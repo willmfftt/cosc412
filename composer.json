@@ -3,6 +3,7 @@
 		"classmap": ["generated-classes/"]
 	},
 	"require": {
-		"propel/propel": "~2.0@dev"
+		"propel/propel": "~2.0@dev",
+		"owasp/phprbac": "2.0.*@dev"
 	}
 }

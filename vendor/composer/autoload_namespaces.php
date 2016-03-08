@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Propel' => array($vendorDir . '/propel/propel/src'),
+    'PhpRbac' => array($vendorDir . '/owasp/phprbac/PhpRbac/src'),
 );
