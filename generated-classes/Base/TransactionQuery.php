@@ -10,7 +10,6 @@ use Map\TransactionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
-use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -21,11 +20,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildTransactionQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildTransactionQuery orderByUserid($order = Criteria::ASC) Order by the userId column
+ * @method     ChildTransactionQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildTransactionQuery orderByType($order = Criteria::ASC) Order by the type column
  *
  * @method     ChildTransactionQuery groupById() Group by the id column
- * @method     ChildTransactionQuery groupByUserid() Group by the userId column
+ * @method     ChildTransactionQuery groupByUserId() Group by the user_id column
  * @method     ChildTransactionQuery groupByType() Group by the type column
  *
  * @method     ChildTransactionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -36,55 +35,23 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransactionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildTransactionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildTransactionQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildTransactionQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildTransactionQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
- *
- * @method     ChildTransactionQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
- *
- * @method     ChildTransactionQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildTransactionQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildTransactionQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
- *
- * @method     ChildTransactionQuery leftJoinPurchase($relationAlias = null) Adds a LEFT JOIN clause to the query using the Purchase relation
- * @method     ChildTransactionQuery rightJoinPurchase($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Purchase relation
- * @method     ChildTransactionQuery innerJoinPurchase($relationAlias = null) Adds a INNER JOIN clause to the query using the Purchase relation
- *
- * @method     ChildTransactionQuery joinWithPurchase($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Purchase relation
- *
- * @method     ChildTransactionQuery leftJoinWithPurchase() Adds a LEFT JOIN clause and with to the query using the Purchase relation
- * @method     ChildTransactionQuery rightJoinWithPurchase() Adds a RIGHT JOIN clause and with to the query using the Purchase relation
- * @method     ChildTransactionQuery innerJoinWithPurchase() Adds a INNER JOIN clause and with to the query using the Purchase relation
- *
- * @method     ChildTransactionQuery leftJoinRefund($relationAlias = null) Adds a LEFT JOIN clause to the query using the Refund relation
- * @method     ChildTransactionQuery rightJoinRefund($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Refund relation
- * @method     ChildTransactionQuery innerJoinRefund($relationAlias = null) Adds a INNER JOIN clause to the query using the Refund relation
- *
- * @method     ChildTransactionQuery joinWithRefund($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Refund relation
- *
- * @method     ChildTransactionQuery leftJoinWithRefund() Adds a LEFT JOIN clause and with to the query using the Refund relation
- * @method     ChildTransactionQuery rightJoinWithRefund() Adds a RIGHT JOIN clause and with to the query using the Refund relation
- * @method     ChildTransactionQuery innerJoinWithRefund() Adds a INNER JOIN clause and with to the query using the Refund relation
- *
- * @method     \UserQuery|\PurchaseQuery|\RefundQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildTransaction findOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
  *
  * @method     ChildTransaction findOneById(int $id) Return the first ChildTransaction filtered by the id column
- * @method     ChildTransaction findOneByUserid(int $userId) Return the first ChildTransaction filtered by the userId column
+ * @method     ChildTransaction findOneByUserId(int $user_id) Return the first ChildTransaction filtered by the user_id column
  * @method     ChildTransaction findOneByType(string $type) Return the first ChildTransaction filtered by the type column *
 
  * @method     ChildTransaction requirePk($key, ConnectionInterface $con = null) Return the ChildTransaction by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction requireOneById(int $id) Return the first ChildTransaction filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTransaction requireOneByUserid(int $userId) Return the first ChildTransaction filtered by the userId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByUserId(int $user_id) Return the first ChildTransaction filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByType(string $type) Return the first ChildTransaction filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransaction objects based on current ModelCriteria
  * @method     ChildTransaction[]|ObjectCollection findById(int $id) Return ChildTransaction objects filtered by the id column
- * @method     ChildTransaction[]|ObjectCollection findByUserid(int $userId) Return ChildTransaction objects filtered by the userId column
+ * @method     ChildTransaction[]|ObjectCollection findByUserId(int $user_id) Return ChildTransaction objects filtered by the user_id column
  * @method     ChildTransaction[]|ObjectCollection findByType(string $type) Return ChildTransaction objects filtered by the type column
  * @method     ChildTransaction[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -178,7 +145,7 @@ abstract class TransactionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, userId, type FROM transaction WHERE id = :p0';
+        $sql = 'SELECT id, user_id, type FROM transaction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -310,18 +277,16 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the userId column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserid(1234); // WHERE userId = 1234
-     * $query->filterByUserid(array(12, 34)); // WHERE userId IN (12, 34)
-     * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
-     * @see       filterByUser()
-     *
-     * @param     mixed $userid The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -329,16 +294,16 @@ abstract class TransactionQuery extends ModelCriteria
      *
      * @return $this|ChildTransactionQuery The current query, for fluid interface
      */
-    public function filterByUserid($userid = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userid)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($userid['min'])) {
-                $this->addUsingAlias(TransactionTableMap::COL_USERID, $userid['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($userid['max'])) {
-                $this->addUsingAlias(TransactionTableMap::COL_USERID, $userid['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -349,7 +314,7 @@ abstract class TransactionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(TransactionTableMap::COL_USERID, $userid, $comparison);
+        return $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -379,229 +344,6 @@ abstract class TransactionQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TransactionTableMap::COL_TYPE, $type, $comparison);
-    }
-
-    /**
-     * Filter the query by a related \User object
-     *
-     * @param \User|ObjectCollection $user The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
-     *
-     * @return ChildTransactionQuery The current query, for fluid interface
-     */
-    public function filterByUser($user, $comparison = null)
-    {
-        if ($user instanceof \User) {
-            return $this
-                ->addUsingAlias(TransactionTableMap::COL_USERID, $user->getId(), $comparison);
-        } elseif ($user instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(TransactionTableMap::COL_USERID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
-        } else {
-            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the User relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildTransactionQuery The current query, for fluid interface
-     */
-    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('User');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'User');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the User relation User object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \UserQuery A secondary query class using the current class as primary query
-     */
-    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
-    }
-
-    /**
-     * Filter the query by a related \Purchase object
-     *
-     * @param \Purchase|ObjectCollection $purchase the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildTransactionQuery The current query, for fluid interface
-     */
-    public function filterByPurchase($purchase, $comparison = null)
-    {
-        if ($purchase instanceof \Purchase) {
-            return $this
-                ->addUsingAlias(TransactionTableMap::COL_ID, $purchase->getTransactionid(), $comparison);
-        } elseif ($purchase instanceof ObjectCollection) {
-            return $this
-                ->usePurchaseQuery()
-                ->filterByPrimaryKeys($purchase->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByPurchase() only accepts arguments of type \Purchase or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Purchase relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildTransactionQuery The current query, for fluid interface
-     */
-    public function joinPurchase($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Purchase');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Purchase');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Purchase relation Purchase object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \PurchaseQuery A secondary query class using the current class as primary query
-     */
-    public function usePurchaseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinPurchase($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Purchase', '\PurchaseQuery');
-    }
-
-    /**
-     * Filter the query by a related \Refund object
-     *
-     * @param \Refund|ObjectCollection $refund the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildTransactionQuery The current query, for fluid interface
-     */
-    public function filterByRefund($refund, $comparison = null)
-    {
-        if ($refund instanceof \Refund) {
-            return $this
-                ->addUsingAlias(TransactionTableMap::COL_ID, $refund->getTransactionid(), $comparison);
-        } elseif ($refund instanceof ObjectCollection) {
-            return $this
-                ->useRefundQuery()
-                ->filterByPrimaryKeys($refund->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByRefund() only accepts arguments of type \Refund or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Refund relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildTransactionQuery The current query, for fluid interface
-     */
-    public function joinRefund($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Refund');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Refund');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Refund relation Refund object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \RefundQuery A secondary query class using the current class as primary query
-     */
-    public function useRefundQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinRefund($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Refund', '\RefundQuery');
     }
 
     /**

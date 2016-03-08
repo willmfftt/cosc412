@@ -1,9 +1,9 @@
 <?php
 
-use Base\ApproveduserQuery as BaseApproveduserQuery;
+use Base\ApprovedUserQuery as BaseApprovedUserQuery;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'approvedUser' table.
+ * Skeleton subclass for performing query and update operations on the 'approved_user' table.
  *
  *
  *
@@ -12,7 +12,7 @@ use Base\ApproveduserQuery as BaseApproveduserQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class ApproveduserQuery extends BaseApproveduserQuery
+class ApprovedUserQuery extends BaseApprovedUserQuery
 {
 
 }

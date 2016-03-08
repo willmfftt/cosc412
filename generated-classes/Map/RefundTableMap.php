@@ -77,9 +77,9 @@ class RefundTableMap extends TableMap
     const COL_ID = 'refund.id';
 
     /**
-     * the column name for the transactionId field
+     * the column name for the transaction_id field
      */
-    const COL_TRANSACTIONID = 'refund.transactionId';
+    const COL_TRANSACTION_ID = 'refund.transaction_id';
 
     /**
      * the column name for the amount field
@@ -98,10 +98,10 @@ class RefundTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Transactionid', 'Amount', ),
-        self::TYPE_CAMELNAME     => array('id', 'transactionid', 'amount', ),
-        self::TYPE_COLNAME       => array(RefundTableMap::COL_ID, RefundTableMap::COL_TRANSACTIONID, RefundTableMap::COL_AMOUNT, ),
-        self::TYPE_FIELDNAME     => array('id', 'transactionId', 'amount', ),
+        self::TYPE_PHPNAME       => array('Id', 'TransactionId', 'Amount', ),
+        self::TYPE_CAMELNAME     => array('id', 'transactionId', 'amount', ),
+        self::TYPE_COLNAME       => array(RefundTableMap::COL_ID, RefundTableMap::COL_TRANSACTION_ID, RefundTableMap::COL_AMOUNT, ),
+        self::TYPE_FIELDNAME     => array('id', 'transaction_id', 'amount', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,10 +112,10 @@ class RefundTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Transactionid' => 1, 'Amount' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'transactionid' => 1, 'amount' => 2, ),
-        self::TYPE_COLNAME       => array(RefundTableMap::COL_ID => 0, RefundTableMap::COL_TRANSACTIONID => 1, RefundTableMap::COL_AMOUNT => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'transactionId' => 1, 'amount' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'TransactionId' => 1, 'Amount' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'transactionId' => 1, 'amount' => 2, ),
+        self::TYPE_COLNAME       => array(RefundTableMap::COL_ID => 0, RefundTableMap::COL_TRANSACTION_ID => 1, RefundTableMap::COL_AMOUNT => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'transaction_id' => 1, 'amount' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,7 +137,7 @@ class RefundTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('transactionId', 'Transactionid', 'INTEGER', 'transaction', 'id', true, null, null);
+        $this->addColumn('transaction_id', 'TransactionId', 'INTEGER', true, null, null);
         $this->addColumn('amount', 'Amount', 'FLOAT', true, 10, null);
     } // initialize()
 
@@ -146,13 +146,6 @@ class RefundTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Transaction', '\\Transaction', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':transactionId',
-    1 => ':id',
-  ),
-), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -297,11 +290,11 @@ class RefundTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(RefundTableMap::COL_ID);
-            $criteria->addSelectColumn(RefundTableMap::COL_TRANSACTIONID);
+            $criteria->addSelectColumn(RefundTableMap::COL_TRANSACTION_ID);
             $criteria->addSelectColumn(RefundTableMap::COL_AMOUNT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.transactionId');
+            $criteria->addSelectColumn($alias . '.transaction_id');
             $criteria->addSelectColumn($alias . '.amount');
         }
     }

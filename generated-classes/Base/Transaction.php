@@ -2,25 +2,15 @@
 
 namespace Base;
 
-use \Purchase as ChildPurchase;
-use \PurchaseQuery as ChildPurchaseQuery;
-use \Refund as ChildRefund;
-use \RefundQuery as ChildRefundQuery;
-use \Transaction as ChildTransaction;
 use \TransactionQuery as ChildTransactionQuery;
-use \User as ChildUser;
-use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
-use Map\PurchaseTableMap;
-use Map\RefundTableMap;
 use Map\TransactionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -77,11 +67,11 @@ abstract class Transaction implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
+    protected $user_id;
 
     /**
      * The value for the type field.
@@ -92,41 +82,12 @@ abstract class Transaction implements ActiveRecordInterface
     protected $type;
 
     /**
-     * @var        ChildUser
-     */
-    protected $aUser;
-
-    /**
-     * @var        ObjectCollection|ChildPurchase[] Collection to store aggregation of ChildPurchase objects.
-     */
-    protected $collPurchases;
-    protected $collPurchasesPartial;
-
-    /**
-     * @var        ObjectCollection|ChildRefund[] Collection to store aggregation of ChildRefund objects.
-     */
-    protected $collRefunds;
-    protected $collRefundsPartial;
-
-    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildPurchase[]
-     */
-    protected $purchasesScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildRefund[]
-     */
-    protected $refundsScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -377,13 +338,13 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
@@ -417,28 +378,24 @@ abstract class Transaction implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\Transaction The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[TransactionTableMap::COL_USERID] = true;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[TransactionTableMap::COL_USER_ID] = true;
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
 
     /**
      * Set the value of [type] column.
@@ -503,8 +460,8 @@ abstract class Transaction implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : TransactionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TransactionTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TransactionTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : TransactionTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
             $this->type = (null !== $col) ? (string) $col : null;
@@ -538,9 +495,6 @@ abstract class Transaction implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->userid !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
     } // ensureConsistency
 
     /**
@@ -579,11 +533,6 @@ abstract class Transaction implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->aUser = null;
-            $this->collPurchases = null;
-
-            $this->collRefunds = null;
 
         } // if (deep)
     }
@@ -684,18 +633,6 @@ abstract class Transaction implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -705,40 +642,6 @@ abstract class Transaction implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->purchasesScheduledForDeletion !== null) {
-                if (!$this->purchasesScheduledForDeletion->isEmpty()) {
-                    \PurchaseQuery::create()
-                        ->filterByPrimaryKeys($this->purchasesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->purchasesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collPurchases !== null) {
-                foreach ($this->collPurchases as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->refundsScheduledForDeletion !== null) {
-                if (!$this->refundsScheduledForDeletion->isEmpty()) {
-                    \RefundQuery::create()
-                        ->filterByPrimaryKeys($this->refundsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->refundsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collRefunds !== null) {
-                foreach ($this->collRefunds as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -770,8 +673,8 @@ abstract class Transaction implements ActiveRecordInterface
         if ($this->isColumnModified(TransactionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(TransactionTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(TransactionTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
         if ($this->isColumnModified(TransactionTableMap::COL_TYPE)) {
             $modifiedColumns[':p' . $index++]  = 'type';
@@ -790,8 +693,8 @@ abstract class Transaction implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                     case 'type':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
@@ -862,7 +765,7 @@ abstract class Transaction implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
                 break;
             case 2:
                 return $this->getType();
@@ -884,11 +787,10 @@ abstract class Transaction implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Transaction'][$this->hashCode()])) {
@@ -898,7 +800,7 @@ abstract class Transaction implements ActiveRecordInterface
         $keys = TransactionTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
+            $keys[1] => $this->getUserId(),
             $keys[2] => $this->getType(),
         );
         $virtualColumns = $this->virtualColumns;
@@ -906,53 +808,6 @@ abstract class Transaction implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aUser) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'user';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user';
-                        break;
-                    default:
-                        $key = 'User';
-                }
-
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collPurchases) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'purchases';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'purchases';
-                        break;
-                    default:
-                        $key = 'Purchases';
-                }
-
-                $result[$key] = $this->collPurchases->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collRefunds) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'refunds';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'refunds';
-                        break;
-                    default:
-                        $key = 'Refunds';
-                }
-
-                $result[$key] = $this->collRefunds->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -990,7 +845,7 @@ abstract class Transaction implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
                 break;
             case 2:
                 $this->setType($value);
@@ -1025,7 +880,7 @@ abstract class Transaction implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
             $this->setType($arr[$keys[2]]);
@@ -1074,8 +929,8 @@ abstract class Transaction implements ActiveRecordInterface
         if ($this->isColumnModified(TransactionTableMap::COL_ID)) {
             $criteria->add(TransactionTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(TransactionTableMap::COL_USERID)) {
-            $criteria->add(TransactionTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(TransactionTableMap::COL_USER_ID)) {
+            $criteria->add(TransactionTableMap::COL_USER_ID, $this->user_id);
         }
         if ($this->isColumnModified(TransactionTableMap::COL_TYPE)) {
             $criteria->add(TransactionTableMap::COL_TYPE, $this->type);
@@ -1166,28 +1021,8 @@ abstract class Transaction implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
+        $copyObj->setUserId($this->getUserId());
         $copyObj->setType($this->getType());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getPurchases() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPurchase($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getRefunds() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addRefund($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1217,537 +1052,14 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildUser object.
-     *
-     * @param  ChildUser $v
-     * @return $this|\Transaction The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUser(ChildUser $v = null)
-    {
-        if ($v === null) {
-            $this->setUserid(NULL);
-        } else {
-            $this->setUserid($v->getId());
-        }
-
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUser object, it will not be re-added.
-        if ($v !== null) {
-            $v->addTransaction($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildUser object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUser The associated ChildUser object.
-     * @throws PropelException
-     */
-    public function getUser(ConnectionInterface $con = null)
-    {
-        if ($this->aUser === null && ($this->userid !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->userid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addTransactions($this);
-             */
-        }
-
-        return $this->aUser;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Purchase' == $relationName) {
-            return $this->initPurchases();
-        }
-        if ('Refund' == $relationName) {
-            return $this->initRefunds();
-        }
-    }
-
-    /**
-     * Clears out the collPurchases collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addPurchases()
-     */
-    public function clearPurchases()
-    {
-        $this->collPurchases = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collPurchases collection loaded partially.
-     */
-    public function resetPartialPurchases($v = true)
-    {
-        $this->collPurchasesPartial = $v;
-    }
-
-    /**
-     * Initializes the collPurchases collection.
-     *
-     * By default this just sets the collPurchases collection to an empty array (like clearcollPurchases());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initPurchases($overrideExisting = true)
-    {
-        if (null !== $this->collPurchases && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = PurchaseTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collPurchases = new $collectionClassName;
-        $this->collPurchases->setModel('\Purchase');
-    }
-
-    /**
-     * Gets an array of ChildPurchase objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildTransaction is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildPurchase[] List of ChildPurchase objects
-     * @throws PropelException
-     */
-    public function getPurchases(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collPurchasesPartial && !$this->isNew();
-        if (null === $this->collPurchases || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPurchases) {
-                // return empty collection
-                $this->initPurchases();
-            } else {
-                $collPurchases = ChildPurchaseQuery::create(null, $criteria)
-                    ->filterByTransaction($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collPurchasesPartial && count($collPurchases)) {
-                        $this->initPurchases(false);
-
-                        foreach ($collPurchases as $obj) {
-                            if (false == $this->collPurchases->contains($obj)) {
-                                $this->collPurchases->append($obj);
-                            }
-                        }
-
-                        $this->collPurchasesPartial = true;
-                    }
-
-                    return $collPurchases;
-                }
-
-                if ($partial && $this->collPurchases) {
-                    foreach ($this->collPurchases as $obj) {
-                        if ($obj->isNew()) {
-                            $collPurchases[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collPurchases = $collPurchases;
-                $this->collPurchasesPartial = false;
-            }
-        }
-
-        return $this->collPurchases;
-    }
-
-    /**
-     * Sets a collection of ChildPurchase objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $purchases A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildTransaction The current object (for fluent API support)
-     */
-    public function setPurchases(Collection $purchases, ConnectionInterface $con = null)
-    {
-        /** @var ChildPurchase[] $purchasesToDelete */
-        $purchasesToDelete = $this->getPurchases(new Criteria(), $con)->diff($purchases);
-
-
-        $this->purchasesScheduledForDeletion = $purchasesToDelete;
-
-        foreach ($purchasesToDelete as $purchaseRemoved) {
-            $purchaseRemoved->setTransaction(null);
-        }
-
-        $this->collPurchases = null;
-        foreach ($purchases as $purchase) {
-            $this->addPurchase($purchase);
-        }
-
-        $this->collPurchases = $purchases;
-        $this->collPurchasesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Purchase objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Purchase objects.
-     * @throws PropelException
-     */
-    public function countPurchases(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collPurchasesPartial && !$this->isNew();
-        if (null === $this->collPurchases || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPurchases) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getPurchases());
-            }
-
-            $query = ChildPurchaseQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByTransaction($this)
-                ->count($con);
-        }
-
-        return count($this->collPurchases);
-    }
-
-    /**
-     * Method called to associate a ChildPurchase object to this object
-     * through the ChildPurchase foreign key attribute.
-     *
-     * @param  ChildPurchase $l ChildPurchase
-     * @return $this|\Transaction The current object (for fluent API support)
-     */
-    public function addPurchase(ChildPurchase $l)
-    {
-        if ($this->collPurchases === null) {
-            $this->initPurchases();
-            $this->collPurchasesPartial = true;
-        }
-
-        if (!$this->collPurchases->contains($l)) {
-            $this->doAddPurchase($l);
-
-            if ($this->purchasesScheduledForDeletion and $this->purchasesScheduledForDeletion->contains($l)) {
-                $this->purchasesScheduledForDeletion->remove($this->purchasesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildPurchase $purchase The ChildPurchase object to add.
-     */
-    protected function doAddPurchase(ChildPurchase $purchase)
-    {
-        $this->collPurchases[]= $purchase;
-        $purchase->setTransaction($this);
-    }
-
-    /**
-     * @param  ChildPurchase $purchase The ChildPurchase object to remove.
-     * @return $this|ChildTransaction The current object (for fluent API support)
-     */
-    public function removePurchase(ChildPurchase $purchase)
-    {
-        if ($this->getPurchases()->contains($purchase)) {
-            $pos = $this->collPurchases->search($purchase);
-            $this->collPurchases->remove($pos);
-            if (null === $this->purchasesScheduledForDeletion) {
-                $this->purchasesScheduledForDeletion = clone $this->collPurchases;
-                $this->purchasesScheduledForDeletion->clear();
-            }
-            $this->purchasesScheduledForDeletion[]= clone $purchase;
-            $purchase->setTransaction(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collRefunds collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addRefunds()
-     */
-    public function clearRefunds()
-    {
-        $this->collRefunds = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collRefunds collection loaded partially.
-     */
-    public function resetPartialRefunds($v = true)
-    {
-        $this->collRefundsPartial = $v;
-    }
-
-    /**
-     * Initializes the collRefunds collection.
-     *
-     * By default this just sets the collRefunds collection to an empty array (like clearcollRefunds());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initRefunds($overrideExisting = true)
-    {
-        if (null !== $this->collRefunds && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = RefundTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collRefunds = new $collectionClassName;
-        $this->collRefunds->setModel('\Refund');
-    }
-
-    /**
-     * Gets an array of ChildRefund objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildTransaction is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildRefund[] List of ChildRefund objects
-     * @throws PropelException
-     */
-    public function getRefunds(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collRefundsPartial && !$this->isNew();
-        if (null === $this->collRefunds || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collRefunds) {
-                // return empty collection
-                $this->initRefunds();
-            } else {
-                $collRefunds = ChildRefundQuery::create(null, $criteria)
-                    ->filterByTransaction($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collRefundsPartial && count($collRefunds)) {
-                        $this->initRefunds(false);
-
-                        foreach ($collRefunds as $obj) {
-                            if (false == $this->collRefunds->contains($obj)) {
-                                $this->collRefunds->append($obj);
-                            }
-                        }
-
-                        $this->collRefundsPartial = true;
-                    }
-
-                    return $collRefunds;
-                }
-
-                if ($partial && $this->collRefunds) {
-                    foreach ($this->collRefunds as $obj) {
-                        if ($obj->isNew()) {
-                            $collRefunds[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collRefunds = $collRefunds;
-                $this->collRefundsPartial = false;
-            }
-        }
-
-        return $this->collRefunds;
-    }
-
-    /**
-     * Sets a collection of ChildRefund objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $refunds A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildTransaction The current object (for fluent API support)
-     */
-    public function setRefunds(Collection $refunds, ConnectionInterface $con = null)
-    {
-        /** @var ChildRefund[] $refundsToDelete */
-        $refundsToDelete = $this->getRefunds(new Criteria(), $con)->diff($refunds);
-
-
-        $this->refundsScheduledForDeletion = $refundsToDelete;
-
-        foreach ($refundsToDelete as $refundRemoved) {
-            $refundRemoved->setTransaction(null);
-        }
-
-        $this->collRefunds = null;
-        foreach ($refunds as $refund) {
-            $this->addRefund($refund);
-        }
-
-        $this->collRefunds = $refunds;
-        $this->collRefundsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Refund objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Refund objects.
-     * @throws PropelException
-     */
-    public function countRefunds(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collRefundsPartial && !$this->isNew();
-        if (null === $this->collRefunds || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collRefunds) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getRefunds());
-            }
-
-            $query = ChildRefundQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByTransaction($this)
-                ->count($con);
-        }
-
-        return count($this->collRefunds);
-    }
-
-    /**
-     * Method called to associate a ChildRefund object to this object
-     * through the ChildRefund foreign key attribute.
-     *
-     * @param  ChildRefund $l ChildRefund
-     * @return $this|\Transaction The current object (for fluent API support)
-     */
-    public function addRefund(ChildRefund $l)
-    {
-        if ($this->collRefunds === null) {
-            $this->initRefunds();
-            $this->collRefundsPartial = true;
-        }
-
-        if (!$this->collRefunds->contains($l)) {
-            $this->doAddRefund($l);
-
-            if ($this->refundsScheduledForDeletion and $this->refundsScheduledForDeletion->contains($l)) {
-                $this->refundsScheduledForDeletion->remove($this->refundsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildRefund $refund The ChildRefund object to add.
-     */
-    protected function doAddRefund(ChildRefund $refund)
-    {
-        $this->collRefunds[]= $refund;
-        $refund->setTransaction($this);
-    }
-
-    /**
-     * @param  ChildRefund $refund The ChildRefund object to remove.
-     * @return $this|ChildTransaction The current object (for fluent API support)
-     */
-    public function removeRefund(ChildRefund $refund)
-    {
-        if ($this->getRefunds()->contains($refund)) {
-            $pos = $this->collRefunds->search($refund);
-            $this->collRefunds->remove($pos);
-            if (null === $this->refundsScheduledForDeletion) {
-                $this->refundsScheduledForDeletion = clone $this->collRefunds;
-                $this->refundsScheduledForDeletion->clear();
-            }
-            $this->refundsScheduledForDeletion[]= clone $refund;
-            $refund->setTransaction(null);
-        }
-
-        return $this;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aUser) {
-            $this->aUser->removeTransaction($this);
-        }
         $this->id = null;
-        $this->userid = null;
+        $this->user_id = null;
         $this->type = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -1768,21 +1080,8 @@ abstract class Transaction implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collPurchases) {
-                foreach ($this->collPurchases as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collRefunds) {
-                foreach ($this->collRefunds as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collPurchases = null;
-        $this->collRefunds = null;
-        $this->aUser = null;
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \Purchasingagent as ChildPurchasingagent;
-use \PurchasingagentQuery as ChildPurchasingagentQuery;
+use \PurchasingAgent as ChildPurchasingAgent;
+use \PurchasingAgentQuery as ChildPurchasingAgentQuery;
 use \Exception;
 use \PDO;
-use Map\PurchasingagentTableMap;
+use Map\PurchasingAgentTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,84 +16,84 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'purchasingAgent' table.
+ * Base class that represents a query for the 'purchasing_agent' table.
  *
  *
  *
- * @method     ChildPurchasingagentQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildPurchasingagentQuery orderByUserid($order = Criteria::ASC) Order by the userId column
+ * @method     ChildPurchasingAgentQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildPurchasingAgentQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  *
- * @method     ChildPurchasingagentQuery groupById() Group by the id column
- * @method     ChildPurchasingagentQuery groupByUserid() Group by the userId column
+ * @method     ChildPurchasingAgentQuery groupById() Group by the id column
+ * @method     ChildPurchasingAgentQuery groupByUserId() Group by the user_id column
  *
- * @method     ChildPurchasingagentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildPurchasingagentQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildPurchasingagentQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildPurchasingAgentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildPurchasingAgentQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildPurchasingAgentQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildPurchasingagentQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildPurchasingagentQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildPurchasingagentQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildPurchasingAgentQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildPurchasingAgentQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildPurchasingAgentQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildPurchasingagentQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildPurchasingagentQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildPurchasingagentQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ * @method     ChildPurchasingAgentQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildPurchasingAgentQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildPurchasingAgentQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     ChildPurchasingagentQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ * @method     ChildPurchasingAgentQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
  *
- * @method     ChildPurchasingagentQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildPurchasingagentQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildPurchasingagentQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ * @method     ChildPurchasingAgentQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildPurchasingAgentQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildPurchasingAgentQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
  * @method     \UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildPurchasingagent findOne(ConnectionInterface $con = null) Return the first ChildPurchasingagent matching the query
- * @method     ChildPurchasingagent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchasingagent matching the query, or a new ChildPurchasingagent object populated from the query conditions when no match is found
+ * @method     ChildPurchasingAgent findOne(ConnectionInterface $con = null) Return the first ChildPurchasingAgent matching the query
+ * @method     ChildPurchasingAgent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPurchasingAgent matching the query, or a new ChildPurchasingAgent object populated from the query conditions when no match is found
  *
- * @method     ChildPurchasingagent findOneById(int $id) Return the first ChildPurchasingagent filtered by the id column
- * @method     ChildPurchasingagent findOneByUserid(int $userId) Return the first ChildPurchasingagent filtered by the userId column *
+ * @method     ChildPurchasingAgent findOneById(int $id) Return the first ChildPurchasingAgent filtered by the id column
+ * @method     ChildPurchasingAgent findOneByUserId(int $user_id) Return the first ChildPurchasingAgent filtered by the user_id column *
 
- * @method     ChildPurchasingagent requirePk($key, ConnectionInterface $con = null) Return the ChildPurchasingagent by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchasingagent requireOne(ConnectionInterface $con = null) Return the first ChildPurchasingagent matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchasingAgent requirePk($key, ConnectionInterface $con = null) Return the ChildPurchasingAgent by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchasingAgent requireOne(ConnectionInterface $con = null) Return the first ChildPurchasingAgent matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildPurchasingagent requireOneById(int $id) Return the first ChildPurchasingagent filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPurchasingagent requireOneByUserid(int $userId) Return the first ChildPurchasingagent filtered by the userId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchasingAgent requireOneById(int $id) Return the first ChildPurchasingAgent filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPurchasingAgent requireOneByUserId(int $user_id) Return the first ChildPurchasingAgent filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildPurchasingagent[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPurchasingagent objects based on current ModelCriteria
- * @method     ChildPurchasingagent[]|ObjectCollection findById(int $id) Return ChildPurchasingagent objects filtered by the id column
- * @method     ChildPurchasingagent[]|ObjectCollection findByUserid(int $userId) Return ChildPurchasingagent objects filtered by the userId column
- * @method     ChildPurchasingagent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildPurchasingAgent[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPurchasingAgent objects based on current ModelCriteria
+ * @method     ChildPurchasingAgent[]|ObjectCollection findById(int $id) Return ChildPurchasingAgent objects filtered by the id column
+ * @method     ChildPurchasingAgent[]|ObjectCollection findByUserId(int $user_id) Return ChildPurchasingAgent objects filtered by the user_id column
+ * @method     ChildPurchasingAgent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class PurchasingagentQuery extends ModelCriteria
+abstract class PurchasingAgentQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\PurchasingagentQuery object.
+     * Initializes internal state of \Base\PurchasingAgentQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Purchasingagent', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\PurchasingAgent', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildPurchasingagentQuery object.
+     * Returns a new ChildPurchasingAgentQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildPurchasingagentQuery
+     * @return ChildPurchasingAgentQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildPurchasingagentQuery) {
+        if ($criteria instanceof ChildPurchasingAgentQuery) {
             return $criteria;
         }
-        $query = new ChildPurchasingagentQuery();
+        $query = new ChildPurchasingAgentQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -110,25 +110,25 @@ abstract class PurchasingagentQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildPurchasingagent|array|mixed the result, formatted by the current formatter
+     * @return ChildPurchasingAgent|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PurchasingagentTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = PurchasingAgentTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(PurchasingAgentTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -149,14 +149,15 @@ abstract class PurchasingagentQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildPurchasingagent A model object, or null if the key is not found
+     * @return ChildPurchasingAgent A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, userId FROM purchasingAgent WHERE id = :p0';
+        $sql = 'SELECT id, user_id FROM purchasing_agent WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -164,10 +165,10 @@ abstract class PurchasingagentQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildPurchasingagent $obj */
-            $obj = new ChildPurchasingagent();
+            /** @var ChildPurchasingAgent $obj */
+            $obj = new ChildPurchasingAgent();
             $obj->hydrate($row);
-            PurchasingagentTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            PurchasingAgentTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -180,7 +181,7 @@ abstract class PurchasingagentQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildPurchasingagent|array|mixed the result, formatted by the current formatter
+     * @return ChildPurchasingAgent|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -196,7 +197,7 @@ abstract class PurchasingagentQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -222,12 +223,14 @@ abstract class PurchasingagentQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(PurchasingAgentTableMap::COL_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -235,12 +238,21 @@ abstract class PurchasingagentQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(PurchasingAgentTableMap::COL_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(PurchasingAgentTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -259,18 +271,18 @@ abstract class PurchasingagentQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PurchasingAgentTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PurchasingAgentTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -281,39 +293,39 @@ abstract class PurchasingagentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(PurchasingAgentTableMap::COL_ID, $id, $comparison);
     }
 
     /**
-     * Filter the query on the userId column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserid(1234); // WHERE userId = 1234
-     * $query->filterByUserid(array(12, 34)); // WHERE userId IN (12, 34)
-     * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
      * @see       filterByUser()
      *
-     * @param     mixed $userid The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
-    public function filterByUserid($userid = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userid)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($userid['min'])) {
-                $this->addUsingAlias(PurchasingagentTableMap::COL_USERID, $userid['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($userid['max'])) {
-                $this->addUsingAlias(PurchasingagentTableMap::COL_USERID, $userid['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -324,7 +336,7 @@ abstract class PurchasingagentQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PurchasingagentTableMap::COL_USERID, $userid, $comparison);
+        return $this->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -335,20 +347,20 @@ abstract class PurchasingagentQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildPurchasingagentQuery The current query, for fluid interface
+     * @return ChildPurchasingAgentQuery The current query, for fluid interface
      */
     public function filterByUser($user, $comparison = null)
     {
         if ($user instanceof \User) {
             return $this
-                ->addUsingAlias(PurchasingagentTableMap::COL_USERID, $user->getId(), $comparison);
+                ->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $user->getId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(PurchasingagentTableMap::COL_USERID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(PurchasingAgentTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
         }
@@ -360,7 +372,7 @@ abstract class PurchasingagentQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
     public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -407,21 +419,23 @@ abstract class PurchasingagentQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildPurchasingagent $purchasingagent Object to remove from the list of results
+     * @param   ChildPurchasingAgent $purchasingAgent Object to remove from the list of results
      *
-     * @return $this|ChildPurchasingagentQuery The current query, for fluid interface
+     * @return $this|ChildPurchasingAgentQuery The current query, for fluid interface
      */
-    public function prune($purchasingagent = null)
+    public function prune($purchasingAgent = null)
     {
-        if ($purchasingagent) {
-            $this->addUsingAlias(PurchasingagentTableMap::COL_ID, $purchasingagent->getId(), Criteria::NOT_EQUAL);
+        if ($purchasingAgent) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(PurchasingAgentTableMap::COL_ID), $purchasingAgent->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(PurchasingAgentTableMap::COL_USER_ID), $purchasingAgent->getUserId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the purchasingAgent table.
+     * Deletes all rows from the purchasing_agent table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -429,7 +443,7 @@ abstract class PurchasingagentQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingAgentTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -440,8 +454,8 @@ abstract class PurchasingagentQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            PurchasingagentTableMap::clearInstancePool();
-            PurchasingagentTableMap::clearRelatedInstancePool();
+            PurchasingAgentTableMap::clearInstancePool();
+            PurchasingAgentTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -459,26 +473,26 @@ abstract class PurchasingagentQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingAgentTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(PurchasingagentTableMap::DATABASE_NAME);
+        $criteria->setDbName(PurchasingAgentTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            PurchasingagentTableMap::removeInstanceFromPool($criteria);
+            PurchasingAgentTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            PurchasingagentTableMap::clearRelatedInstancePool();
+            PurchasingAgentTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // PurchasingagentQuery
+} // PurchasingAgentQuery

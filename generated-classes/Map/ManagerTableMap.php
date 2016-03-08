@@ -77,14 +77,14 @@ class ManagerTableMap extends TableMap
     const COL_ID = 'manager.id';
 
     /**
-     * the column name for the userId field
+     * the column name for the user_id field
      */
-    const COL_USERID = 'manager.userId';
+    const COL_USER_ID = 'manager.user_id';
 
     /**
-     * the column name for the adminId field
+     * the column name for the admin_id field
      */
-    const COL_ADMINID = 'manager.adminId';
+    const COL_ADMIN_ID = 'manager.admin_id';
 
     /**
      * The default string format for model objects of the related table
@@ -98,10 +98,10 @@ class ManagerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Userid', 'Adminid', ),
-        self::TYPE_CAMELNAME     => array('id', 'userid', 'adminid', ),
-        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID, ManagerTableMap::COL_USERID, ManagerTableMap::COL_ADMINID, ),
-        self::TYPE_FIELDNAME     => array('id', 'userId', 'adminId', ),
+        self::TYPE_PHPNAME       => array('Id', 'UserId', 'AdminId', ),
+        self::TYPE_CAMELNAME     => array('id', 'userId', 'adminId', ),
+        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID, ManagerTableMap::COL_USER_ID, ManagerTableMap::COL_ADMIN_ID, ),
+        self::TYPE_FIELDNAME     => array('id', 'user_id', 'admin_id', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,10 +112,10 @@ class ManagerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Userid' => 1, 'Adminid' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userid' => 1, 'adminid' => 2, ),
-        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID => 0, ManagerTableMap::COL_USERID => 1, ManagerTableMap::COL_ADMINID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'userId' => 1, 'adminId' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'AdminId' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'adminId' => 2, ),
+        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID => 0, ManagerTableMap::COL_USER_ID => 1, ManagerTableMap::COL_ADMIN_ID => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'admin_id' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,8 +137,8 @@ class ManagerTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('userId', 'Userid', 'INTEGER', 'user', 'id', true, null, null);
-        $this->addForeignKey('adminId', 'Adminid', 'INTEGER', 'admin', 'id', true, null, null);
+        $this->addPrimaryKey('user_id', 'UserId', 'INTEGER', true, null, null);
+        $this->addColumn('admin_id', 'AdminId', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -146,20 +146,6 @@ class ManagerTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':userId',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Admin', '\\Admin', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':adminId',
-    1 => ':id',
-  ),
-), null, null, null, false);
         $this->addRelation('Supervisor', '\\Supervisor', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -168,6 +154,59 @@ class ManagerTableMap extends TableMap
   ),
 ), null, null, 'Supervisors', false);
     } // buildRelations()
+
+    /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \Manager $obj A \Manager object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getId() || is_scalar($obj->getId()) || is_callable([$obj->getId(), '__toString']) ? (string) $obj->getId() : $obj->getId()), (null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \Manager object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \Manager) {
+                $key = serialize([(null === $value->getId() || is_scalar($value->getId()) || is_callable([$value->getId(), '__toString']) ? (string) $value->getId() : $value->getId()), (null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Manager object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -185,11 +224,11 @@ class ManagerTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -206,11 +245,20 @@ class ManagerTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
                 : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -311,12 +359,12 @@ class ManagerTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(ManagerTableMap::COL_ID);
-            $criteria->addSelectColumn(ManagerTableMap::COL_USERID);
-            $criteria->addSelectColumn(ManagerTableMap::COL_ADMINID);
+            $criteria->addSelectColumn(ManagerTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(ManagerTableMap::COL_ADMIN_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.userId');
-            $criteria->addSelectColumn($alias . '.adminId');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.admin_id');
         }
     }
 
@@ -368,7 +416,17 @@ class ManagerTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ManagerTableMap::DATABASE_NAME);
-            $criteria->add(ManagerTableMap::COL_ID, (array) $values, Criteria::IN);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(ManagerTableMap::COL_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(ManagerTableMap::COL_USER_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
         $query = ManagerQuery::create()->mergeWith($criteria);

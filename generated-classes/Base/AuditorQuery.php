@@ -10,7 +10,6 @@ use Map\AuditorTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
-use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -33,18 +32,6 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuditorQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildAuditorQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildAuditorQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
- *
- * @method     ChildAuditorQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildAuditorQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildAuditorQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
- *
- * @method     ChildAuditorQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
- *
- * @method     ChildAuditorQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildAuditorQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildAuditorQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
- *
- * @method     \UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildAuditor findOne(ConnectionInterface $con = null) Return the first ChildAuditor matching the query
  * @method     ChildAuditor findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAuditor matching the query, or a new ChildAuditor object populated from the query conditions when no match is found
@@ -294,8 +281,6 @@ abstract class AuditorQuery extends ModelCriteria
      * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
      * </code>
      *
-     * @see       filterByUser()
-     *
      * @param     mixed $userid The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -325,83 +310,6 @@ abstract class AuditorQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AuditorTableMap::COL_USERID, $userid, $comparison);
-    }
-
-    /**
-     * Filter the query by a related \User object
-     *
-     * @param \User|ObjectCollection $user The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
-     *
-     * @return ChildAuditorQuery The current query, for fluid interface
-     */
-    public function filterByUser($user, $comparison = null)
-    {
-        if ($user instanceof \User) {
-            return $this
-                ->addUsingAlias(AuditorTableMap::COL_USERID, $user->getId(), $comparison);
-        } elseif ($user instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(AuditorTableMap::COL_USERID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
-        } else {
-            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the User relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildAuditorQuery The current query, for fluid interface
-     */
-    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('User');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'User');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the User relation User object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \UserQuery A secondary query class using the current class as primary query
-     */
-    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
     }
 
     /**
