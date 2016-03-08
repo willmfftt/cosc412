@@ -2,31 +2,16 @@
 
 namespace Base;
 
-use \Admin as ChildAdmin;
-use \AdminQuery as ChildAdminQuery;
-use \Approveduser as ChildApproveduser;
-use \ApproveduserQuery as ChildApproveduserQuery;
-use \Auditor as ChildAuditor;
-use \AuditorQuery as ChildAuditorQuery;
-use \Manager as ChildManager;
-use \ManagerQuery as ChildManagerQuery;
-use \Purchasingagent as ChildPurchasingagent;
-use \PurchasingagentQuery as ChildPurchasingagentQuery;
-use \Supervisor as ChildSupervisor;
-use \SupervisorQuery as ChildSupervisorQuery;
-use \Transaction as ChildTransaction;
-use \TransactionQuery as ChildTransactionQuery;
+use \ApprovedUser as ChildApprovedUser;
+use \ApprovedUserQuery as ChildApprovedUserQuery;
+use \PurchasingAgent as ChildPurchasingAgent;
+use \PurchasingAgentQuery as ChildPurchasingAgentQuery;
 use \User as ChildUser;
 use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
-use Map\AdminTableMap;
-use Map\ApproveduserTableMap;
-use Map\AuditorTableMap;
-use Map\ManagerTableMap;
-use Map\PurchasingagentTableMap;
-use Map\SupervisorTableMap;
-use Map\TransactionTableMap;
+use Map\ApprovedUserTableMap;
+use Map\PurchasingAgentTableMap;
 use Map\UserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -104,11 +89,11 @@ abstract class User implements ActiveRecordInterface
     protected $lastname;
 
     /**
-     * The value for the emailaddress field.
+     * The value for the email_address field.
      *
      * @var        string
      */
-    protected $emailaddress;
+    protected $email_address;
 
     /**
      * The value for the username field.
@@ -125,46 +110,16 @@ abstract class User implements ActiveRecordInterface
     protected $password;
 
     /**
-     * @var        ObjectCollection|ChildAdmin[] Collection to store aggregation of ChildAdmin objects.
+     * @var        ObjectCollection|ChildApprovedUser[] Collection to store aggregation of ChildApprovedUser objects.
      */
-    protected $collAdmins;
-    protected $collAdminsPartial;
+    protected $collApprovedUsers;
+    protected $collApprovedUsersPartial;
 
     /**
-     * @var        ObjectCollection|ChildApproveduser[] Collection to store aggregation of ChildApproveduser objects.
+     * @var        ObjectCollection|ChildPurchasingAgent[] Collection to store aggregation of ChildPurchasingAgent objects.
      */
-    protected $collApprovedusers;
-    protected $collApprovedusersPartial;
-
-    /**
-     * @var        ObjectCollection|ChildAuditor[] Collection to store aggregation of ChildAuditor objects.
-     */
-    protected $collAuditors;
-    protected $collAuditorsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildManager[] Collection to store aggregation of ChildManager objects.
-     */
-    protected $collManagers;
-    protected $collManagersPartial;
-
-    /**
-     * @var        ObjectCollection|ChildPurchasingagent[] Collection to store aggregation of ChildPurchasingagent objects.
-     */
-    protected $collPurchasingagents;
-    protected $collPurchasingagentsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildSupervisor[] Collection to store aggregation of ChildSupervisor objects.
-     */
-    protected $collSupervisors;
-    protected $collSupervisorsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildTransaction[] Collection to store aggregation of ChildTransaction objects.
-     */
-    protected $collTransactions;
-    protected $collTransactionsPartial;
+    protected $collPurchasingAgents;
+    protected $collPurchasingAgentsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -176,45 +131,15 @@ abstract class User implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildAdmin[]
+     * @var ObjectCollection|ChildApprovedUser[]
      */
-    protected $adminsScheduledForDeletion = null;
+    protected $approvedUsersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildApproveduser[]
+     * @var ObjectCollection|ChildPurchasingAgent[]
      */
-    protected $approvedusersScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildAuditor[]
-     */
-    protected $auditorsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildManager[]
-     */
-    protected $managersScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildPurchasingagent[]
-     */
-    protected $purchasingagentsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildSupervisor[]
-     */
-    protected $supervisorsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTransaction[]
-     */
-    protected $transactionsScheduledForDeletion = null;
+    protected $purchasingAgentsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\User object.
@@ -472,13 +397,13 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [emailaddress] column value.
+     * Get the [email_address] column value.
      *
      * @return string
      */
-    public function getEmailaddress()
+    public function getEmailAddress()
     {
-        return $this->emailaddress;
+        return $this->email_address;
     }
 
     /**
@@ -562,24 +487,24 @@ abstract class User implements ActiveRecordInterface
     } // setLastname()
 
     /**
-     * Set the value of [emailaddress] column.
+     * Set the value of [email_address] column.
      *
      * @param string $v new value
      * @return $this|\User The current object (for fluent API support)
      */
-    public function setEmailaddress($v)
+    public function setEmailAddress($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->emailaddress !== $v) {
-            $this->emailaddress = $v;
-            $this->modifiedColumns[UserTableMap::COL_EMAILADDRESS] = true;
+        if ($this->email_address !== $v) {
+            $this->email_address = $v;
+            $this->modifiedColumns[UserTableMap::COL_EMAIL_ADDRESS] = true;
         }
 
         return $this;
-    } // setEmailaddress()
+    } // setEmailAddress()
 
     /**
      * Set the value of [username] column.
@@ -666,8 +591,8 @@ abstract class User implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('Lastname', TableMap::TYPE_PHPNAME, $indexType)];
             $this->lastname = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('Emailaddress', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->emailaddress = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('EmailAddress', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->email_address = (null !== $col) ? (string) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Username', TableMap::TYPE_PHPNAME, $indexType)];
             $this->username = (null !== $col) ? (string) $col : null;
@@ -743,19 +668,9 @@ abstract class User implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collAdmins = null;
+            $this->collApprovedUsers = null;
 
-            $this->collApprovedusers = null;
-
-            $this->collAuditors = null;
-
-            $this->collManagers = null;
-
-            $this->collPurchasingagents = null;
-
-            $this->collSupervisors = null;
-
-            $this->collTransactions = null;
+            $this->collPurchasingAgents = null;
 
         } // if (deep)
     }
@@ -867,119 +782,34 @@ abstract class User implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->adminsScheduledForDeletion !== null) {
-                if (!$this->adminsScheduledForDeletion->isEmpty()) {
-                    \AdminQuery::create()
-                        ->filterByPrimaryKeys($this->adminsScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->approvedUsersScheduledForDeletion !== null) {
+                if (!$this->approvedUsersScheduledForDeletion->isEmpty()) {
+                    \ApprovedUserQuery::create()
+                        ->filterByPrimaryKeys($this->approvedUsersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->adminsScheduledForDeletion = null;
+                    $this->approvedUsersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collAdmins !== null) {
-                foreach ($this->collAdmins as $referrerFK) {
+            if ($this->collApprovedUsers !== null) {
+                foreach ($this->collApprovedUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->approvedusersScheduledForDeletion !== null) {
-                if (!$this->approvedusersScheduledForDeletion->isEmpty()) {
-                    \ApproveduserQuery::create()
-                        ->filterByPrimaryKeys($this->approvedusersScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->purchasingAgentsScheduledForDeletion !== null) {
+                if (!$this->purchasingAgentsScheduledForDeletion->isEmpty()) {
+                    \PurchasingAgentQuery::create()
+                        ->filterByPrimaryKeys($this->purchasingAgentsScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->approvedusersScheduledForDeletion = null;
+                    $this->purchasingAgentsScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collApprovedusers !== null) {
-                foreach ($this->collApprovedusers as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->auditorsScheduledForDeletion !== null) {
-                if (!$this->auditorsScheduledForDeletion->isEmpty()) {
-                    \AuditorQuery::create()
-                        ->filterByPrimaryKeys($this->auditorsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->auditorsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collAuditors !== null) {
-                foreach ($this->collAuditors as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->managersScheduledForDeletion !== null) {
-                if (!$this->managersScheduledForDeletion->isEmpty()) {
-                    \ManagerQuery::create()
-                        ->filterByPrimaryKeys($this->managersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->managersScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collManagers !== null) {
-                foreach ($this->collManagers as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->purchasingagentsScheduledForDeletion !== null) {
-                if (!$this->purchasingagentsScheduledForDeletion->isEmpty()) {
-                    \PurchasingagentQuery::create()
-                        ->filterByPrimaryKeys($this->purchasingagentsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->purchasingagentsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collPurchasingagents !== null) {
-                foreach ($this->collPurchasingagents as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->supervisorsScheduledForDeletion !== null) {
-                if (!$this->supervisorsScheduledForDeletion->isEmpty()) {
-                    \SupervisorQuery::create()
-                        ->filterByPrimaryKeys($this->supervisorsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->supervisorsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collSupervisors !== null) {
-                foreach ($this->collSupervisors as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->transactionsScheduledForDeletion !== null) {
-                if (!$this->transactionsScheduledForDeletion->isEmpty()) {
-                    \TransactionQuery::create()
-                        ->filterByPrimaryKeys($this->transactionsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->transactionsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collTransactions !== null) {
-                foreach ($this->collTransactions as $referrerFK) {
+            if ($this->collPurchasingAgents !== null) {
+                foreach ($this->collPurchasingAgents as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1021,8 +851,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_LASTNAME)) {
             $modifiedColumns[':p' . $index++]  = 'lastname';
         }
-        if ($this->isColumnModified(UserTableMap::COL_EMAILADDRESS)) {
-            $modifiedColumns[':p' . $index++]  = 'emailAddress';
+        if ($this->isColumnModified(UserTableMap::COL_EMAIL_ADDRESS)) {
+            $modifiedColumns[':p' . $index++]  = 'email_address';
         }
         if ($this->isColumnModified(UserTableMap::COL_USERNAME)) {
             $modifiedColumns[':p' . $index++]  = 'username';
@@ -1050,8 +880,8 @@ abstract class User implements ActiveRecordInterface
                     case 'lastname':
                         $stmt->bindValue($identifier, $this->lastname, PDO::PARAM_STR);
                         break;
-                    case 'emailAddress':
-                        $stmt->bindValue($identifier, $this->emailaddress, PDO::PARAM_STR);
+                    case 'email_address':
+                        $stmt->bindValue($identifier, $this->email_address, PDO::PARAM_STR);
                         break;
                     case 'username':
                         $stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
@@ -1131,7 +961,7 @@ abstract class User implements ActiveRecordInterface
                 return $this->getLastname();
                 break;
             case 3:
-                return $this->getEmailaddress();
+                return $this->getEmailAddress();
                 break;
             case 4:
                 return $this->getUsername();
@@ -1172,7 +1002,7 @@ abstract class User implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getFirstname(),
             $keys[2] => $this->getLastname(),
-            $keys[3] => $this->getEmailaddress(),
+            $keys[3] => $this->getEmailAddress(),
             $keys[4] => $this->getUsername(),
             $keys[5] => $this->getPassword(),
         );
@@ -1182,110 +1012,35 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collAdmins) {
+            if (null !== $this->collApprovedUsers) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'admins';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'admins';
-                        break;
-                    default:
-                        $key = 'Admins';
-                }
-
-                $result[$key] = $this->collAdmins->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collApprovedusers) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'approvedusers';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
                         $key = 'approvedUsers';
                         break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'approved_users';
+                        break;
                     default:
-                        $key = 'Approvedusers';
+                        $key = 'ApprovedUsers';
                 }
 
-                $result[$key] = $this->collApprovedusers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collApprovedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collAuditors) {
+            if (null !== $this->collPurchasingAgents) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'auditors';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'auditors';
-                        break;
-                    default:
-                        $key = 'Auditors';
-                }
-
-                $result[$key] = $this->collAuditors->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collManagers) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'managers';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'managers';
-                        break;
-                    default:
-                        $key = 'Managers';
-                }
-
-                $result[$key] = $this->collManagers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collPurchasingagents) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'purchasingagents';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
                         $key = 'purchasingAgents';
                         break;
-                    default:
-                        $key = 'Purchasingagents';
-                }
-
-                $result[$key] = $this->collPurchasingagents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collSupervisors) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'supervisors';
-                        break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'supervisors';
+                        $key = 'purchasing_agents';
                         break;
                     default:
-                        $key = 'Supervisors';
+                        $key = 'PurchasingAgents';
                 }
 
-                $result[$key] = $this->collSupervisors->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collTransactions) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'transactions';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'transactions';
-                        break;
-                    default:
-                        $key = 'Transactions';
-                }
-
-                $result[$key] = $this->collTransactions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result[$key] = $this->collPurchasingAgents->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1331,7 +1086,7 @@ abstract class User implements ActiveRecordInterface
                 $this->setLastname($value);
                 break;
             case 3:
-                $this->setEmailaddress($value);
+                $this->setEmailAddress($value);
                 break;
             case 4:
                 $this->setUsername($value);
@@ -1375,7 +1130,7 @@ abstract class User implements ActiveRecordInterface
             $this->setLastname($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setEmailaddress($arr[$keys[3]]);
+            $this->setEmailAddress($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setUsername($arr[$keys[4]]);
@@ -1433,8 +1188,8 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_LASTNAME)) {
             $criteria->add(UserTableMap::COL_LASTNAME, $this->lastname);
         }
-        if ($this->isColumnModified(UserTableMap::COL_EMAILADDRESS)) {
-            $criteria->add(UserTableMap::COL_EMAILADDRESS, $this->emailaddress);
+        if ($this->isColumnModified(UserTableMap::COL_EMAIL_ADDRESS)) {
+            $criteria->add(UserTableMap::COL_EMAIL_ADDRESS, $this->email_address);
         }
         if ($this->isColumnModified(UserTableMap::COL_USERNAME)) {
             $criteria->add(UserTableMap::COL_USERNAME, $this->username);
@@ -1530,7 +1285,7 @@ abstract class User implements ActiveRecordInterface
     {
         $copyObj->setFirstname($this->getFirstname());
         $copyObj->setLastname($this->getLastname());
-        $copyObj->setEmailaddress($this->getEmailaddress());
+        $copyObj->setEmailAddress($this->getEmailAddress());
         $copyObj->setUsername($this->getUsername());
         $copyObj->setPassword($this->getPassword());
 
@@ -1539,45 +1294,15 @@ abstract class User implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getAdmins() as $relObj) {
+            foreach ($this->getApprovedUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addAdmin($relObj->copy($deepCopy));
+                    $copyObj->addApprovedUser($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getApprovedusers() as $relObj) {
+            foreach ($this->getPurchasingAgents() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addApproveduser($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getAuditors() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addAuditor($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getManagers() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addManager($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getPurchasingagents() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPurchasingagent($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getSupervisors() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addSupervisor($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getTransactions() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addTransaction($relObj->copy($deepCopy));
+                    $copyObj->addPurchasingAgent($relObj->copy($deepCopy));
                 }
             }
 
@@ -1622,55 +1347,40 @@ abstract class User implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('Admin' == $relationName) {
-            return $this->initAdmins();
+        if ('ApprovedUser' == $relationName) {
+            return $this->initApprovedUsers();
         }
-        if ('Approveduser' == $relationName) {
-            return $this->initApprovedusers();
-        }
-        if ('Auditor' == $relationName) {
-            return $this->initAuditors();
-        }
-        if ('Manager' == $relationName) {
-            return $this->initManagers();
-        }
-        if ('Purchasingagent' == $relationName) {
-            return $this->initPurchasingagents();
-        }
-        if ('Supervisor' == $relationName) {
-            return $this->initSupervisors();
-        }
-        if ('Transaction' == $relationName) {
-            return $this->initTransactions();
+        if ('PurchasingAgent' == $relationName) {
+            return $this->initPurchasingAgents();
         }
     }
 
     /**
-     * Clears out the collAdmins collection
+     * Clears out the collApprovedUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addAdmins()
+     * @see        addApprovedUsers()
      */
-    public function clearAdmins()
+    public function clearApprovedUsers()
     {
-        $this->collAdmins = null; // important to set this to NULL since that means it is uninitialized
+        $this->collApprovedUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collAdmins collection loaded partially.
+     * Reset is the collApprovedUsers collection loaded partially.
      */
-    public function resetPartialAdmins($v = true)
+    public function resetPartialApprovedUsers($v = true)
     {
-        $this->collAdminsPartial = $v;
+        $this->collApprovedUsersPartial = $v;
     }
 
     /**
-     * Initializes the collAdmins collection.
+     * Initializes the collApprovedUsers collection.
      *
-     * By default this just sets the collAdmins collection to an empty array (like clearcollAdmins());
+     * By default this just sets the collApprovedUsers collection to an empty array (like clearcollApprovedUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1679,20 +1389,20 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initAdmins($overrideExisting = true)
+    public function initApprovedUsers($overrideExisting = true)
     {
-        if (null !== $this->collAdmins && !$overrideExisting) {
+        if (null !== $this->collApprovedUsers && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = AdminTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = ApprovedUserTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collAdmins = new $collectionClassName;
-        $this->collAdmins->setModel('\Admin');
+        $this->collApprovedUsers = new $collectionClassName;
+        $this->collApprovedUsers->setModel('\ApprovedUser');
     }
 
     /**
-     * Gets an array of ChildAdmin objects which contain a foreign key that references this object.
+     * Gets an array of ChildApprovedUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1702,108 +1412,111 @@ abstract class User implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildAdmin[] List of ChildAdmin objects
+     * @return ObjectCollection|ChildApprovedUser[] List of ChildApprovedUser objects
      * @throws PropelException
      */
-    public function getAdmins(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getApprovedUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collAdminsPartial && !$this->isNew();
-        if (null === $this->collAdmins || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collAdmins) {
+        $partial = $this->collApprovedUsersPartial && !$this->isNew();
+        if (null === $this->collApprovedUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collApprovedUsers) {
                 // return empty collection
-                $this->initAdmins();
+                $this->initApprovedUsers();
             } else {
-                $collAdmins = ChildAdminQuery::create(null, $criteria)
+                $collApprovedUsers = ChildApprovedUserQuery::create(null, $criteria)
                     ->filterByUser($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collAdminsPartial && count($collAdmins)) {
-                        $this->initAdmins(false);
+                    if (false !== $this->collApprovedUsersPartial && count($collApprovedUsers)) {
+                        $this->initApprovedUsers(false);
 
-                        foreach ($collAdmins as $obj) {
-                            if (false == $this->collAdmins->contains($obj)) {
-                                $this->collAdmins->append($obj);
+                        foreach ($collApprovedUsers as $obj) {
+                            if (false == $this->collApprovedUsers->contains($obj)) {
+                                $this->collApprovedUsers->append($obj);
                             }
                         }
 
-                        $this->collAdminsPartial = true;
+                        $this->collApprovedUsersPartial = true;
                     }
 
-                    return $collAdmins;
+                    return $collApprovedUsers;
                 }
 
-                if ($partial && $this->collAdmins) {
-                    foreach ($this->collAdmins as $obj) {
+                if ($partial && $this->collApprovedUsers) {
+                    foreach ($this->collApprovedUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collAdmins[] = $obj;
+                            $collApprovedUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collAdmins = $collAdmins;
-                $this->collAdminsPartial = false;
+                $this->collApprovedUsers = $collApprovedUsers;
+                $this->collApprovedUsersPartial = false;
             }
         }
 
-        return $this->collAdmins;
+        return $this->collApprovedUsers;
     }
 
     /**
-     * Sets a collection of ChildAdmin objects related by a one-to-many relationship
+     * Sets a collection of ChildApprovedUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $admins A Propel collection.
+     * @param      Collection $approvedUsers A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function setAdmins(Collection $admins, ConnectionInterface $con = null)
+    public function setApprovedUsers(Collection $approvedUsers, ConnectionInterface $con = null)
     {
-        /** @var ChildAdmin[] $adminsToDelete */
-        $adminsToDelete = $this->getAdmins(new Criteria(), $con)->diff($admins);
+        /** @var ChildApprovedUser[] $approvedUsersToDelete */
+        $approvedUsersToDelete = $this->getApprovedUsers(new Criteria(), $con)->diff($approvedUsers);
 
 
-        $this->adminsScheduledForDeletion = $adminsToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->approvedUsersScheduledForDeletion = clone $approvedUsersToDelete;
 
-        foreach ($adminsToDelete as $adminRemoved) {
-            $adminRemoved->setUser(null);
+        foreach ($approvedUsersToDelete as $approvedUserRemoved) {
+            $approvedUserRemoved->setUser(null);
         }
 
-        $this->collAdmins = null;
-        foreach ($admins as $admin) {
-            $this->addAdmin($admin);
+        $this->collApprovedUsers = null;
+        foreach ($approvedUsers as $approvedUser) {
+            $this->addApprovedUser($approvedUser);
         }
 
-        $this->collAdmins = $admins;
-        $this->collAdminsPartial = false;
+        $this->collApprovedUsers = $approvedUsers;
+        $this->collApprovedUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Admin objects.
+     * Returns the number of related ApprovedUser objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Admin objects.
+     * @return int             Count of related ApprovedUser objects.
      * @throws PropelException
      */
-    public function countAdmins(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countApprovedUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collAdminsPartial && !$this->isNew();
-        if (null === $this->collAdmins || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collAdmins) {
+        $partial = $this->collApprovedUsersPartial && !$this->isNew();
+        if (null === $this->collApprovedUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collApprovedUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getAdmins());
+                return count($this->getApprovedUsers());
             }
 
-            $query = ChildAdminQuery::create(null, $criteria);
+            $query = ChildApprovedUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1813,28 +1526,28 @@ abstract class User implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collAdmins);
+        return count($this->collApprovedUsers);
     }
 
     /**
-     * Method called to associate a ChildAdmin object to this object
-     * through the ChildAdmin foreign key attribute.
+     * Method called to associate a ChildApprovedUser object to this object
+     * through the ChildApprovedUser foreign key attribute.
      *
-     * @param  ChildAdmin $l ChildAdmin
+     * @param  ChildApprovedUser $l ChildApprovedUser
      * @return $this|\User The current object (for fluent API support)
      */
-    public function addAdmin(ChildAdmin $l)
+    public function addApprovedUser(ChildApprovedUser $l)
     {
-        if ($this->collAdmins === null) {
-            $this->initAdmins();
-            $this->collAdminsPartial = true;
+        if ($this->collApprovedUsers === null) {
+            $this->initApprovedUsers();
+            $this->collApprovedUsersPartial = true;
         }
 
-        if (!$this->collAdmins->contains($l)) {
-            $this->doAddAdmin($l);
+        if (!$this->collApprovedUsers->contains($l)) {
+            $this->doAddApprovedUser($l);
 
-            if ($this->adminsScheduledForDeletion and $this->adminsScheduledForDeletion->contains($l)) {
-                $this->adminsScheduledForDeletion->remove($this->adminsScheduledForDeletion->search($l));
+            if ($this->approvedUsersScheduledForDeletion and $this->approvedUsersScheduledForDeletion->contains($l)) {
+                $this->approvedUsersScheduledForDeletion->remove($this->approvedUsersScheduledForDeletion->search($l));
             }
         }
 
@@ -1842,60 +1555,60 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildAdmin $admin The ChildAdmin object to add.
+     * @param ChildApprovedUser $approvedUser The ChildApprovedUser object to add.
      */
-    protected function doAddAdmin(ChildAdmin $admin)
+    protected function doAddApprovedUser(ChildApprovedUser $approvedUser)
     {
-        $this->collAdmins[]= $admin;
-        $admin->setUser($this);
+        $this->collApprovedUsers[]= $approvedUser;
+        $approvedUser->setUser($this);
     }
 
     /**
-     * @param  ChildAdmin $admin The ChildAdmin object to remove.
+     * @param  ChildApprovedUser $approvedUser The ChildApprovedUser object to remove.
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function removeAdmin(ChildAdmin $admin)
+    public function removeApprovedUser(ChildApprovedUser $approvedUser)
     {
-        if ($this->getAdmins()->contains($admin)) {
-            $pos = $this->collAdmins->search($admin);
-            $this->collAdmins->remove($pos);
-            if (null === $this->adminsScheduledForDeletion) {
-                $this->adminsScheduledForDeletion = clone $this->collAdmins;
-                $this->adminsScheduledForDeletion->clear();
+        if ($this->getApprovedUsers()->contains($approvedUser)) {
+            $pos = $this->collApprovedUsers->search($approvedUser);
+            $this->collApprovedUsers->remove($pos);
+            if (null === $this->approvedUsersScheduledForDeletion) {
+                $this->approvedUsersScheduledForDeletion = clone $this->collApprovedUsers;
+                $this->approvedUsersScheduledForDeletion->clear();
             }
-            $this->adminsScheduledForDeletion[]= clone $admin;
-            $admin->setUser(null);
+            $this->approvedUsersScheduledForDeletion[]= clone $approvedUser;
+            $approvedUser->setUser(null);
         }
 
         return $this;
     }
 
     /**
-     * Clears out the collApprovedusers collection
+     * Clears out the collPurchasingAgents collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addApprovedusers()
+     * @see        addPurchasingAgents()
      */
-    public function clearApprovedusers()
+    public function clearPurchasingAgents()
     {
-        $this->collApprovedusers = null; // important to set this to NULL since that means it is uninitialized
+        $this->collPurchasingAgents = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collApprovedusers collection loaded partially.
+     * Reset is the collPurchasingAgents collection loaded partially.
      */
-    public function resetPartialApprovedusers($v = true)
+    public function resetPartialPurchasingAgents($v = true)
     {
-        $this->collApprovedusersPartial = $v;
+        $this->collPurchasingAgentsPartial = $v;
     }
 
     /**
-     * Initializes the collApprovedusers collection.
+     * Initializes the collPurchasingAgents collection.
      *
-     * By default this just sets the collApprovedusers collection to an empty array (like clearcollApprovedusers());
+     * By default this just sets the collPurchasingAgents collection to an empty array (like clearcollPurchasingAgents());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1904,20 +1617,20 @@ abstract class User implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initApprovedusers($overrideExisting = true)
+    public function initPurchasingAgents($overrideExisting = true)
     {
-        if (null !== $this->collApprovedusers && !$overrideExisting) {
+        if (null !== $this->collPurchasingAgents && !$overrideExisting) {
             return;
         }
 
-        $collectionClassName = ApproveduserTableMap::getTableMap()->getCollectionClassName();
+        $collectionClassName = PurchasingAgentTableMap::getTableMap()->getCollectionClassName();
 
-        $this->collApprovedusers = new $collectionClassName;
-        $this->collApprovedusers->setModel('\Approveduser');
+        $this->collPurchasingAgents = new $collectionClassName;
+        $this->collPurchasingAgents->setModel('\PurchasingAgent');
     }
 
     /**
-     * Gets an array of ChildApproveduser objects which contain a foreign key that references this object.
+     * Gets an array of ChildPurchasingAgent objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1927,108 +1640,111 @@ abstract class User implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildApproveduser[] List of ChildApproveduser objects
+     * @return ObjectCollection|ChildPurchasingAgent[] List of ChildPurchasingAgent objects
      * @throws PropelException
      */
-    public function getApprovedusers(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getPurchasingAgents(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collApprovedusersPartial && !$this->isNew();
-        if (null === $this->collApprovedusers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collApprovedusers) {
+        $partial = $this->collPurchasingAgentsPartial && !$this->isNew();
+        if (null === $this->collPurchasingAgents || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPurchasingAgents) {
                 // return empty collection
-                $this->initApprovedusers();
+                $this->initPurchasingAgents();
             } else {
-                $collApprovedusers = ChildApproveduserQuery::create(null, $criteria)
+                $collPurchasingAgents = ChildPurchasingAgentQuery::create(null, $criteria)
                     ->filterByUser($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collApprovedusersPartial && count($collApprovedusers)) {
-                        $this->initApprovedusers(false);
+                    if (false !== $this->collPurchasingAgentsPartial && count($collPurchasingAgents)) {
+                        $this->initPurchasingAgents(false);
 
-                        foreach ($collApprovedusers as $obj) {
-                            if (false == $this->collApprovedusers->contains($obj)) {
-                                $this->collApprovedusers->append($obj);
+                        foreach ($collPurchasingAgents as $obj) {
+                            if (false == $this->collPurchasingAgents->contains($obj)) {
+                                $this->collPurchasingAgents->append($obj);
                             }
                         }
 
-                        $this->collApprovedusersPartial = true;
+                        $this->collPurchasingAgentsPartial = true;
                     }
 
-                    return $collApprovedusers;
+                    return $collPurchasingAgents;
                 }
 
-                if ($partial && $this->collApprovedusers) {
-                    foreach ($this->collApprovedusers as $obj) {
+                if ($partial && $this->collPurchasingAgents) {
+                    foreach ($this->collPurchasingAgents as $obj) {
                         if ($obj->isNew()) {
-                            $collApprovedusers[] = $obj;
+                            $collPurchasingAgents[] = $obj;
                         }
                     }
                 }
 
-                $this->collApprovedusers = $collApprovedusers;
-                $this->collApprovedusersPartial = false;
+                $this->collPurchasingAgents = $collPurchasingAgents;
+                $this->collPurchasingAgentsPartial = false;
             }
         }
 
-        return $this->collApprovedusers;
+        return $this->collPurchasingAgents;
     }
 
     /**
-     * Sets a collection of ChildApproveduser objects related by a one-to-many relationship
+     * Sets a collection of ChildPurchasingAgent objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $approvedusers A Propel collection.
+     * @param      Collection $purchasingAgents A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function setApprovedusers(Collection $approvedusers, ConnectionInterface $con = null)
+    public function setPurchasingAgents(Collection $purchasingAgents, ConnectionInterface $con = null)
     {
-        /** @var ChildApproveduser[] $approvedusersToDelete */
-        $approvedusersToDelete = $this->getApprovedusers(new Criteria(), $con)->diff($approvedusers);
+        /** @var ChildPurchasingAgent[] $purchasingAgentsToDelete */
+        $purchasingAgentsToDelete = $this->getPurchasingAgents(new Criteria(), $con)->diff($purchasingAgents);
 
 
-        $this->approvedusersScheduledForDeletion = $approvedusersToDelete;
+        //since at least one column in the foreign key is at the same time a PK
+        //we can not just set a PK to NULL in the lines below. We have to store
+        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
+        $this->purchasingAgentsScheduledForDeletion = clone $purchasingAgentsToDelete;
 
-        foreach ($approvedusersToDelete as $approveduserRemoved) {
-            $approveduserRemoved->setUser(null);
+        foreach ($purchasingAgentsToDelete as $purchasingAgentRemoved) {
+            $purchasingAgentRemoved->setUser(null);
         }
 
-        $this->collApprovedusers = null;
-        foreach ($approvedusers as $approveduser) {
-            $this->addApproveduser($approveduser);
+        $this->collPurchasingAgents = null;
+        foreach ($purchasingAgents as $purchasingAgent) {
+            $this->addPurchasingAgent($purchasingAgent);
         }
 
-        $this->collApprovedusers = $approvedusers;
-        $this->collApprovedusersPartial = false;
+        $this->collPurchasingAgents = $purchasingAgents;
+        $this->collPurchasingAgentsPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Approveduser objects.
+     * Returns the number of related PurchasingAgent objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related Approveduser objects.
+     * @return int             Count of related PurchasingAgent objects.
      * @throws PropelException
      */
-    public function countApprovedusers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countPurchasingAgents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collApprovedusersPartial && !$this->isNew();
-        if (null === $this->collApprovedusers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collApprovedusers) {
+        $partial = $this->collPurchasingAgentsPartial && !$this->isNew();
+        if (null === $this->collPurchasingAgents || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPurchasingAgents) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getApprovedusers());
+                return count($this->getPurchasingAgents());
             }
 
-            $query = ChildApproveduserQuery::create(null, $criteria);
+            $query = ChildPurchasingAgentQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2038,28 +1754,28 @@ abstract class User implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collApprovedusers);
+        return count($this->collPurchasingAgents);
     }
 
     /**
-     * Method called to associate a ChildApproveduser object to this object
-     * through the ChildApproveduser foreign key attribute.
+     * Method called to associate a ChildPurchasingAgent object to this object
+     * through the ChildPurchasingAgent foreign key attribute.
      *
-     * @param  ChildApproveduser $l ChildApproveduser
+     * @param  ChildPurchasingAgent $l ChildPurchasingAgent
      * @return $this|\User The current object (for fluent API support)
      */
-    public function addApproveduser(ChildApproveduser $l)
+    public function addPurchasingAgent(ChildPurchasingAgent $l)
     {
-        if ($this->collApprovedusers === null) {
-            $this->initApprovedusers();
-            $this->collApprovedusersPartial = true;
+        if ($this->collPurchasingAgents === null) {
+            $this->initPurchasingAgents();
+            $this->collPurchasingAgentsPartial = true;
         }
 
-        if (!$this->collApprovedusers->contains($l)) {
-            $this->doAddApproveduser($l);
+        if (!$this->collPurchasingAgents->contains($l)) {
+            $this->doAddPurchasingAgent($l);
 
-            if ($this->approvedusersScheduledForDeletion and $this->approvedusersScheduledForDeletion->contains($l)) {
-                $this->approvedusersScheduledForDeletion->remove($this->approvedusersScheduledForDeletion->search($l));
+            if ($this->purchasingAgentsScheduledForDeletion and $this->purchasingAgentsScheduledForDeletion->contains($l)) {
+                $this->purchasingAgentsScheduledForDeletion->remove($this->purchasingAgentsScheduledForDeletion->search($l));
             }
         }
 
@@ -2067,1204 +1783,29 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * @param ChildApproveduser $approveduser The ChildApproveduser object to add.
+     * @param ChildPurchasingAgent $purchasingAgent The ChildPurchasingAgent object to add.
      */
-    protected function doAddApproveduser(ChildApproveduser $approveduser)
+    protected function doAddPurchasingAgent(ChildPurchasingAgent $purchasingAgent)
     {
-        $this->collApprovedusers[]= $approveduser;
-        $approveduser->setUser($this);
+        $this->collPurchasingAgents[]= $purchasingAgent;
+        $purchasingAgent->setUser($this);
     }
 
     /**
-     * @param  ChildApproveduser $approveduser The ChildApproveduser object to remove.
+     * @param  ChildPurchasingAgent $purchasingAgent The ChildPurchasingAgent object to remove.
      * @return $this|ChildUser The current object (for fluent API support)
      */
-    public function removeApproveduser(ChildApproveduser $approveduser)
+    public function removePurchasingAgent(ChildPurchasingAgent $purchasingAgent)
     {
-        if ($this->getApprovedusers()->contains($approveduser)) {
-            $pos = $this->collApprovedusers->search($approveduser);
-            $this->collApprovedusers->remove($pos);
-            if (null === $this->approvedusersScheduledForDeletion) {
-                $this->approvedusersScheduledForDeletion = clone $this->collApprovedusers;
-                $this->approvedusersScheduledForDeletion->clear();
+        if ($this->getPurchasingAgents()->contains($purchasingAgent)) {
+            $pos = $this->collPurchasingAgents->search($purchasingAgent);
+            $this->collPurchasingAgents->remove($pos);
+            if (null === $this->purchasingAgentsScheduledForDeletion) {
+                $this->purchasingAgentsScheduledForDeletion = clone $this->collPurchasingAgents;
+                $this->purchasingAgentsScheduledForDeletion->clear();
             }
-            $this->approvedusersScheduledForDeletion[]= clone $approveduser;
-            $approveduser->setUser(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collAuditors collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addAuditors()
-     */
-    public function clearAuditors()
-    {
-        $this->collAuditors = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collAuditors collection loaded partially.
-     */
-    public function resetPartialAuditors($v = true)
-    {
-        $this->collAuditorsPartial = $v;
-    }
-
-    /**
-     * Initializes the collAuditors collection.
-     *
-     * By default this just sets the collAuditors collection to an empty array (like clearcollAuditors());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initAuditors($overrideExisting = true)
-    {
-        if (null !== $this->collAuditors && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = AuditorTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collAuditors = new $collectionClassName;
-        $this->collAuditors->setModel('\Auditor');
-    }
-
-    /**
-     * Gets an array of ChildAuditor objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildAuditor[] List of ChildAuditor objects
-     * @throws PropelException
-     */
-    public function getAuditors(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collAuditorsPartial && !$this->isNew();
-        if (null === $this->collAuditors || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collAuditors) {
-                // return empty collection
-                $this->initAuditors();
-            } else {
-                $collAuditors = ChildAuditorQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collAuditorsPartial && count($collAuditors)) {
-                        $this->initAuditors(false);
-
-                        foreach ($collAuditors as $obj) {
-                            if (false == $this->collAuditors->contains($obj)) {
-                                $this->collAuditors->append($obj);
-                            }
-                        }
-
-                        $this->collAuditorsPartial = true;
-                    }
-
-                    return $collAuditors;
-                }
-
-                if ($partial && $this->collAuditors) {
-                    foreach ($this->collAuditors as $obj) {
-                        if ($obj->isNew()) {
-                            $collAuditors[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collAuditors = $collAuditors;
-                $this->collAuditorsPartial = false;
-            }
-        }
-
-        return $this->collAuditors;
-    }
-
-    /**
-     * Sets a collection of ChildAuditor objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $auditors A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setAuditors(Collection $auditors, ConnectionInterface $con = null)
-    {
-        /** @var ChildAuditor[] $auditorsToDelete */
-        $auditorsToDelete = $this->getAuditors(new Criteria(), $con)->diff($auditors);
-
-
-        $this->auditorsScheduledForDeletion = $auditorsToDelete;
-
-        foreach ($auditorsToDelete as $auditorRemoved) {
-            $auditorRemoved->setUser(null);
-        }
-
-        $this->collAuditors = null;
-        foreach ($auditors as $auditor) {
-            $this->addAuditor($auditor);
-        }
-
-        $this->collAuditors = $auditors;
-        $this->collAuditorsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Auditor objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Auditor objects.
-     * @throws PropelException
-     */
-    public function countAuditors(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collAuditorsPartial && !$this->isNew();
-        if (null === $this->collAuditors || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collAuditors) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getAuditors());
-            }
-
-            $query = ChildAuditorQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collAuditors);
-    }
-
-    /**
-     * Method called to associate a ChildAuditor object to this object
-     * through the ChildAuditor foreign key attribute.
-     *
-     * @param  ChildAuditor $l ChildAuditor
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addAuditor(ChildAuditor $l)
-    {
-        if ($this->collAuditors === null) {
-            $this->initAuditors();
-            $this->collAuditorsPartial = true;
-        }
-
-        if (!$this->collAuditors->contains($l)) {
-            $this->doAddAuditor($l);
-
-            if ($this->auditorsScheduledForDeletion and $this->auditorsScheduledForDeletion->contains($l)) {
-                $this->auditorsScheduledForDeletion->remove($this->auditorsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildAuditor $auditor The ChildAuditor object to add.
-     */
-    protected function doAddAuditor(ChildAuditor $auditor)
-    {
-        $this->collAuditors[]= $auditor;
-        $auditor->setUser($this);
-    }
-
-    /**
-     * @param  ChildAuditor $auditor The ChildAuditor object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removeAuditor(ChildAuditor $auditor)
-    {
-        if ($this->getAuditors()->contains($auditor)) {
-            $pos = $this->collAuditors->search($auditor);
-            $this->collAuditors->remove($pos);
-            if (null === $this->auditorsScheduledForDeletion) {
-                $this->auditorsScheduledForDeletion = clone $this->collAuditors;
-                $this->auditorsScheduledForDeletion->clear();
-            }
-            $this->auditorsScheduledForDeletion[]= clone $auditor;
-            $auditor->setUser(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collManagers collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addManagers()
-     */
-    public function clearManagers()
-    {
-        $this->collManagers = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collManagers collection loaded partially.
-     */
-    public function resetPartialManagers($v = true)
-    {
-        $this->collManagersPartial = $v;
-    }
-
-    /**
-     * Initializes the collManagers collection.
-     *
-     * By default this just sets the collManagers collection to an empty array (like clearcollManagers());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initManagers($overrideExisting = true)
-    {
-        if (null !== $this->collManagers && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ManagerTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collManagers = new $collectionClassName;
-        $this->collManagers->setModel('\Manager');
-    }
-
-    /**
-     * Gets an array of ChildManager objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildManager[] List of ChildManager objects
-     * @throws PropelException
-     */
-    public function getManagers(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collManagersPartial && !$this->isNew();
-        if (null === $this->collManagers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collManagers) {
-                // return empty collection
-                $this->initManagers();
-            } else {
-                $collManagers = ChildManagerQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collManagersPartial && count($collManagers)) {
-                        $this->initManagers(false);
-
-                        foreach ($collManagers as $obj) {
-                            if (false == $this->collManagers->contains($obj)) {
-                                $this->collManagers->append($obj);
-                            }
-                        }
-
-                        $this->collManagersPartial = true;
-                    }
-
-                    return $collManagers;
-                }
-
-                if ($partial && $this->collManagers) {
-                    foreach ($this->collManagers as $obj) {
-                        if ($obj->isNew()) {
-                            $collManagers[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collManagers = $collManagers;
-                $this->collManagersPartial = false;
-            }
-        }
-
-        return $this->collManagers;
-    }
-
-    /**
-     * Sets a collection of ChildManager objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $managers A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setManagers(Collection $managers, ConnectionInterface $con = null)
-    {
-        /** @var ChildManager[] $managersToDelete */
-        $managersToDelete = $this->getManagers(new Criteria(), $con)->diff($managers);
-
-
-        $this->managersScheduledForDeletion = $managersToDelete;
-
-        foreach ($managersToDelete as $managerRemoved) {
-            $managerRemoved->setUser(null);
-        }
-
-        $this->collManagers = null;
-        foreach ($managers as $manager) {
-            $this->addManager($manager);
-        }
-
-        $this->collManagers = $managers;
-        $this->collManagersPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Manager objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Manager objects.
-     * @throws PropelException
-     */
-    public function countManagers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collManagersPartial && !$this->isNew();
-        if (null === $this->collManagers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collManagers) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getManagers());
-            }
-
-            $query = ChildManagerQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collManagers);
-    }
-
-    /**
-     * Method called to associate a ChildManager object to this object
-     * through the ChildManager foreign key attribute.
-     *
-     * @param  ChildManager $l ChildManager
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addManager(ChildManager $l)
-    {
-        if ($this->collManagers === null) {
-            $this->initManagers();
-            $this->collManagersPartial = true;
-        }
-
-        if (!$this->collManagers->contains($l)) {
-            $this->doAddManager($l);
-
-            if ($this->managersScheduledForDeletion and $this->managersScheduledForDeletion->contains($l)) {
-                $this->managersScheduledForDeletion->remove($this->managersScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildManager $manager The ChildManager object to add.
-     */
-    protected function doAddManager(ChildManager $manager)
-    {
-        $this->collManagers[]= $manager;
-        $manager->setUser($this);
-    }
-
-    /**
-     * @param  ChildManager $manager The ChildManager object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removeManager(ChildManager $manager)
-    {
-        if ($this->getManagers()->contains($manager)) {
-            $pos = $this->collManagers->search($manager);
-            $this->collManagers->remove($pos);
-            if (null === $this->managersScheduledForDeletion) {
-                $this->managersScheduledForDeletion = clone $this->collManagers;
-                $this->managersScheduledForDeletion->clear();
-            }
-            $this->managersScheduledForDeletion[]= clone $manager;
-            $manager->setUser(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this User is new, it will return
-     * an empty collection; or if this User has previously
-     * been saved, it will retrieve related Managers from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in User.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildManager[] List of ChildManager objects
-     */
-    public function getManagersJoinAdmin(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildManagerQuery::create(null, $criteria);
-        $query->joinWith('Admin', $joinBehavior);
-
-        return $this->getManagers($query, $con);
-    }
-
-    /**
-     * Clears out the collPurchasingagents collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addPurchasingagents()
-     */
-    public function clearPurchasingagents()
-    {
-        $this->collPurchasingagents = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collPurchasingagents collection loaded partially.
-     */
-    public function resetPartialPurchasingagents($v = true)
-    {
-        $this->collPurchasingagentsPartial = $v;
-    }
-
-    /**
-     * Initializes the collPurchasingagents collection.
-     *
-     * By default this just sets the collPurchasingagents collection to an empty array (like clearcollPurchasingagents());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initPurchasingagents($overrideExisting = true)
-    {
-        if (null !== $this->collPurchasingagents && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = PurchasingagentTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collPurchasingagents = new $collectionClassName;
-        $this->collPurchasingagents->setModel('\Purchasingagent');
-    }
-
-    /**
-     * Gets an array of ChildPurchasingagent objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildPurchasingagent[] List of ChildPurchasingagent objects
-     * @throws PropelException
-     */
-    public function getPurchasingagents(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collPurchasingagentsPartial && !$this->isNew();
-        if (null === $this->collPurchasingagents || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPurchasingagents) {
-                // return empty collection
-                $this->initPurchasingagents();
-            } else {
-                $collPurchasingagents = ChildPurchasingagentQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collPurchasingagentsPartial && count($collPurchasingagents)) {
-                        $this->initPurchasingagents(false);
-
-                        foreach ($collPurchasingagents as $obj) {
-                            if (false == $this->collPurchasingagents->contains($obj)) {
-                                $this->collPurchasingagents->append($obj);
-                            }
-                        }
-
-                        $this->collPurchasingagentsPartial = true;
-                    }
-
-                    return $collPurchasingagents;
-                }
-
-                if ($partial && $this->collPurchasingagents) {
-                    foreach ($this->collPurchasingagents as $obj) {
-                        if ($obj->isNew()) {
-                            $collPurchasingagents[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collPurchasingagents = $collPurchasingagents;
-                $this->collPurchasingagentsPartial = false;
-            }
-        }
-
-        return $this->collPurchasingagents;
-    }
-
-    /**
-     * Sets a collection of ChildPurchasingagent objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $purchasingagents A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setPurchasingagents(Collection $purchasingagents, ConnectionInterface $con = null)
-    {
-        /** @var ChildPurchasingagent[] $purchasingagentsToDelete */
-        $purchasingagentsToDelete = $this->getPurchasingagents(new Criteria(), $con)->diff($purchasingagents);
-
-
-        $this->purchasingagentsScheduledForDeletion = $purchasingagentsToDelete;
-
-        foreach ($purchasingagentsToDelete as $purchasingagentRemoved) {
-            $purchasingagentRemoved->setUser(null);
-        }
-
-        $this->collPurchasingagents = null;
-        foreach ($purchasingagents as $purchasingagent) {
-            $this->addPurchasingagent($purchasingagent);
-        }
-
-        $this->collPurchasingagents = $purchasingagents;
-        $this->collPurchasingagentsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Purchasingagent objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Purchasingagent objects.
-     * @throws PropelException
-     */
-    public function countPurchasingagents(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collPurchasingagentsPartial && !$this->isNew();
-        if (null === $this->collPurchasingagents || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPurchasingagents) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getPurchasingagents());
-            }
-
-            $query = ChildPurchasingagentQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collPurchasingagents);
-    }
-
-    /**
-     * Method called to associate a ChildPurchasingagent object to this object
-     * through the ChildPurchasingagent foreign key attribute.
-     *
-     * @param  ChildPurchasingagent $l ChildPurchasingagent
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addPurchasingagent(ChildPurchasingagent $l)
-    {
-        if ($this->collPurchasingagents === null) {
-            $this->initPurchasingagents();
-            $this->collPurchasingagentsPartial = true;
-        }
-
-        if (!$this->collPurchasingagents->contains($l)) {
-            $this->doAddPurchasingagent($l);
-
-            if ($this->purchasingagentsScheduledForDeletion and $this->purchasingagentsScheduledForDeletion->contains($l)) {
-                $this->purchasingagentsScheduledForDeletion->remove($this->purchasingagentsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildPurchasingagent $purchasingagent The ChildPurchasingagent object to add.
-     */
-    protected function doAddPurchasingagent(ChildPurchasingagent $purchasingagent)
-    {
-        $this->collPurchasingagents[]= $purchasingagent;
-        $purchasingagent->setUser($this);
-    }
-
-    /**
-     * @param  ChildPurchasingagent $purchasingagent The ChildPurchasingagent object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removePurchasingagent(ChildPurchasingagent $purchasingagent)
-    {
-        if ($this->getPurchasingagents()->contains($purchasingagent)) {
-            $pos = $this->collPurchasingagents->search($purchasingagent);
-            $this->collPurchasingagents->remove($pos);
-            if (null === $this->purchasingagentsScheduledForDeletion) {
-                $this->purchasingagentsScheduledForDeletion = clone $this->collPurchasingagents;
-                $this->purchasingagentsScheduledForDeletion->clear();
-            }
-            $this->purchasingagentsScheduledForDeletion[]= clone $purchasingagent;
-            $purchasingagent->setUser(null);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collSupervisors collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addSupervisors()
-     */
-    public function clearSupervisors()
-    {
-        $this->collSupervisors = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collSupervisors collection loaded partially.
-     */
-    public function resetPartialSupervisors($v = true)
-    {
-        $this->collSupervisorsPartial = $v;
-    }
-
-    /**
-     * Initializes the collSupervisors collection.
-     *
-     * By default this just sets the collSupervisors collection to an empty array (like clearcollSupervisors());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initSupervisors($overrideExisting = true)
-    {
-        if (null !== $this->collSupervisors && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = SupervisorTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collSupervisors = new $collectionClassName;
-        $this->collSupervisors->setModel('\Supervisor');
-    }
-
-    /**
-     * Gets an array of ChildSupervisor objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildSupervisor[] List of ChildSupervisor objects
-     * @throws PropelException
-     */
-    public function getSupervisors(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collSupervisorsPartial && !$this->isNew();
-        if (null === $this->collSupervisors || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSupervisors) {
-                // return empty collection
-                $this->initSupervisors();
-            } else {
-                $collSupervisors = ChildSupervisorQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collSupervisorsPartial && count($collSupervisors)) {
-                        $this->initSupervisors(false);
-
-                        foreach ($collSupervisors as $obj) {
-                            if (false == $this->collSupervisors->contains($obj)) {
-                                $this->collSupervisors->append($obj);
-                            }
-                        }
-
-                        $this->collSupervisorsPartial = true;
-                    }
-
-                    return $collSupervisors;
-                }
-
-                if ($partial && $this->collSupervisors) {
-                    foreach ($this->collSupervisors as $obj) {
-                        if ($obj->isNew()) {
-                            $collSupervisors[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collSupervisors = $collSupervisors;
-                $this->collSupervisorsPartial = false;
-            }
-        }
-
-        return $this->collSupervisors;
-    }
-
-    /**
-     * Sets a collection of ChildSupervisor objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $supervisors A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setSupervisors(Collection $supervisors, ConnectionInterface $con = null)
-    {
-        /** @var ChildSupervisor[] $supervisorsToDelete */
-        $supervisorsToDelete = $this->getSupervisors(new Criteria(), $con)->diff($supervisors);
-
-
-        $this->supervisorsScheduledForDeletion = $supervisorsToDelete;
-
-        foreach ($supervisorsToDelete as $supervisorRemoved) {
-            $supervisorRemoved->setUser(null);
-        }
-
-        $this->collSupervisors = null;
-        foreach ($supervisors as $supervisor) {
-            $this->addSupervisor($supervisor);
-        }
-
-        $this->collSupervisors = $supervisors;
-        $this->collSupervisorsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Supervisor objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Supervisor objects.
-     * @throws PropelException
-     */
-    public function countSupervisors(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collSupervisorsPartial && !$this->isNew();
-        if (null === $this->collSupervisors || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collSupervisors) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getSupervisors());
-            }
-
-            $query = ChildSupervisorQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collSupervisors);
-    }
-
-    /**
-     * Method called to associate a ChildSupervisor object to this object
-     * through the ChildSupervisor foreign key attribute.
-     *
-     * @param  ChildSupervisor $l ChildSupervisor
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addSupervisor(ChildSupervisor $l)
-    {
-        if ($this->collSupervisors === null) {
-            $this->initSupervisors();
-            $this->collSupervisorsPartial = true;
-        }
-
-        if (!$this->collSupervisors->contains($l)) {
-            $this->doAddSupervisor($l);
-
-            if ($this->supervisorsScheduledForDeletion and $this->supervisorsScheduledForDeletion->contains($l)) {
-                $this->supervisorsScheduledForDeletion->remove($this->supervisorsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildSupervisor $supervisor The ChildSupervisor object to add.
-     */
-    protected function doAddSupervisor(ChildSupervisor $supervisor)
-    {
-        $this->collSupervisors[]= $supervisor;
-        $supervisor->setUser($this);
-    }
-
-    /**
-     * @param  ChildSupervisor $supervisor The ChildSupervisor object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removeSupervisor(ChildSupervisor $supervisor)
-    {
-        if ($this->getSupervisors()->contains($supervisor)) {
-            $pos = $this->collSupervisors->search($supervisor);
-            $this->collSupervisors->remove($pos);
-            if (null === $this->supervisorsScheduledForDeletion) {
-                $this->supervisorsScheduledForDeletion = clone $this->collSupervisors;
-                $this->supervisorsScheduledForDeletion->clear();
-            }
-            $this->supervisorsScheduledForDeletion[]= clone $supervisor;
-            $supervisor->setUser(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this User is new, it will return
-     * an empty collection; or if this User has previously
-     * been saved, it will retrieve related Supervisors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in User.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildSupervisor[] List of ChildSupervisor objects
-     */
-    public function getSupervisorsJoinManager(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildSupervisorQuery::create(null, $criteria);
-        $query->joinWith('Manager', $joinBehavior);
-
-        return $this->getSupervisors($query, $con);
-    }
-
-    /**
-     * Clears out the collTransactions collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addTransactions()
-     */
-    public function clearTransactions()
-    {
-        $this->collTransactions = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collTransactions collection loaded partially.
-     */
-    public function resetPartialTransactions($v = true)
-    {
-        $this->collTransactionsPartial = $v;
-    }
-
-    /**
-     * Initializes the collTransactions collection.
-     *
-     * By default this just sets the collTransactions collection to an empty array (like clearcollTransactions());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initTransactions($overrideExisting = true)
-    {
-        if (null !== $this->collTransactions && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = TransactionTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collTransactions = new $collectionClassName;
-        $this->collTransactions->setModel('\Transaction');
-    }
-
-    /**
-     * Gets an array of ChildTransaction objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildUser is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
-     * @throws PropelException
-     */
-    public function getTransactions(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collTransactions) {
-                // return empty collection
-                $this->initTransactions();
-            } else {
-                $collTransactions = ChildTransactionQuery::create(null, $criteria)
-                    ->filterByUser($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collTransactionsPartial && count($collTransactions)) {
-                        $this->initTransactions(false);
-
-                        foreach ($collTransactions as $obj) {
-                            if (false == $this->collTransactions->contains($obj)) {
-                                $this->collTransactions->append($obj);
-                            }
-                        }
-
-                        $this->collTransactionsPartial = true;
-                    }
-
-                    return $collTransactions;
-                }
-
-                if ($partial && $this->collTransactions) {
-                    foreach ($this->collTransactions as $obj) {
-                        if ($obj->isNew()) {
-                            $collTransactions[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collTransactions = $collTransactions;
-                $this->collTransactionsPartial = false;
-            }
-        }
-
-        return $this->collTransactions;
-    }
-
-    /**
-     * Sets a collection of ChildTransaction objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $transactions A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
-    {
-        /** @var ChildTransaction[] $transactionsToDelete */
-        $transactionsToDelete = $this->getTransactions(new Criteria(), $con)->diff($transactions);
-
-
-        $this->transactionsScheduledForDeletion = $transactionsToDelete;
-
-        foreach ($transactionsToDelete as $transactionRemoved) {
-            $transactionRemoved->setUser(null);
-        }
-
-        $this->collTransactions = null;
-        foreach ($transactions as $transaction) {
-            $this->addTransaction($transaction);
-        }
-
-        $this->collTransactions = $transactions;
-        $this->collTransactionsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Transaction objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Transaction objects.
-     * @throws PropelException
-     */
-    public function countTransactions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTransactions) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getTransactions());
-            }
-
-            $query = ChildTransactionQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUser($this)
-                ->count($con);
-        }
-
-        return count($this->collTransactions);
-    }
-
-    /**
-     * Method called to associate a ChildTransaction object to this object
-     * through the ChildTransaction foreign key attribute.
-     *
-     * @param  ChildTransaction $l ChildTransaction
-     * @return $this|\User The current object (for fluent API support)
-     */
-    public function addTransaction(ChildTransaction $l)
-    {
-        if ($this->collTransactions === null) {
-            $this->initTransactions();
-            $this->collTransactionsPartial = true;
-        }
-
-        if (!$this->collTransactions->contains($l)) {
-            $this->doAddTransaction($l);
-
-            if ($this->transactionsScheduledForDeletion and $this->transactionsScheduledForDeletion->contains($l)) {
-                $this->transactionsScheduledForDeletion->remove($this->transactionsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildTransaction $transaction The ChildTransaction object to add.
-     */
-    protected function doAddTransaction(ChildTransaction $transaction)
-    {
-        $this->collTransactions[]= $transaction;
-        $transaction->setUser($this);
-    }
-
-    /**
-     * @param  ChildTransaction $transaction The ChildTransaction object to remove.
-     * @return $this|ChildUser The current object (for fluent API support)
-     */
-    public function removeTransaction(ChildTransaction $transaction)
-    {
-        if ($this->getTransactions()->contains($transaction)) {
-            $pos = $this->collTransactions->search($transaction);
-            $this->collTransactions->remove($pos);
-            if (null === $this->transactionsScheduledForDeletion) {
-                $this->transactionsScheduledForDeletion = clone $this->collTransactions;
-                $this->transactionsScheduledForDeletion->clear();
-            }
-            $this->transactionsScheduledForDeletion[]= clone $transaction;
-            $transaction->setUser(null);
+            $this->purchasingAgentsScheduledForDeletion[]= clone $purchasingAgent;
+            $purchasingAgent->setUser(null);
         }
 
         return $this;
@@ -3280,7 +1821,7 @@ abstract class User implements ActiveRecordInterface
         $this->id = null;
         $this->firstname = null;
         $this->lastname = null;
-        $this->emailaddress = null;
+        $this->email_address = null;
         $this->username = null;
         $this->password = null;
         $this->alreadyInSave = false;
@@ -3301,50 +1842,20 @@ abstract class User implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collAdmins) {
-                foreach ($this->collAdmins as $o) {
+            if ($this->collApprovedUsers) {
+                foreach ($this->collApprovedUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collApprovedusers) {
-                foreach ($this->collApprovedusers as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collAuditors) {
-                foreach ($this->collAuditors as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collManagers) {
-                foreach ($this->collManagers as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collPurchasingagents) {
-                foreach ($this->collPurchasingagents as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collSupervisors) {
-                foreach ($this->collSupervisors as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collTransactions) {
-                foreach ($this->collTransactions as $o) {
+            if ($this->collPurchasingAgents) {
+                foreach ($this->collPurchasingAgents as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
         } // if ($deep)
 
-        $this->collAdmins = null;
-        $this->collApprovedusers = null;
-        $this->collAuditors = null;
-        $this->collManagers = null;
-        $this->collPurchasingagents = null;
-        $this->collSupervisors = null;
-        $this->collTransactions = null;
+        $this->collApprovedUsers = null;
+        $this->collPurchasingAgents = null;
     }
 
     /**

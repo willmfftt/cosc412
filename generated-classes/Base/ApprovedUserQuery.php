@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \Approveduser as ChildApproveduser;
-use \ApproveduserQuery as ChildApproveduserQuery;
+use \ApprovedUser as ChildApprovedUser;
+use \ApprovedUserQuery as ChildApprovedUserQuery;
 use \Exception;
 use \PDO;
-use Map\ApproveduserTableMap;
+use Map\ApprovedUserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -16,84 +16,84 @@ use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 
 /**
- * Base class that represents a query for the 'approvedUser' table.
+ * Base class that represents a query for the 'approved_user' table.
  *
  *
  *
- * @method     ChildApproveduserQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildApproveduserQuery orderByUserid($order = Criteria::ASC) Order by the userId column
+ * @method     ChildApprovedUserQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildApprovedUserQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  *
- * @method     ChildApproveduserQuery groupById() Group by the id column
- * @method     ChildApproveduserQuery groupByUserid() Group by the userId column
+ * @method     ChildApprovedUserQuery groupById() Group by the id column
+ * @method     ChildApprovedUserQuery groupByUserId() Group by the user_id column
  *
- * @method     ChildApproveduserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildApproveduserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildApproveduserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildApprovedUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildApprovedUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildApprovedUserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildApproveduserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildApproveduserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildApproveduserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildApprovedUserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildApprovedUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildApprovedUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildApproveduserQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildApproveduserQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildApproveduserQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ * @method     ChildApprovedUserQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildApprovedUserQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildApprovedUserQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     ChildApproveduserQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ * @method     ChildApprovedUserQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
  *
- * @method     ChildApproveduserQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildApproveduserQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildApproveduserQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ * @method     ChildApprovedUserQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildApprovedUserQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildApprovedUserQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
  * @method     \UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildApproveduser findOne(ConnectionInterface $con = null) Return the first ChildApproveduser matching the query
- * @method     ChildApproveduser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildApproveduser matching the query, or a new ChildApproveduser object populated from the query conditions when no match is found
+ * @method     ChildApprovedUser findOne(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query
+ * @method     ChildApprovedUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query, or a new ChildApprovedUser object populated from the query conditions when no match is found
  *
- * @method     ChildApproveduser findOneById(int $id) Return the first ChildApproveduser filtered by the id column
- * @method     ChildApproveduser findOneByUserid(int $userId) Return the first ChildApproveduser filtered by the userId column *
+ * @method     ChildApprovedUser findOneById(int $id) Return the first ChildApprovedUser filtered by the id column
+ * @method     ChildApprovedUser findOneByUserId(int $user_id) Return the first ChildApprovedUser filtered by the user_id column *
 
- * @method     ChildApproveduser requirePk($key, ConnectionInterface $con = null) Return the ChildApproveduser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildApproveduser requireOne(ConnectionInterface $con = null) Return the first ChildApproveduser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildApprovedUser requirePk($key, ConnectionInterface $con = null) Return the ChildApprovedUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildApprovedUser requireOne(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildApproveduser requireOneById(int $id) Return the first ChildApproveduser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildApproveduser requireOneByUserid(int $userId) Return the first ChildApproveduser filtered by the userId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildApprovedUser requireOneById(int $id) Return the first ChildApprovedUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildApprovedUser requireOneByUserId(int $user_id) Return the first ChildApprovedUser filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildApproveduser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildApproveduser objects based on current ModelCriteria
- * @method     ChildApproveduser[]|ObjectCollection findById(int $id) Return ChildApproveduser objects filtered by the id column
- * @method     ChildApproveduser[]|ObjectCollection findByUserid(int $userId) Return ChildApproveduser objects filtered by the userId column
- * @method     ChildApproveduser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildApprovedUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildApprovedUser objects based on current ModelCriteria
+ * @method     ChildApprovedUser[]|ObjectCollection findById(int $id) Return ChildApprovedUser objects filtered by the id column
+ * @method     ChildApprovedUser[]|ObjectCollection findByUserId(int $user_id) Return ChildApprovedUser objects filtered by the user_id column
+ * @method     ChildApprovedUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class ApproveduserQuery extends ModelCriteria
+abstract class ApprovedUserQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\ApproveduserQuery object.
+     * Initializes internal state of \Base\ApprovedUserQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\Approveduser', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\ApprovedUser', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildApproveduserQuery object.
+     * Returns a new ChildApprovedUserQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildApproveduserQuery
+     * @return ChildApprovedUserQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildApproveduserQuery) {
+        if ($criteria instanceof ChildApprovedUserQuery) {
             return $criteria;
         }
-        $query = new ChildApproveduserQuery();
+        $query = new ChildApprovedUserQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -110,25 +110,25 @@ abstract class ApproveduserQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildApproveduser|array|mixed the result, formatted by the current formatter
+     * @return ChildApprovedUser|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = ApproveduserTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = ApprovedUserTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ApproveduserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -149,14 +149,15 @@ abstract class ApproveduserQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildApproveduser A model object, or null if the key is not found
+     * @return ChildApprovedUser A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, userId FROM approvedUser WHERE id = :p0';
+        $sql = 'SELECT id, user_id FROM approved_user WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -164,10 +165,10 @@ abstract class ApproveduserQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildApproveduser $obj */
-            $obj = new ChildApproveduser();
+            /** @var ChildApprovedUser $obj */
+            $obj = new ChildApprovedUser();
             $obj->hydrate($row);
-            ApproveduserTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            ApprovedUserTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -180,7 +181,7 @@ abstract class ApproveduserQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildApproveduser|array|mixed the result, formatted by the current formatter
+     * @return ChildApprovedUser|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -196,7 +197,7 @@ abstract class ApproveduserQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -222,12 +223,14 @@ abstract class ApproveduserQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(ApprovedUserTableMap::COL_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(ApproveduserTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -235,12 +238,21 @@ abstract class ApproveduserQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(ApprovedUserTableMap::COL_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(ApprovedUserTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(ApproveduserTableMap::COL_ID, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -259,18 +271,18 @@ abstract class ApproveduserQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(ApproveduserTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ApprovedUserTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(ApproveduserTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ApprovedUserTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -281,39 +293,39 @@ abstract class ApproveduserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ApproveduserTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(ApprovedUserTableMap::COL_ID, $id, $comparison);
     }
 
     /**
-     * Filter the query on the userId column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserid(1234); // WHERE userId = 1234
-     * $query->filterByUserid(array(12, 34)); // WHERE userId IN (12, 34)
-     * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
      * @see       filterByUser()
      *
-     * @param     mixed $userid The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
-    public function filterByUserid($userid = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userid)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($userid['min'])) {
-                $this->addUsingAlias(ApproveduserTableMap::COL_USERID, $userid['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($userid['max'])) {
-                $this->addUsingAlias(ApproveduserTableMap::COL_USERID, $userid['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -324,7 +336,7 @@ abstract class ApproveduserQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(ApproveduserTableMap::COL_USERID, $userid, $comparison);
+        return $this->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -335,20 +347,20 @@ abstract class ApproveduserQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildApproveduserQuery The current query, for fluid interface
+     * @return ChildApprovedUserQuery The current query, for fluid interface
      */
     public function filterByUser($user, $comparison = null)
     {
         if ($user instanceof \User) {
             return $this
-                ->addUsingAlias(ApproveduserTableMap::COL_USERID, $user->getId(), $comparison);
+                ->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $user->getId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ApproveduserTableMap::COL_USERID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
         }
@@ -360,7 +372,7 @@ abstract class ApproveduserQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
     public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -407,21 +419,23 @@ abstract class ApproveduserQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildApproveduser $approveduser Object to remove from the list of results
+     * @param   ChildApprovedUser $approvedUser Object to remove from the list of results
      *
-     * @return $this|ChildApproveduserQuery The current query, for fluid interface
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
      */
-    public function prune($approveduser = null)
+    public function prune($approvedUser = null)
     {
-        if ($approveduser) {
-            $this->addUsingAlias(ApproveduserTableMap::COL_ID, $approveduser->getId(), Criteria::NOT_EQUAL);
+        if ($approvedUser) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(ApprovedUserTableMap::COL_ID), $approvedUser->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ApprovedUserTableMap::COL_USER_ID), $approvedUser->getUserId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;
     }
 
     /**
-     * Deletes all rows from the approvedUser table.
+     * Deletes all rows from the approved_user table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
@@ -429,7 +443,7 @@ abstract class ApproveduserQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ApproveduserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -440,8 +454,8 @@ abstract class ApproveduserQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            ApproveduserTableMap::clearInstancePool();
-            ApproveduserTableMap::clearRelatedInstancePool();
+            ApprovedUserTableMap::clearInstancePool();
+            ApprovedUserTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -459,26 +473,26 @@ abstract class ApproveduserQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ApproveduserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(ApproveduserTableMap::DATABASE_NAME);
+        $criteria->setDbName(ApprovedUserTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            ApproveduserTableMap::removeInstanceFromPool($criteria);
+            ApprovedUserTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            ApproveduserTableMap::clearRelatedInstancePool();
+            ApprovedUserTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // ApproveduserQuery
+} // ApprovedUserQuery

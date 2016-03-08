@@ -1,9 +1,9 @@
 <?php
 
-use Base\PurchasingagentQuery as BasePurchasingagentQuery;
+use Base\PurchasingAgent as BasePurchasingAgent;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'purchasingAgent' table.
+ * Skeleton subclass for representing a row from the 'purchasing_agent' table.
  *
  *
  *
@@ -12,7 +12,7 @@ use Base\PurchasingagentQuery as BasePurchasingagentQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class PurchasingagentQuery extends BasePurchasingagentQuery
+class PurchasingAgent extends BasePurchasingAgent
 {
 
 }

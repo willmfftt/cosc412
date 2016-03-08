@@ -10,7 +10,6 @@ use Map\AdminTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
-use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -21,10 +20,10 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildAdminQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildAdminQuery orderByUserid($order = Criteria::ASC) Order by the userId column
+ * @method     ChildAdminQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  *
  * @method     ChildAdminQuery groupById() Group by the id column
- * @method     ChildAdminQuery groupByUserid() Group by the userId column
+ * @method     ChildAdminQuery groupByUserId() Group by the user_id column
  *
  * @method     ChildAdminQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildAdminQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,43 +33,21 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAdminQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildAdminQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildAdminQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
- * @method     ChildAdminQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
- * @method     ChildAdminQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
- *
- * @method     ChildAdminQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
- *
- * @method     ChildAdminQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
- * @method     ChildAdminQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
- * @method     ChildAdminQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
- *
- * @method     ChildAdminQuery leftJoinManager($relationAlias = null) Adds a LEFT JOIN clause to the query using the Manager relation
- * @method     ChildAdminQuery rightJoinManager($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Manager relation
- * @method     ChildAdminQuery innerJoinManager($relationAlias = null) Adds a INNER JOIN clause to the query using the Manager relation
- *
- * @method     ChildAdminQuery joinWithManager($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Manager relation
- *
- * @method     ChildAdminQuery leftJoinWithManager() Adds a LEFT JOIN clause and with to the query using the Manager relation
- * @method     ChildAdminQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
- * @method     ChildAdminQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
- *
- * @method     \UserQuery|\ManagerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildAdmin findOne(ConnectionInterface $con = null) Return the first ChildAdmin matching the query
  * @method     ChildAdmin findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAdmin matching the query, or a new ChildAdmin object populated from the query conditions when no match is found
  *
  * @method     ChildAdmin findOneById(int $id) Return the first ChildAdmin filtered by the id column
- * @method     ChildAdmin findOneByUserid(int $userId) Return the first ChildAdmin filtered by the userId column *
+ * @method     ChildAdmin findOneByUserId(int $user_id) Return the first ChildAdmin filtered by the user_id column *
 
  * @method     ChildAdmin requirePk($key, ConnectionInterface $con = null) Return the ChildAdmin by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAdmin requireOne(ConnectionInterface $con = null) Return the first ChildAdmin matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAdmin requireOneById(int $id) Return the first ChildAdmin filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildAdmin requireOneByUserid(int $userId) Return the first ChildAdmin filtered by the userId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAdmin requireOneByUserId(int $user_id) Return the first ChildAdmin filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAdmin[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAdmin objects based on current ModelCriteria
  * @method     ChildAdmin[]|ObjectCollection findById(int $id) Return ChildAdmin objects filtered by the id column
- * @method     ChildAdmin[]|ObjectCollection findByUserid(int $userId) Return ChildAdmin objects filtered by the userId column
+ * @method     ChildAdmin[]|ObjectCollection findByUserId(int $user_id) Return ChildAdmin objects filtered by the user_id column
  * @method     ChildAdmin[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -120,10 +97,10 @@ abstract class AdminQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildAdmin|array|mixed the result, formatted by the current formatter
@@ -133,7 +110,7 @@ abstract class AdminQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = AdminTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = AdminTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -163,10 +140,11 @@ abstract class AdminQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, userId FROM admin WHERE id = :p0';
+        $sql = 'SELECT id, user_id FROM admin WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -177,7 +155,7 @@ abstract class AdminQuery extends ModelCriteria
             /** @var ChildAdmin $obj */
             $obj = new ChildAdmin();
             $obj->hydrate($row);
-            AdminTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            AdminTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -206,7 +184,7 @@ abstract class AdminQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -236,8 +214,10 @@ abstract class AdminQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(AdminTableMap::COL_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(AdminTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(AdminTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -249,8 +229,17 @@ abstract class AdminQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(AdminTableMap::COL_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(AdminTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(AdminTableMap::COL_ID, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -295,18 +284,16 @@ abstract class AdminQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the userId column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserid(1234); // WHERE userId = 1234
-     * $query->filterByUserid(array(12, 34)); // WHERE userId IN (12, 34)
-     * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
-     * @see       filterByUser()
-     *
-     * @param     mixed $userid The value to use as filter.
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -314,16 +301,16 @@ abstract class AdminQuery extends ModelCriteria
      *
      * @return $this|ChildAdminQuery The current query, for fluid interface
      */
-    public function filterByUserid($userid = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userid)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($userid['min'])) {
-                $this->addUsingAlias(AdminTableMap::COL_USERID, $userid['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(AdminTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($userid['max'])) {
-                $this->addUsingAlias(AdminTableMap::COL_USERID, $userid['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(AdminTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -334,157 +321,7 @@ abstract class AdminQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(AdminTableMap::COL_USERID, $userid, $comparison);
-    }
-
-    /**
-     * Filter the query by a related \User object
-     *
-     * @param \User|ObjectCollection $user The related object(s) to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @throws \Propel\Runtime\Exception\PropelException
-     *
-     * @return ChildAdminQuery The current query, for fluid interface
-     */
-    public function filterByUser($user, $comparison = null)
-    {
-        if ($user instanceof \User) {
-            return $this
-                ->addUsingAlias(AdminTableMap::COL_USERID, $user->getId(), $comparison);
-        } elseif ($user instanceof ObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(AdminTableMap::COL_USERID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
-        } else {
-            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the User relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildAdminQuery The current query, for fluid interface
-     */
-    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('User');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'User');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the User relation User object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \UserQuery A secondary query class using the current class as primary query
-     */
-    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
-    }
-
-    /**
-     * Filter the query by a related \Manager object
-     *
-     * @param \Manager|ObjectCollection $manager the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildAdminQuery The current query, for fluid interface
-     */
-    public function filterByManager($manager, $comparison = null)
-    {
-        if ($manager instanceof \Manager) {
-            return $this
-                ->addUsingAlias(AdminTableMap::COL_ID, $manager->getAdminid(), $comparison);
-        } elseif ($manager instanceof ObjectCollection) {
-            return $this
-                ->useManagerQuery()
-                ->filterByPrimaryKeys($manager->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByManager() only accepts arguments of type \Manager or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Manager relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildAdminQuery The current query, for fluid interface
-     */
-    public function joinManager($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Manager');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Manager');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Manager relation Manager object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \ManagerQuery A secondary query class using the current class as primary query
-     */
-    public function useManagerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinManager($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Manager', '\ManagerQuery');
+        return $this->addUsingAlias(AdminTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -497,7 +334,9 @@ abstract class AdminQuery extends ModelCriteria
     public function prune($admin = null)
     {
         if ($admin) {
-            $this->addUsingAlias(AdminTableMap::COL_ID, $admin->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(AdminTableMap::COL_ID), $admin->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(AdminTableMap::COL_USER_ID), $admin->getUserId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

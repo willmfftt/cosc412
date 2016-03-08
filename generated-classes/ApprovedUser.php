@@ -1,9 +1,9 @@
 <?php
 
-use Base\Approveduser as BaseApproveduser;
+use Base\ApprovedUser as BaseApprovedUser;
 
 /**
- * Skeleton subclass for representing a row from the 'approvedUser' table.
+ * Skeleton subclass for representing a row from the 'approved_user' table.
  *
  *
  *
@@ -12,7 +12,7 @@ use Base\Approveduser as BaseApproveduser;
  * long as it does not already exist in the output directory.
  *
  */
-class Approveduser extends BaseApproveduser
+class ApprovedUser extends BaseApprovedUser
 {
 
 }

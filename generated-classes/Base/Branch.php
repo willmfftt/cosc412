@@ -3,8 +3,6 @@
 namespace Base;
 
 use \BranchQuery as ChildBranchQuery;
-use \Location as ChildLocation;
-use \LocationQuery as ChildLocationQuery;
 use \Exception;
 use \PDO;
 use Map\BranchTableMap;
@@ -69,23 +67,18 @@ abstract class Branch implements ActiveRecordInterface
     protected $id;
 
     /**
+     * The value for the location_id field.
+     *
+     * @var        int
+     */
+    protected $location_id;
+
+    /**
      * The value for the name field.
      *
      * @var        string
      */
     protected $name;
-
-    /**
-     * The value for the locationid field.
-     *
-     * @var        int
-     */
-    protected $locationid;
-
-    /**
-     * @var        ChildLocation
-     */
-    protected $aLocation;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -331,6 +324,16 @@ abstract class Branch implements ActiveRecordInterface
     }
 
     /**
+     * Get the [location_id] column value.
+     *
+     * @return int
+     */
+    public function getLocationId()
+    {
+        return $this->location_id;
+    }
+
+    /**
      * Get the [name] column value.
      *
      * @return string
@@ -338,16 +341,6 @@ abstract class Branch implements ActiveRecordInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Get the [locationid] column value.
-     *
-     * @return int
-     */
-    public function getLocationid()
-    {
-        return $this->locationid;
     }
 
     /**
@@ -371,6 +364,26 @@ abstract class Branch implements ActiveRecordInterface
     } // setId()
 
     /**
+     * Set the value of [location_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Branch The current object (for fluent API support)
+     */
+    public function setLocationId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->location_id !== $v) {
+            $this->location_id = $v;
+            $this->modifiedColumns[BranchTableMap::COL_LOCATION_ID] = true;
+        }
+
+        return $this;
+    } // setLocationId()
+
+    /**
      * Set the value of [name] column.
      *
      * @param string $v new value
@@ -389,30 +402,6 @@ abstract class Branch implements ActiveRecordInterface
 
         return $this;
     } // setName()
-
-    /**
-     * Set the value of [locationid] column.
-     *
-     * @param int $v new value
-     * @return $this|\Branch The current object (for fluent API support)
-     */
-    public function setLocationid($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->locationid !== $v) {
-            $this->locationid = $v;
-            $this->modifiedColumns[BranchTableMap::COL_LOCATIONID] = true;
-        }
-
-        if ($this->aLocation !== null && $this->aLocation->getId() !== $v) {
-            $this->aLocation = null;
-        }
-
-        return $this;
-    } // setLocationid()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -453,11 +442,11 @@ abstract class Branch implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : BranchTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BranchTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : BranchTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->location_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BranchTableMap::translateFieldName('Locationid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->locationid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : BranchTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -488,9 +477,6 @@ abstract class Branch implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aLocation !== null && $this->locationid !== $this->aLocation->getId()) {
-            $this->aLocation = null;
-        }
     } // ensureConsistency
 
     /**
@@ -530,7 +516,6 @@ abstract class Branch implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aLocation = null;
         } // if (deep)
     }
 
@@ -630,18 +615,6 @@ abstract class Branch implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aLocation !== null) {
-                if ($this->aLocation->isModified() || $this->aLocation->isNew()) {
-                    $affectedRows += $this->aLocation->save($con);
-                }
-                $this->setLocation($this->aLocation);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -682,11 +655,11 @@ abstract class Branch implements ActiveRecordInterface
         if ($this->isColumnModified(BranchTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
+        if ($this->isColumnModified(BranchTableMap::COL_LOCATION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'location_id';
+        }
         if ($this->isColumnModified(BranchTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
-        }
-        if ($this->isColumnModified(BranchTableMap::COL_LOCATIONID)) {
-            $modifiedColumns[':p' . $index++]  = 'locationId';
         }
 
         $sql = sprintf(
@@ -702,11 +675,11 @@ abstract class Branch implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
+                    case 'location_id':
+                        $stmt->bindValue($identifier, $this->location_id, PDO::PARAM_INT);
+                        break;
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
-                    case 'locationId':
-                        $stmt->bindValue($identifier, $this->locationid, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -774,10 +747,10 @@ abstract class Branch implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getName();
+                return $this->getLocationId();
                 break;
             case 2:
-                return $this->getLocationid();
+                return $this->getName();
                 break;
             default:
                 return null;
@@ -796,11 +769,10 @@ abstract class Branch implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Branch'][$this->hashCode()])) {
@@ -810,31 +782,14 @@ abstract class Branch implements ActiveRecordInterface
         $keys = BranchTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getLocationid(),
+            $keys[1] => $this->getLocationId(),
+            $keys[2] => $this->getName(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aLocation) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'location';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'location';
-                        break;
-                    default:
-                        $key = 'Location';
-                }
-
-                $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -872,10 +827,10 @@ abstract class Branch implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setName($value);
+                $this->setLocationId($value);
                 break;
             case 2:
-                $this->setLocationid($value);
+                $this->setName($value);
                 break;
         } // switch()
 
@@ -907,10 +862,10 @@ abstract class Branch implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setName($arr[$keys[1]]);
+            $this->setLocationId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setLocationid($arr[$keys[2]]);
+            $this->setName($arr[$keys[2]]);
         }
     }
 
@@ -956,11 +911,11 @@ abstract class Branch implements ActiveRecordInterface
         if ($this->isColumnModified(BranchTableMap::COL_ID)) {
             $criteria->add(BranchTableMap::COL_ID, $this->id);
         }
+        if ($this->isColumnModified(BranchTableMap::COL_LOCATION_ID)) {
+            $criteria->add(BranchTableMap::COL_LOCATION_ID, $this->location_id);
+        }
         if ($this->isColumnModified(BranchTableMap::COL_NAME)) {
             $criteria->add(BranchTableMap::COL_NAME, $this->name);
-        }
-        if ($this->isColumnModified(BranchTableMap::COL_LOCATIONID)) {
-            $criteria->add(BranchTableMap::COL_LOCATIONID, $this->locationid);
         }
 
         return $criteria;
@@ -1048,8 +1003,8 @@ abstract class Branch implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setLocationId($this->getLocationId());
         $copyObj->setName($this->getName());
-        $copyObj->setLocationid($this->getLocationid());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1079,69 +1034,15 @@ abstract class Branch implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildLocation object.
-     *
-     * @param  ChildLocation $v
-     * @return $this|\Branch The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setLocation(ChildLocation $v = null)
-    {
-        if ($v === null) {
-            $this->setLocationid(NULL);
-        } else {
-            $this->setLocationid($v->getId());
-        }
-
-        $this->aLocation = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildLocation object, it will not be re-added.
-        if ($v !== null) {
-            $v->addBranch($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildLocation object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildLocation The associated ChildLocation object.
-     * @throws PropelException
-     */
-    public function getLocation(ConnectionInterface $con = null)
-    {
-        if ($this->aLocation === null && ($this->locationid !== null)) {
-            $this->aLocation = ChildLocationQuery::create()->findPk($this->locationid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aLocation->addBranches($this);
-             */
-        }
-
-        return $this->aLocation;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aLocation) {
-            $this->aLocation->removeBranch($this);
-        }
         $this->id = null;
+        $this->location_id = null;
         $this->name = null;
-        $this->locationid = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1162,7 +1063,6 @@ abstract class Branch implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aLocation = null;
     }
 
     /**

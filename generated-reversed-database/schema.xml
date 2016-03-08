@@ -2,25 +2,22 @@
 <database name="default" defaultIdMethod="native" defaultPhpNamingMethod="underscore">
   <table name="admin" idMethod="native" phpName="Admin">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="user" name="fk_admin_user1">
-      <reference local="userId" foreign="id"/>
-    </foreign-key>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
     <index name="fk_admin_user1_idx">
-      <index-column name="userId"/>
+      <index-column name="user_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="approvedUser" idMethod="native" phpName="Approveduser">
+  <table name="approved_user" idMethod="native" phpName="ApprovedUser">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
     <foreign-key foreignTable="user" name="fk_approvedUser_user1">
-      <reference local="userId" foreign="id"/>
+      <reference local="user_id" foreign="id"/>
     </foreign-key>
     <index name="fk_approvedUser_user1_idx">
-      <index-column name="userId"/>
+      <index-column name="user_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -29,9 +26,6 @@
   <table name="auditor" idMethod="native" phpName="Auditor">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="user" name="fk_auditor_user1">
-      <reference local="userId" foreign="id"/>
-    </foreign-key>
     <index name="fk_auditor_user1_idx">
       <index-column name="userId"/>
     </index>
@@ -41,13 +35,10 @@
   </table>
   <table name="branch" idMethod="native" phpName="Branch">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="45"/>
-    <column name="locationId" phpName="Locationid" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="location" name="fk_branch_location1">
-      <reference local="locationId" foreign="id"/>
-    </foreign-key>
     <index name="fk_branch_location1_idx">
-      <index-column name="locationId"/>
+      <index-column name="location_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -56,26 +47,20 @@
   <table name="location" idMethod="native" phpName="Location">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="name" phpName="Name" type="VARCHAR" size="45"/>
-    <column name="stateCode" phpName="Statecode" type="VARCHAR" size="2" required="true"/>
+    <column name="state_code" phpName="StateCode" type="VARCHAR" size="2" required="true"/>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
   <table name="manager" idMethod="native" phpName="Manager">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
-    <column name="adminId" phpName="Adminid" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="user" name="fk_manager_user1">
-      <reference local="userId" foreign="id"/>
-    </foreign-key>
-    <foreign-key foreignTable="admin" name="fk_manager_admin1">
-      <reference local="adminId" foreign="id"/>
-    </foreign-key>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="admin_id" phpName="AdminId" type="INTEGER" required="true"/>
     <index name="fk_manager_user1_idx">
-      <index-column name="userId"/>
+      <index-column name="user_id"/>
     </index>
     <index name="fk_manager_admin1_idx">
-      <index-column name="adminId"/>
+      <index-column name="admin_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -83,26 +68,23 @@
   </table>
   <table name="purchase" idMethod="native" phpName="Purchase">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="transactionId" phpName="Transactionid" type="INTEGER" required="true"/>
+    <column name="transaction_id" phpName="TransactionId" type="INTEGER" required="true"/>
     <column name="amount" phpName="Amount" type="FLOAT" size="10" scale="2" required="true"/>
-    <foreign-key foreignTable="transaction" name="fk_purchase_transaction1">
-      <reference local="transactionId" foreign="id"/>
-    </foreign-key>
     <index name="fk_purchase_transaction1_idx">
-      <index-column name="transactionId"/>
+      <index-column name="transaction_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
-  <table name="purchasingAgent" idMethod="native" phpName="Purchasingagent">
+  <table name="purchasing_agent" idMethod="native" phpName="PurchasingAgent">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" primaryKey="true" required="true"/>
     <foreign-key foreignTable="user" name="fk_purchasingAgent_user1">
-      <reference local="userId" foreign="id"/>
+      <reference local="user_id" foreign="id"/>
     </foreign-key>
     <index name="fk_purchasingAgent_user1_idx">
-      <index-column name="userId"/>
+      <index-column name="user_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -110,13 +92,10 @@
   </table>
   <table name="refund" idMethod="native" phpName="Refund">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="transactionId" phpName="Transactionid" type="INTEGER" required="true"/>
+    <column name="transaction_id" phpName="TransactionId" type="INTEGER" required="true"/>
     <column name="amount" phpName="Amount" type="FLOAT" size="10" scale="2" required="true"/>
-    <foreign-key foreignTable="transaction" name="fk_refund_transaction1">
-      <reference local="transactionId" foreign="id"/>
-    </foreign-key>
     <index name="fk_refund_transaction1_idx">
-      <index-column name="transactionId"/>
+      <index-column name="transaction_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -126,9 +105,6 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
     <column name="managerId" phpName="Managerid" type="INTEGER" required="true"/>
-    <foreign-key foreignTable="user" name="fk_supervisor_user1">
-      <reference local="userId" foreign="id"/>
-    </foreign-key>
     <foreign-key foreignTable="manager" name="fk_supervisor_manager1">
       <reference local="managerId" foreign="id"/>
     </foreign-key>
@@ -144,13 +120,10 @@
   </table>
   <table name="transaction" idMethod="native" phpName="Transaction">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="userId" phpName="Userid" type="INTEGER" required="true"/>
+    <column name="user_id" phpName="UserId" type="INTEGER" required="true"/>
     <column name="type" phpName="Type" type="VARCHAR" size="20" required="true" defaultValue="internal"/>
-    <foreign-key foreignTable="user" name="fk_transaction_user">
-      <reference local="userId" foreign="id"/>
-    </foreign-key>
     <index name="fk_transaction_user_idx">
-      <index-column name="userId"/>
+      <index-column name="user_id"/>
     </index>
     <vendor type="mysql">
       <parameter name="Engine" value="InnoDB"/>
@@ -160,7 +133,7 @@
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="firstname" phpName="Firstname" type="VARCHAR" size="45" required="true"/>
     <column name="lastname" phpName="Lastname" type="VARCHAR" size="45" required="true"/>
-    <column name="emailAddress" phpName="Emailaddress" type="VARCHAR" size="80" required="true"/>
+    <column name="email_address" phpName="EmailAddress" type="VARCHAR" size="80" required="true"/>
     <column name="username" phpName="Username" type="VARCHAR" size="30" required="true"/>
     <column name="password" phpName="Password" type="CHAR" size="60" required="true"/>
     <vendor type="mysql">

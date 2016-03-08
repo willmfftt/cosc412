@@ -23,14 +23,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildUserQuery orderByFirstname($order = Criteria::ASC) Order by the firstname column
  * @method     ChildUserQuery orderByLastname($order = Criteria::ASC) Order by the lastname column
- * @method     ChildUserQuery orderByEmailaddress($order = Criteria::ASC) Order by the emailAddress column
+ * @method     ChildUserQuery orderByEmailAddress($order = Criteria::ASC) Order by the email_address column
  * @method     ChildUserQuery orderByUsername($order = Criteria::ASC) Order by the username column
  * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByFirstname() Group by the firstname column
  * @method     ChildUserQuery groupByLastname() Group by the lastname column
- * @method     ChildUserQuery groupByEmailaddress() Group by the emailAddress column
+ * @method     ChildUserQuery groupByEmailAddress() Group by the email_address column
  * @method     ChildUserQuery groupByUsername() Group by the username column
  * @method     ChildUserQuery groupByPassword() Group by the password column
  *
@@ -42,77 +42,27 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildUserQuery leftJoinAdmin($relationAlias = null) Adds a LEFT JOIN clause to the query using the Admin relation
- * @method     ChildUserQuery rightJoinAdmin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Admin relation
- * @method     ChildUserQuery innerJoinAdmin($relationAlias = null) Adds a INNER JOIN clause to the query using the Admin relation
+ * @method     ChildUserQuery leftJoinApprovedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ApprovedUser relation
+ * @method     ChildUserQuery rightJoinApprovedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ApprovedUser relation
+ * @method     ChildUserQuery innerJoinApprovedUser($relationAlias = null) Adds a INNER JOIN clause to the query using the ApprovedUser relation
  *
- * @method     ChildUserQuery joinWithAdmin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Admin relation
+ * @method     ChildUserQuery joinWithApprovedUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the ApprovedUser relation
  *
- * @method     ChildUserQuery leftJoinWithAdmin() Adds a LEFT JOIN clause and with to the query using the Admin relation
- * @method     ChildUserQuery rightJoinWithAdmin() Adds a RIGHT JOIN clause and with to the query using the Admin relation
- * @method     ChildUserQuery innerJoinWithAdmin() Adds a INNER JOIN clause and with to the query using the Admin relation
+ * @method     ChildUserQuery leftJoinWithApprovedUser() Adds a LEFT JOIN clause and with to the query using the ApprovedUser relation
+ * @method     ChildUserQuery rightJoinWithApprovedUser() Adds a RIGHT JOIN clause and with to the query using the ApprovedUser relation
+ * @method     ChildUserQuery innerJoinWithApprovedUser() Adds a INNER JOIN clause and with to the query using the ApprovedUser relation
  *
- * @method     ChildUserQuery leftJoinApproveduser($relationAlias = null) Adds a LEFT JOIN clause to the query using the Approveduser relation
- * @method     ChildUserQuery rightJoinApproveduser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Approveduser relation
- * @method     ChildUserQuery innerJoinApproveduser($relationAlias = null) Adds a INNER JOIN clause to the query using the Approveduser relation
+ * @method     ChildUserQuery leftJoinPurchasingAgent($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchasingAgent relation
+ * @method     ChildUserQuery rightJoinPurchasingAgent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchasingAgent relation
+ * @method     ChildUserQuery innerJoinPurchasingAgent($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchasingAgent relation
  *
- * @method     ChildUserQuery joinWithApproveduser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Approveduser relation
+ * @method     ChildUserQuery joinWithPurchasingAgent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PurchasingAgent relation
  *
- * @method     ChildUserQuery leftJoinWithApproveduser() Adds a LEFT JOIN clause and with to the query using the Approveduser relation
- * @method     ChildUserQuery rightJoinWithApproveduser() Adds a RIGHT JOIN clause and with to the query using the Approveduser relation
- * @method     ChildUserQuery innerJoinWithApproveduser() Adds a INNER JOIN clause and with to the query using the Approveduser relation
+ * @method     ChildUserQuery leftJoinWithPurchasingAgent() Adds a LEFT JOIN clause and with to the query using the PurchasingAgent relation
+ * @method     ChildUserQuery rightJoinWithPurchasingAgent() Adds a RIGHT JOIN clause and with to the query using the PurchasingAgent relation
+ * @method     ChildUserQuery innerJoinWithPurchasingAgent() Adds a INNER JOIN clause and with to the query using the PurchasingAgent relation
  *
- * @method     ChildUserQuery leftJoinAuditor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Auditor relation
- * @method     ChildUserQuery rightJoinAuditor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Auditor relation
- * @method     ChildUserQuery innerJoinAuditor($relationAlias = null) Adds a INNER JOIN clause to the query using the Auditor relation
- *
- * @method     ChildUserQuery joinWithAuditor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Auditor relation
- *
- * @method     ChildUserQuery leftJoinWithAuditor() Adds a LEFT JOIN clause and with to the query using the Auditor relation
- * @method     ChildUserQuery rightJoinWithAuditor() Adds a RIGHT JOIN clause and with to the query using the Auditor relation
- * @method     ChildUserQuery innerJoinWithAuditor() Adds a INNER JOIN clause and with to the query using the Auditor relation
- *
- * @method     ChildUserQuery leftJoinManager($relationAlias = null) Adds a LEFT JOIN clause to the query using the Manager relation
- * @method     ChildUserQuery rightJoinManager($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Manager relation
- * @method     ChildUserQuery innerJoinManager($relationAlias = null) Adds a INNER JOIN clause to the query using the Manager relation
- *
- * @method     ChildUserQuery joinWithManager($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Manager relation
- *
- * @method     ChildUserQuery leftJoinWithManager() Adds a LEFT JOIN clause and with to the query using the Manager relation
- * @method     ChildUserQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
- * @method     ChildUserQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
- *
- * @method     ChildUserQuery leftJoinPurchasingagent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Purchasingagent relation
- * @method     ChildUserQuery rightJoinPurchasingagent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Purchasingagent relation
- * @method     ChildUserQuery innerJoinPurchasingagent($relationAlias = null) Adds a INNER JOIN clause to the query using the Purchasingagent relation
- *
- * @method     ChildUserQuery joinWithPurchasingagent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Purchasingagent relation
- *
- * @method     ChildUserQuery leftJoinWithPurchasingagent() Adds a LEFT JOIN clause and with to the query using the Purchasingagent relation
- * @method     ChildUserQuery rightJoinWithPurchasingagent() Adds a RIGHT JOIN clause and with to the query using the Purchasingagent relation
- * @method     ChildUserQuery innerJoinWithPurchasingagent() Adds a INNER JOIN clause and with to the query using the Purchasingagent relation
- *
- * @method     ChildUserQuery leftJoinSupervisor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supervisor relation
- * @method     ChildUserQuery rightJoinSupervisor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supervisor relation
- * @method     ChildUserQuery innerJoinSupervisor($relationAlias = null) Adds a INNER JOIN clause to the query using the Supervisor relation
- *
- * @method     ChildUserQuery joinWithSupervisor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Supervisor relation
- *
- * @method     ChildUserQuery leftJoinWithSupervisor() Adds a LEFT JOIN clause and with to the query using the Supervisor relation
- * @method     ChildUserQuery rightJoinWithSupervisor() Adds a RIGHT JOIN clause and with to the query using the Supervisor relation
- * @method     ChildUserQuery innerJoinWithSupervisor() Adds a INNER JOIN clause and with to the query using the Supervisor relation
- *
- * @method     ChildUserQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
- * @method     ChildUserQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
- * @method     ChildUserQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
- *
- * @method     ChildUserQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
- *
- * @method     ChildUserQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
- * @method     ChildUserQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
- * @method     ChildUserQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
- *
- * @method     \AdminQuery|\ApproveduserQuery|\AuditorQuery|\ManagerQuery|\PurchasingagentQuery|\SupervisorQuery|\TransactionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \ApprovedUserQuery|\PurchasingAgentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -120,7 +70,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
  * @method     ChildUser findOneByFirstname(string $firstname) Return the first ChildUser filtered by the firstname column
  * @method     ChildUser findOneByLastname(string $lastname) Return the first ChildUser filtered by the lastname column
- * @method     ChildUser findOneByEmailaddress(string $emailAddress) Return the first ChildUser filtered by the emailAddress column
+ * @method     ChildUser findOneByEmailAddress(string $email_address) Return the first ChildUser filtered by the email_address column
  * @method     ChildUser findOneByUsername(string $username) Return the first ChildUser filtered by the username column
  * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column *
 
@@ -130,7 +80,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneById(int $id) Return the first ChildUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByFirstname(string $firstname) Return the first ChildUser filtered by the firstname column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByLastname(string $lastname) Return the first ChildUser filtered by the lastname column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildUser requireOneByEmailaddress(string $emailAddress) Return the first ChildUser filtered by the emailAddress column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByEmailAddress(string $email_address) Return the first ChildUser filtered by the email_address column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByUsername(string $username) Return the first ChildUser filtered by the username column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -138,7 +88,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
  * @method     ChildUser[]|ObjectCollection findByFirstname(string $firstname) Return ChildUser objects filtered by the firstname column
  * @method     ChildUser[]|ObjectCollection findByLastname(string $lastname) Return ChildUser objects filtered by the lastname column
- * @method     ChildUser[]|ObjectCollection findByEmailaddress(string $emailAddress) Return ChildUser objects filtered by the emailAddress column
+ * @method     ChildUser[]|ObjectCollection findByEmailAddress(string $email_address) Return ChildUser objects filtered by the email_address column
  * @method     ChildUser[]|ObjectCollection findByUsername(string $username) Return ChildUser objects filtered by the username column
  * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -233,7 +183,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, firstname, lastname, emailAddress, username, password FROM user WHERE id = :p0';
+        $sql = 'SELECT id, firstname, lastname, email_address, username, password FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -423,32 +373,32 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the emailAddress column
+     * Filter the query on the email_address column
      *
      * Example usage:
      * <code>
-     * $query->filterByEmailaddress('fooValue');   // WHERE emailAddress = 'fooValue'
-     * $query->filterByEmailaddress('%fooValue%'); // WHERE emailAddress LIKE '%fooValue%'
+     * $query->filterByEmailAddress('fooValue');   // WHERE email_address = 'fooValue'
+     * $query->filterByEmailAddress('%fooValue%'); // WHERE email_address LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $emailaddress The value to use as filter.
+     * @param     string $emailAddress The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function filterByEmailaddress($emailaddress = null, $comparison = null)
+    public function filterByEmailAddress($emailAddress = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($emailaddress)) {
+            if (is_array($emailAddress)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $emailaddress)) {
-                $emailaddress = str_replace('*', '%', $emailaddress);
+            } elseif (preg_match('/[\%\*]/', $emailAddress)) {
+                $emailAddress = str_replace('*', '%', $emailAddress);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UserTableMap::COL_EMAILADDRESS, $emailaddress, $comparison);
+        return $this->addUsingAlias(UserTableMap::COL_EMAIL_ADDRESS, $emailAddress, $comparison);
     }
 
     /**
@@ -510,40 +460,40 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Admin object
+     * Filter the query by a related \ApprovedUser object
      *
-     * @param \Admin|ObjectCollection $admin the related object to use as filter
+     * @param \ApprovedUser|ObjectCollection $approvedUser the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByAdmin($admin, $comparison = null)
+    public function filterByApprovedUser($approvedUser, $comparison = null)
     {
-        if ($admin instanceof \Admin) {
+        if ($approvedUser instanceof \ApprovedUser) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $admin->getUserid(), $comparison);
-        } elseif ($admin instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_ID, $approvedUser->getUserId(), $comparison);
+        } elseif ($approvedUser instanceof ObjectCollection) {
             return $this
-                ->useAdminQuery()
-                ->filterByPrimaryKeys($admin->getPrimaryKeys())
+                ->useApprovedUserQuery()
+                ->filterByPrimaryKeys($approvedUser->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByAdmin() only accepts arguments of type \Admin or Collection');
+            throw new PropelException('filterByApprovedUser() only accepts arguments of type \ApprovedUser or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Admin relation
+     * Adds a JOIN clause to the query using the ApprovedUser relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinAdmin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinApprovedUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Admin');
+        $relationMap = $tableMap->getRelation('ApprovedUser');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -558,14 +508,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Admin');
+            $this->addJoinObject($join, 'ApprovedUser');
         }
 
         return $this;
     }
 
     /**
-     * Use the Admin relation Admin object
+     * Use the ApprovedUser relation ApprovedUser object
      *
      * @see useQuery()
      *
@@ -573,50 +523,50 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \AdminQuery A secondary query class using the current class as primary query
+     * @return \ApprovedUserQuery A secondary query class using the current class as primary query
      */
-    public function useAdminQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useApprovedUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinAdmin($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Admin', '\AdminQuery');
+            ->joinApprovedUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ApprovedUser', '\ApprovedUserQuery');
     }
 
     /**
-     * Filter the query by a related \Approveduser object
+     * Filter the query by a related \PurchasingAgent object
      *
-     * @param \Approveduser|ObjectCollection $approveduser the related object to use as filter
+     * @param \PurchasingAgent|ObjectCollection $purchasingAgent the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByApproveduser($approveduser, $comparison = null)
+    public function filterByPurchasingAgent($purchasingAgent, $comparison = null)
     {
-        if ($approveduser instanceof \Approveduser) {
+        if ($purchasingAgent instanceof \PurchasingAgent) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $approveduser->getUserid(), $comparison);
-        } elseif ($approveduser instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_ID, $purchasingAgent->getUserId(), $comparison);
+        } elseif ($purchasingAgent instanceof ObjectCollection) {
             return $this
-                ->useApproveduserQuery()
-                ->filterByPrimaryKeys($approveduser->getPrimaryKeys())
+                ->usePurchasingAgentQuery()
+                ->filterByPrimaryKeys($purchasingAgent->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByApproveduser() only accepts arguments of type \Approveduser or Collection');
+            throw new PropelException('filterByPurchasingAgent() only accepts arguments of type \PurchasingAgent or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Approveduser relation
+     * Adds a JOIN clause to the query using the PurchasingAgent relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinApproveduser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPurchasingAgent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Approveduser');
+        $relationMap = $tableMap->getRelation('PurchasingAgent');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -631,14 +581,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Approveduser');
+            $this->addJoinObject($join, 'PurchasingAgent');
         }
 
         return $this;
     }
 
     /**
-     * Use the Approveduser relation Approveduser object
+     * Use the PurchasingAgent relation PurchasingAgent object
      *
      * @see useQuery()
      *
@@ -646,378 +596,13 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \ApproveduserQuery A secondary query class using the current class as primary query
+     * @return \PurchasingAgentQuery A secondary query class using the current class as primary query
      */
-    public function useApproveduserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePurchasingAgentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinApproveduser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Approveduser', '\ApproveduserQuery');
-    }
-
-    /**
-     * Filter the query by a related \Auditor object
-     *
-     * @param \Auditor|ObjectCollection $auditor the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByAuditor($auditor, $comparison = null)
-    {
-        if ($auditor instanceof \Auditor) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $auditor->getUserid(), $comparison);
-        } elseif ($auditor instanceof ObjectCollection) {
-            return $this
-                ->useAuditorQuery()
-                ->filterByPrimaryKeys($auditor->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByAuditor() only accepts arguments of type \Auditor or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Auditor relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinAuditor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Auditor');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Auditor');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Auditor relation Auditor object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \AuditorQuery A secondary query class using the current class as primary query
-     */
-    public function useAuditorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinAuditor($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Auditor', '\AuditorQuery');
-    }
-
-    /**
-     * Filter the query by a related \Manager object
-     *
-     * @param \Manager|ObjectCollection $manager the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByManager($manager, $comparison = null)
-    {
-        if ($manager instanceof \Manager) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $manager->getUserid(), $comparison);
-        } elseif ($manager instanceof ObjectCollection) {
-            return $this
-                ->useManagerQuery()
-                ->filterByPrimaryKeys($manager->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByManager() only accepts arguments of type \Manager or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Manager relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinManager($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Manager');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Manager');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Manager relation Manager object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \ManagerQuery A secondary query class using the current class as primary query
-     */
-    public function useManagerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinManager($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Manager', '\ManagerQuery');
-    }
-
-    /**
-     * Filter the query by a related \Purchasingagent object
-     *
-     * @param \Purchasingagent|ObjectCollection $purchasingagent the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByPurchasingagent($purchasingagent, $comparison = null)
-    {
-        if ($purchasingagent instanceof \Purchasingagent) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $purchasingagent->getUserid(), $comparison);
-        } elseif ($purchasingagent instanceof ObjectCollection) {
-            return $this
-                ->usePurchasingagentQuery()
-                ->filterByPrimaryKeys($purchasingagent->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByPurchasingagent() only accepts arguments of type \Purchasingagent or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Purchasingagent relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinPurchasingagent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Purchasingagent');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Purchasingagent');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Purchasingagent relation Purchasingagent object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \PurchasingagentQuery A secondary query class using the current class as primary query
-     */
-    public function usePurchasingagentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinPurchasingagent($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Purchasingagent', '\PurchasingagentQuery');
-    }
-
-    /**
-     * Filter the query by a related \Supervisor object
-     *
-     * @param \Supervisor|ObjectCollection $supervisor the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterBySupervisor($supervisor, $comparison = null)
-    {
-        if ($supervisor instanceof \Supervisor) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $supervisor->getUserid(), $comparison);
-        } elseif ($supervisor instanceof ObjectCollection) {
-            return $this
-                ->useSupervisorQuery()
-                ->filterByPrimaryKeys($supervisor->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterBySupervisor() only accepts arguments of type \Supervisor or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Supervisor relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinSupervisor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Supervisor');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Supervisor');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Supervisor relation Supervisor object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \SupervisorQuery A secondary query class using the current class as primary query
-     */
-    public function useSupervisorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinSupervisor($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Supervisor', '\SupervisorQuery');
-    }
-
-    /**
-     * Filter the query by a related \Transaction object
-     *
-     * @param \Transaction|ObjectCollection $transaction the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByTransaction($transaction, $comparison = null)
-    {
-        if ($transaction instanceof \Transaction) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $transaction->getUserid(), $comparison);
-        } elseif ($transaction instanceof ObjectCollection) {
-            return $this
-                ->useTransactionQuery()
-                ->filterByPrimaryKeys($transaction->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByTransaction() only accepts arguments of type \Transaction or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Transaction relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinTransaction($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Transaction');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Transaction');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Transaction relation Transaction object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \TransactionQuery A secondary query class using the current class as primary query
-     */
-    public function useTransactionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinTransaction($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Transaction', '\TransactionQuery');
+            ->joinPurchasingAgent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PurchasingAgent', '\PurchasingAgentQuery');
     }
 
     /**

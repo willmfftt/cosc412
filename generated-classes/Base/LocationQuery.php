@@ -10,7 +10,6 @@ use Map\LocationTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
-use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -22,11 +21,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildLocationQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildLocationQuery orderByName($order = Criteria::ASC) Order by the name column
- * @method     ChildLocationQuery orderByStatecode($order = Criteria::ASC) Order by the stateCode column
+ * @method     ChildLocationQuery orderByStateCode($order = Criteria::ASC) Order by the state_code column
  *
  * @method     ChildLocationQuery groupById() Group by the id column
  * @method     ChildLocationQuery groupByName() Group by the name column
- * @method     ChildLocationQuery groupByStatecode() Group by the stateCode column
+ * @method     ChildLocationQuery groupByStateCode() Group by the state_code column
  *
  * @method     ChildLocationQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildLocationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -36,36 +35,24 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildLocationQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildLocationQuery leftJoinBranch($relationAlias = null) Adds a LEFT JOIN clause to the query using the Branch relation
- * @method     ChildLocationQuery rightJoinBranch($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Branch relation
- * @method     ChildLocationQuery innerJoinBranch($relationAlias = null) Adds a INNER JOIN clause to the query using the Branch relation
- *
- * @method     ChildLocationQuery joinWithBranch($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Branch relation
- *
- * @method     ChildLocationQuery leftJoinWithBranch() Adds a LEFT JOIN clause and with to the query using the Branch relation
- * @method     ChildLocationQuery rightJoinWithBranch() Adds a RIGHT JOIN clause and with to the query using the Branch relation
- * @method     ChildLocationQuery innerJoinWithBranch() Adds a INNER JOIN clause and with to the query using the Branch relation
- *
- * @method     \BranchQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
- *
  * @method     ChildLocation findOne(ConnectionInterface $con = null) Return the first ChildLocation matching the query
  * @method     ChildLocation findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLocation matching the query, or a new ChildLocation object populated from the query conditions when no match is found
  *
  * @method     ChildLocation findOneById(int $id) Return the first ChildLocation filtered by the id column
  * @method     ChildLocation findOneByName(string $name) Return the first ChildLocation filtered by the name column
- * @method     ChildLocation findOneByStatecode(string $stateCode) Return the first ChildLocation filtered by the stateCode column *
+ * @method     ChildLocation findOneByStateCode(string $state_code) Return the first ChildLocation filtered by the state_code column *
 
  * @method     ChildLocation requirePk($key, ConnectionInterface $con = null) Return the ChildLocation by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOne(ConnectionInterface $con = null) Return the first ChildLocation matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLocation requireOneById(int $id) Return the first ChildLocation filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLocation requireOneByName(string $name) Return the first ChildLocation filtered by the name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildLocation requireOneByStatecode(string $stateCode) Return the first ChildLocation filtered by the stateCode column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLocation requireOneByStateCode(string $state_code) Return the first ChildLocation filtered by the state_code column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLocation[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildLocation objects based on current ModelCriteria
  * @method     ChildLocation[]|ObjectCollection findById(int $id) Return ChildLocation objects filtered by the id column
  * @method     ChildLocation[]|ObjectCollection findByName(string $name) Return ChildLocation objects filtered by the name column
- * @method     ChildLocation[]|ObjectCollection findByStatecode(string $stateCode) Return ChildLocation objects filtered by the stateCode column
+ * @method     ChildLocation[]|ObjectCollection findByStateCode(string $state_code) Return ChildLocation objects filtered by the state_code column
  * @method     ChildLocation[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -158,7 +145,7 @@ abstract class LocationQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, name, stateCode FROM location WHERE id = :p0';
+        $sql = 'SELECT id, name, state_code FROM location WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -319,105 +306,32 @@ abstract class LocationQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the stateCode column
+     * Filter the query on the state_code column
      *
      * Example usage:
      * <code>
-     * $query->filterByStatecode('fooValue');   // WHERE stateCode = 'fooValue'
-     * $query->filterByStatecode('%fooValue%'); // WHERE stateCode LIKE '%fooValue%'
+     * $query->filterByStateCode('fooValue');   // WHERE state_code = 'fooValue'
+     * $query->filterByStateCode('%fooValue%'); // WHERE state_code LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $statecode The value to use as filter.
+     * @param     string $stateCode The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLocationQuery The current query, for fluid interface
      */
-    public function filterByStatecode($statecode = null, $comparison = null)
+    public function filterByStateCode($stateCode = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($statecode)) {
+            if (is_array($stateCode)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $statecode)) {
-                $statecode = str_replace('*', '%', $statecode);
+            } elseif (preg_match('/[\%\*]/', $stateCode)) {
+                $stateCode = str_replace('*', '%', $stateCode);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(LocationTableMap::COL_STATECODE, $statecode, $comparison);
-    }
-
-    /**
-     * Filter the query by a related \Branch object
-     *
-     * @param \Branch|ObjectCollection $branch the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildLocationQuery The current query, for fluid interface
-     */
-    public function filterByBranch($branch, $comparison = null)
-    {
-        if ($branch instanceof \Branch) {
-            return $this
-                ->addUsingAlias(LocationTableMap::COL_ID, $branch->getLocationid(), $comparison);
-        } elseif ($branch instanceof ObjectCollection) {
-            return $this
-                ->useBranchQuery()
-                ->filterByPrimaryKeys($branch->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByBranch() only accepts arguments of type \Branch or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Branch relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildLocationQuery The current query, for fluid interface
-     */
-    public function joinBranch($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Branch');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Branch');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Branch relation Branch object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \BranchQuery A secondary query class using the current class as primary query
-     */
-    public function useBranchQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinBranch($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Branch', '\BranchQuery');
+        return $this->addUsingAlias(LocationTableMap::COL_STATE_CODE, $stateCode, $comparison);
     }
 
     /**

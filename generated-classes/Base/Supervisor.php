@@ -5,8 +5,6 @@ namespace Base;
 use \Manager as ChildManager;
 use \ManagerQuery as ChildManagerQuery;
 use \SupervisorQuery as ChildSupervisorQuery;
-use \User as ChildUser;
-use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\SupervisorTableMap;
@@ -83,11 +81,6 @@ abstract class Supervisor implements ActiveRecordInterface
      * @var        int
      */
     protected $managerid;
-
-    /**
-     * @var        ChildUser
-     */
-    protected $aUser;
 
     /**
      * @var        ChildManager
@@ -394,10 +387,6 @@ abstract class Supervisor implements ActiveRecordInterface
             $this->modifiedColumns[SupervisorTableMap::COL_USERID] = true;
         }
 
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
-        }
-
         return $this;
     } // setUserid()
 
@@ -499,9 +488,6 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->userid !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
         if ($this->aManager !== null && $this->managerid !== $this->aManager->getId()) {
             $this->aManager = null;
         }
@@ -544,7 +530,6 @@ abstract class Supervisor implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aUser = null;
             $this->aManager = null;
         } // if (deep)
     }
@@ -649,13 +634,6 @@ abstract class Supervisor implements ActiveRecordInterface
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
 
             if ($this->aManager !== null) {
                 if ($this->aManager->isModified() || $this->aManager->isNew()) {
@@ -841,21 +819,6 @@ abstract class Supervisor implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aUser) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'user';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user';
-                        break;
-                    default:
-                        $key = 'User';
-                }
-
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->aManager) {
 
                 switch ($keyType) {
@@ -1116,57 +1079,6 @@ abstract class Supervisor implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildUser object.
-     *
-     * @param  ChildUser $v
-     * @return $this|\Supervisor The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUser(ChildUser $v = null)
-    {
-        if ($v === null) {
-            $this->setUserid(NULL);
-        } else {
-            $this->setUserid($v->getId());
-        }
-
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUser object, it will not be re-added.
-        if ($v !== null) {
-            $v->addSupervisor($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildUser object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUser The associated ChildUser object.
-     * @throws PropelException
-     */
-    public function getUser(ConnectionInterface $con = null)
-    {
-        if ($this->aUser === null && ($this->userid !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->userid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addSupervisors($this);
-             */
-        }
-
-        return $this->aUser;
-    }
-
-    /**
      * Declares an association between this object and a ChildManager object.
      *
      * @param  ChildManager $v
@@ -1204,7 +1116,9 @@ abstract class Supervisor implements ActiveRecordInterface
     public function getManager(ConnectionInterface $con = null)
     {
         if ($this->aManager === null && ($this->managerid !== null)) {
-            $this->aManager = ChildManagerQuery::create()->findPk($this->managerid, $con);
+            $this->aManager = ChildManagerQuery::create()
+                ->filterBySupervisor($this) // here
+                ->findOne($con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
@@ -1224,9 +1138,6 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aUser) {
-            $this->aUser->removeSupervisor($this);
-        }
         if (null !== $this->aManager) {
             $this->aManager->removeSupervisor($this);
         }
@@ -1253,7 +1164,6 @@ abstract class Supervisor implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aUser = null;
         $this->aManager = null;
     }
 

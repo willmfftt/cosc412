@@ -2,12 +2,12 @@
 
 namespace Base;
 
-use \PurchasingagentQuery as ChildPurchasingagentQuery;
+use \ApprovedUserQuery as ChildApprovedUserQuery;
 use \User as ChildUser;
 use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
-use Map\PurchasingagentTableMap;
+use Map\ApprovedUserTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -21,18 +21,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'purchasingAgent' table.
+ * Base class that represents a row from the 'approved_user' table.
  *
  *
  *
 * @package    propel.generator..Base
 */
-abstract class Purchasingagent implements ActiveRecordInterface
+abstract class ApprovedUser implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\PurchasingagentTableMap';
+    const TABLE_MAP = '\\Map\\ApprovedUserTableMap';
 
 
     /**
@@ -69,11 +69,11 @@ abstract class Purchasingagent implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
+    protected $user_id;
 
     /**
      * @var        ChildUser
@@ -89,7 +89,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Base\Purchasingagent object.
+     * Initializes internal state of Base\ApprovedUser object.
      */
     public function __construct()
     {
@@ -184,9 +184,9 @@ abstract class Purchasingagent implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Purchasingagent</code> instance.  If
-     * <code>obj</code> is an instance of <code>Purchasingagent</code>, delegates to
-     * <code>equals(Purchasingagent)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>ApprovedUser</code> instance.  If
+     * <code>obj</code> is an instance of <code>ApprovedUser</code>, delegates to
+     * <code>equals(ApprovedUser)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -252,7 +252,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|Purchasingagent The current object, for fluid interface
+     * @return $this|ApprovedUser The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -324,20 +324,20 @@ abstract class Purchasingagent implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Purchasingagent The current object (for fluent API support)
+     * @return $this|\ApprovedUser The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -347,27 +347,27 @@ abstract class Purchasingagent implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[PurchasingagentTableMap::COL_ID] = true;
+            $this->modifiedColumns[ApprovedUserTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
-     * @return $this|\Purchasingagent The current object (for fluent API support)
+     * @return $this|\ApprovedUser The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[PurchasingagentTableMap::COL_USERID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[ApprovedUserTableMap::COL_USER_ID] = true;
         }
 
         if ($this->aUser !== null && $this->aUser->getId() !== $v) {
@@ -375,7 +375,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -413,11 +413,11 @@ abstract class Purchasingagent implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PurchasingagentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ApprovedUserTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PurchasingagentTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ApprovedUserTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -426,10 +426,10 @@ abstract class Purchasingagent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = PurchasingagentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = ApprovedUserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Purchasingagent'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\ApprovedUser'), 0, $e);
         }
     }
 
@@ -448,7 +448,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->userid !== $this->aUser->getId()) {
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
             $this->aUser = null;
         }
     } // ensureConsistency
@@ -474,13 +474,13 @@ abstract class Purchasingagent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildPurchasingagentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildApprovedUserQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -500,8 +500,8 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see Purchasingagent::setDeleted()
-     * @see Purchasingagent::isDeleted()
+     * @see ApprovedUser::setDeleted()
+     * @see ApprovedUser::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -510,11 +510,11 @@ abstract class Purchasingagent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildPurchasingagentQuery::create()
+            $deleteQuery = ChildApprovedUserQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -545,7 +545,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingagentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ApprovedUserTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -564,7 +564,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                PurchasingagentTableMap::addInstanceToPool($this);
+                ApprovedUserTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -633,21 +633,21 @@ abstract class Purchasingagent implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[PurchasingagentTableMap::COL_ID] = true;
+        $this->modifiedColumns[ApprovedUserTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PurchasingagentTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ApprovedUserTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(PurchasingagentTableMap::COL_ID)) {
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(PurchasingagentTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
 
         $sql = sprintf(
-            'INSERT INTO purchasingAgent (%s) VALUES (%s)',
+            'INSERT INTO approved_user (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -659,8 +659,8 @@ abstract class Purchasingagent implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -708,7 +708,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchasingagentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ApprovedUserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -728,7 +728,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
                 break;
             default:
                 return null;
@@ -754,14 +754,14 @@ abstract class Purchasingagent implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['Purchasingagent'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['ApprovedUser'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Purchasingagent'][$this->hashCode()] = true;
-        $keys = PurchasingagentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['ApprovedUser'][$this->hashCode()] = true;
+        $keys = ApprovedUserTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
+            $keys[1] => $this->getUserId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -798,11 +798,11 @@ abstract class Purchasingagent implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Purchasingagent
+     * @return $this|\ApprovedUser
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchasingagentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ApprovedUserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -813,7 +813,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Purchasingagent
+     * @return $this|\ApprovedUser
      */
     public function setByPosition($pos, $value)
     {
@@ -822,7 +822,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
                 break;
         } // switch()
 
@@ -848,13 +848,13 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = PurchasingagentTableMap::getFieldNames($keyType);
+        $keys = ApprovedUserTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
     }
 
@@ -875,7 +875,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Purchasingagent The current object, for fluid interface
+     * @return $this|\ApprovedUser The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -895,13 +895,13 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(PurchasingagentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ApprovedUserTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(PurchasingagentTableMap::COL_ID)) {
-            $criteria->add(PurchasingagentTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_ID)) {
+            $criteria->add(ApprovedUserTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(PurchasingagentTableMap::COL_USERID)) {
-            $criteria->add(PurchasingagentTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_USER_ID)) {
+            $criteria->add(ApprovedUserTableMap::COL_USER_ID, $this->user_id);
         }
 
         return $criteria;
@@ -919,8 +919,9 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildPurchasingagentQuery::create();
-        $criteria->add(PurchasingagentTableMap::COL_ID, $this->id);
+        $criteria = ChildApprovedUserQuery::create();
+        $criteria->add(ApprovedUserTableMap::COL_ID, $this->id);
+        $criteria->add(ApprovedUserTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -933,10 +934,18 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getId() &&
+            null !== $this->getUserId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
+
+        //relation fk_approvedUser_user1 to table user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -948,23 +957,29 @@ abstract class Purchasingagent implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getUserId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -973,7 +988,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getUserId());
     }
 
     /**
@@ -982,14 +997,14 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Purchasingagent (or compatible) type.
+     * @param      object $copyObj An object of \ApprovedUser (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
+        $copyObj->setUserId($this->getUserId());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1005,7 +1020,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Purchasingagent Clone of current object.
+     * @return \ApprovedUser Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1022,15 +1037,15 @@ abstract class Purchasingagent implements ActiveRecordInterface
      * Declares an association between this object and a ChildUser object.
      *
      * @param  ChildUser $v
-     * @return $this|\Purchasingagent The current object (for fluent API support)
+     * @return $this|\ApprovedUser The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setUserid(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setUserid($v->getId());
+            $this->setUserId($v->getId());
         }
 
         $this->aUser = $v;
@@ -1038,7 +1053,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildUser object, it will not be re-added.
         if ($v !== null) {
-            $v->addPurchasingagent($this);
+            $v->addApprovedUser($this);
         }
 
 
@@ -1055,14 +1070,14 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function getUser(ConnectionInterface $con = null)
     {
-        if ($this->aUser === null && ($this->userid !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->userid, $con);
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aUser->addPurchasingagents($this);
+                $this->aUser->addApprovedUsers($this);
              */
         }
 
@@ -1077,10 +1092,10 @@ abstract class Purchasingagent implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aUser) {
-            $this->aUser->removePurchasingagent($this);
+            $this->aUser->removeApprovedUser($this);
         }
         $this->id = null;
-        $this->userid = null;
+        $this->user_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1111,7 +1126,7 @@ abstract class Purchasingagent implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(PurchasingagentTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ApprovedUserTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
