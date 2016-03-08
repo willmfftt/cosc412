@@ -2,7 +2,7 @@
  * Create Tables
  */
 
-CREATE TABLE IF NOT EXISTS `PREFIX_permissions` (
+CREATE TABLE IF NOT EXISTS `dod_permissions` (
   `ID` int(11) NOT NULL auto_increment,
   `Lft` int(11) NOT NULL,
   `Rght` int(11) NOT NULL,
@@ -14,14 +14,14 @@ CREATE TABLE IF NOT EXISTS `PREFIX_permissions` (
   KEY `Rght` (`Rght`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1;
 
-CREATE TABLE IF NOT EXISTS `PREFIX_rolepermissions` (
+CREATE TABLE IF NOT EXISTS `dod_rolepermissions` (
   `RoleID` int(11) NOT NULL,
   `PermissionID` int(11) NOT NULL,
   `AssignmentDate` int(11) NOT NULL,
   PRIMARY KEY  (`RoleID`,`PermissionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `PREFIX_roles` (
+CREATE TABLE IF NOT EXISTS `dod_roles` (
   `ID` int(11) NOT NULL auto_increment,
   `Lft` int(11) NOT NULL,
   `Rght` int(11) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `PREFIX_roles` (
   KEY `Rght` (`Rght`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `PREFIX_userroles` (
+CREATE TABLE IF NOT EXISTS `dod_userroles` (
   `UserID` int(11) NOT NULL,
   `RoleID` int(11) NOT NULL,
   `AssignmentDate` int(11) NOT NULL,
@@ -44,14 +44,14 @@ CREATE TABLE IF NOT EXISTS `PREFIX_userroles` (
  * Insert Initial Table Data
  */
 
-INSERT INTO `PREFIX_permissions` (`ID`, `Lft`, `Rght`, `Title`, `Description`)
+INSERT INTO `dod_permissions` (`ID`, `Lft`, `Rght`, `Title`, `Description`)
 VALUES (1, 0, 1, 'root', 'root');
 
-INSERT INTO `PREFIX_rolepermissions` (`RoleID`, `PermissionID`, `AssignmentDate`)
+INSERT INTO `dod_rolepermissions` (`RoleID`, `PermissionID`, `AssignmentDate`)
 VALUES (1, 1, UNIX_TIMESTAMP());
 
-INSERT INTO `PREFIX_roles` (`ID`, `Lft`, `Rght`, `Title`, `Description`)
+INSERT INTO `dod_roles` (`ID`, `Lft`, `Rght`, `Title`, `Description`)
 VALUES (1, 0, 1, 'root', 'root');
 
-INSERT INTO `PREFIX_userroles` (`UserID`, `RoleID`, `AssignmentDate`)
+INSERT INTO `dod_userroles` (`UserID`, `RoleID`, `AssignmentDate`)
 VALUES (1, 1, UNIX_TIMESTAMP());
