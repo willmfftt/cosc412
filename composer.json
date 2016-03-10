@@ -1,6 +1,7 @@
 {
 	"autoload": {
-		"classmap": ["generated-classes/"]
+		"classmap": ["generated-classes/", "lib/"],
+		"files": ["generated-conf/config.php"]
 	},
 	"require": {
 		"propel/propel": "~2.0@dev",
