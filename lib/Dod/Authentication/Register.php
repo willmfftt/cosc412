@@ -7,6 +7,8 @@ require_once '/var/www/wmoffitt/vendor/autoload.php';
 use User;
 use Propel\Runtime\Exception\PropelException;
 use Dod\Utils\UserUtils;
+use PhpRbac\Rbac;
+use Dod\Rbac\RoleConstants;
 
 class Register {
 	
@@ -22,7 +24,16 @@ class Register {
 			return false;
 		}
 		
-		// TODO: Check that creator has the right to create this user (i.e. admin rights)
+		$rbac = new Rbac();
+		
+		// Check that creator has the right to create this user (i.e. admin rights)
+		$roleId = $rbac->Roles->returnId(RoleConstants::getAdminRoleName());
+		$isAdmin = $rbac->Users->hasRole($roleId, $creator->getId());
+		
+		// Creator is not an admin
+		if (!$isAdmin) {
+			return false;
+		}
 	
 		// Creator is an admin, check that the user we are trying to create doesn't already exist
 		if (UserUtils::checkUserExists($username)) {
@@ -44,7 +55,9 @@ class Register {
 			return false;
 		}
 		
-		// TODO: Set the users role
+		// Set the users role
+		$roleId = $rbac->Roles->returnId($role);
+		$rbac->Users->assign($roleId, $user->getId());
 		
 		return true;
 	}
