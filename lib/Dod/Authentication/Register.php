@@ -47,6 +47,7 @@ class Register {
 		$user->setEmailAddress($emailAddress);
 		$user->setUsername($username);
 		$user->setPassword(password_hash($password, PASSWORD_BCRYPT));
+
 		
 		try {
 			$user->save();
