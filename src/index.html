@@ -24,20 +24,20 @@
     <!--Login Form-->
     <form class="form-signin">
         <h2 class="form-signin-heading">Please sign in</h2>
-<!--        <label for="inputEmail" class="sr-only">Email address</label>-->
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-<!--        <label for="inputPassword" class="sr-only">Password</label>-->
+        <input type="text" id="inputUsername" class="form-control error" placeholder="Username" required autofocus>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <div class="checkbox">
           <label>
             <input id="form-signin-remember" type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <button id="signin-btn" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      <p id="signin-failed"></p>
       </form>
   </div>
   
+  <script src="js/jquery-1.12.2.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/login.js"></script>
+  <script src="js/signin.js"></script>
 </body>
 </html>

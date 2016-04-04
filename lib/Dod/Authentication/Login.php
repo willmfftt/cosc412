@@ -4,20 +4,14 @@ namespace Dod\Authentication;
 
 require_once '/var/www/wmoffitt/vendor/autoload.php';
 
-use UserQuery;
-use User;
+use Dod\Authentication\OAuth\OAuthTokenController;
 
 class Login {
 	
-	public function login($username, $password)
+	public function login()
 	{
-		$user = UserQuery::create()->findOneByUsername($username);
-		
-		if ($user == null) {
-			return false;
-		}
-		
-		return password_verify($password, $user->getPassword());
+		$tokenController = new OAuthTokenController();
+		$tokenController->handleTokenRequest()->send();
 	}
 		
 }
