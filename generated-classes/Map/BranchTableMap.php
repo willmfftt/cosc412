@@ -77,14 +77,14 @@ class BranchTableMap extends TableMap
     const COL_ID = 'branch.id';
 
     /**
+     * the column name for the location_id field
+     */
+    const COL_LOCATION_ID = 'branch.location_id';
+
+    /**
      * the column name for the name field
      */
     const COL_NAME = 'branch.name';
-
-    /**
-     * the column name for the locationId field
-     */
-    const COL_LOCATIONID = 'branch.locationId';
 
     /**
      * The default string format for model objects of the related table
@@ -98,10 +98,10 @@ class BranchTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Name', 'Locationid', ),
-        self::TYPE_CAMELNAME     => array('id', 'name', 'locationid', ),
-        self::TYPE_COLNAME       => array(BranchTableMap::COL_ID, BranchTableMap::COL_NAME, BranchTableMap::COL_LOCATIONID, ),
-        self::TYPE_FIELDNAME     => array('id', 'name', 'locationId', ),
+        self::TYPE_PHPNAME       => array('Id', 'LocationId', 'Name', ),
+        self::TYPE_CAMELNAME     => array('id', 'locationId', 'name', ),
+        self::TYPE_COLNAME       => array(BranchTableMap::COL_ID, BranchTableMap::COL_LOCATION_ID, BranchTableMap::COL_NAME, ),
+        self::TYPE_FIELDNAME     => array('id', 'location_id', 'name', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,10 +112,10 @@ class BranchTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Name' => 1, 'Locationid' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'name' => 1, 'locationid' => 2, ),
-        self::TYPE_COLNAME       => array(BranchTableMap::COL_ID => 0, BranchTableMap::COL_NAME => 1, BranchTableMap::COL_LOCATIONID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'name' => 1, 'locationId' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'LocationId' => 1, 'Name' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'locationId' => 1, 'name' => 2, ),
+        self::TYPE_COLNAME       => array(BranchTableMap::COL_ID => 0, BranchTableMap::COL_LOCATION_ID => 1, BranchTableMap::COL_NAME => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'location_id' => 1, 'name' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,8 +137,8 @@ class BranchTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('location_id', 'LocationId', 'INTEGER', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 45, null);
-        $this->addForeignKey('locationId', 'Locationid', 'INTEGER', 'location', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -146,13 +146,6 @@ class BranchTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Location', '\\Location', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':locationId',
-    1 => ':id',
-  ),
-), null, null, null, false);
     } // buildRelations()
 
     /**
@@ -297,12 +290,12 @@ class BranchTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(BranchTableMap::COL_ID);
+            $criteria->addSelectColumn(BranchTableMap::COL_LOCATION_ID);
             $criteria->addSelectColumn(BranchTableMap::COL_NAME);
-            $criteria->addSelectColumn(BranchTableMap::COL_LOCATIONID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.location_id');
             $criteria->addSelectColumn($alias . '.name');
-            $criteria->addSelectColumn($alias . '.locationId');
         }
     }
 

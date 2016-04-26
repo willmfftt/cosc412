@@ -2,20 +2,15 @@
 
 namespace Base;
 
-use \Branch as ChildBranch;
-use \BranchQuery as ChildBranchQuery;
-use \Location as ChildLocation;
 use \LocationQuery as ChildLocationQuery;
 use \Exception;
 use \PDO;
-use Map\BranchTableMap;
 use Map\LocationTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -79,17 +74,11 @@ abstract class Location implements ActiveRecordInterface
     protected $name;
 
     /**
-     * The value for the statecode field.
+     * The value for the state_code field.
      *
      * @var        string
      */
-    protected $statecode;
-
-    /**
-     * @var        ObjectCollection|ChildBranch[] Collection to store aggregation of ChildBranch objects.
-     */
-    protected $collBranches;
-    protected $collBranchesPartial;
+    protected $state_code;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -98,12 +87,6 @@ abstract class Location implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildBranch[]
-     */
-    protected $branchesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Location object.
@@ -351,13 +334,13 @@ abstract class Location implements ActiveRecordInterface
     }
 
     /**
-     * Get the [statecode] column value.
+     * Get the [state_code] column value.
      *
      * @return string
      */
-    public function getStatecode()
+    public function getStateCode()
     {
-        return $this->statecode;
+        return $this->state_code;
     }
 
     /**
@@ -401,24 +384,24 @@ abstract class Location implements ActiveRecordInterface
     } // setName()
 
     /**
-     * Set the value of [statecode] column.
+     * Set the value of [state_code] column.
      *
      * @param string $v new value
      * @return $this|\Location The current object (for fluent API support)
      */
-    public function setStatecode($v)
+    public function setStateCode($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->statecode !== $v) {
-            $this->statecode = $v;
-            $this->modifiedColumns[LocationTableMap::COL_STATECODE] = true;
+        if ($this->state_code !== $v) {
+            $this->state_code = $v;
+            $this->modifiedColumns[LocationTableMap::COL_STATE_CODE] = true;
         }
 
         return $this;
-    } // setStatecode()
+    } // setStateCode()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -462,8 +445,8 @@ abstract class Location implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : LocationTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
             $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LocationTableMap::translateFieldName('Statecode', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->statecode = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : LocationTableMap::translateFieldName('StateCode', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->state_code = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -532,8 +515,6 @@ abstract class Location implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->collBranches = null;
 
         } // if (deep)
     }
@@ -645,23 +626,6 @@ abstract class Location implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->branchesScheduledForDeletion !== null) {
-                if (!$this->branchesScheduledForDeletion->isEmpty()) {
-                    \BranchQuery::create()
-                        ->filterByPrimaryKeys($this->branchesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->branchesScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collBranches !== null) {
-                foreach ($this->collBranches as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
             $this->alreadyInSave = false;
 
         }
@@ -694,8 +658,8 @@ abstract class Location implements ActiveRecordInterface
         if ($this->isColumnModified(LocationTableMap::COL_NAME)) {
             $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(LocationTableMap::COL_STATECODE)) {
-            $modifiedColumns[':p' . $index++]  = 'stateCode';
+        if ($this->isColumnModified(LocationTableMap::COL_STATE_CODE)) {
+            $modifiedColumns[':p' . $index++]  = 'state_code';
         }
 
         $sql = sprintf(
@@ -714,8 +678,8 @@ abstract class Location implements ActiveRecordInterface
                     case 'name':
                         $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'stateCode':
-                        $stmt->bindValue($identifier, $this->statecode, PDO::PARAM_STR);
+                    case 'state_code':
+                        $stmt->bindValue($identifier, $this->state_code, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -786,7 +750,7 @@ abstract class Location implements ActiveRecordInterface
                 return $this->getName();
                 break;
             case 2:
-                return $this->getStatecode();
+                return $this->getStateCode();
                 break;
             default:
                 return null;
@@ -805,11 +769,10 @@ abstract class Location implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Location'][$this->hashCode()])) {
@@ -820,30 +783,13 @@ abstract class Location implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getName(),
-            $keys[2] => $this->getStatecode(),
+            $keys[2] => $this->getStateCode(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->collBranches) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'branches';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'branches';
-                        break;
-                    default:
-                        $key = 'Branches';
-                }
-
-                $result[$key] = $this->collBranches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -884,7 +830,7 @@ abstract class Location implements ActiveRecordInterface
                 $this->setName($value);
                 break;
             case 2:
-                $this->setStatecode($value);
+                $this->setStateCode($value);
                 break;
         } // switch()
 
@@ -919,7 +865,7 @@ abstract class Location implements ActiveRecordInterface
             $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setStatecode($arr[$keys[2]]);
+            $this->setStateCode($arr[$keys[2]]);
         }
     }
 
@@ -968,8 +914,8 @@ abstract class Location implements ActiveRecordInterface
         if ($this->isColumnModified(LocationTableMap::COL_NAME)) {
             $criteria->add(LocationTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(LocationTableMap::COL_STATECODE)) {
-            $criteria->add(LocationTableMap::COL_STATECODE, $this->statecode);
+        if ($this->isColumnModified(LocationTableMap::COL_STATE_CODE)) {
+            $criteria->add(LocationTableMap::COL_STATE_CODE, $this->state_code);
         }
 
         return $criteria;
@@ -1058,21 +1004,7 @@ abstract class Location implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setName($this->getName());
-        $copyObj->setStatecode($this->getStatecode());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getBranches() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addBranch($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setStateCode($this->getStateCode());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1101,247 +1033,6 @@ abstract class Location implements ActiveRecordInterface
         return $copyObj;
     }
 
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Branch' == $relationName) {
-            return $this->initBranches();
-        }
-    }
-
-    /**
-     * Clears out the collBranches collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addBranches()
-     */
-    public function clearBranches()
-    {
-        $this->collBranches = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collBranches collection loaded partially.
-     */
-    public function resetPartialBranches($v = true)
-    {
-        $this->collBranchesPartial = $v;
-    }
-
-    /**
-     * Initializes the collBranches collection.
-     *
-     * By default this just sets the collBranches collection to an empty array (like clearcollBranches());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initBranches($overrideExisting = true)
-    {
-        if (null !== $this->collBranches && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = BranchTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collBranches = new $collectionClassName;
-        $this->collBranches->setModel('\Branch');
-    }
-
-    /**
-     * Gets an array of ChildBranch objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildLocation is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildBranch[] List of ChildBranch objects
-     * @throws PropelException
-     */
-    public function getBranches(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBranchesPartial && !$this->isNew();
-        if (null === $this->collBranches || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collBranches) {
-                // return empty collection
-                $this->initBranches();
-            } else {
-                $collBranches = ChildBranchQuery::create(null, $criteria)
-                    ->filterByLocation($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collBranchesPartial && count($collBranches)) {
-                        $this->initBranches(false);
-
-                        foreach ($collBranches as $obj) {
-                            if (false == $this->collBranches->contains($obj)) {
-                                $this->collBranches->append($obj);
-                            }
-                        }
-
-                        $this->collBranchesPartial = true;
-                    }
-
-                    return $collBranches;
-                }
-
-                if ($partial && $this->collBranches) {
-                    foreach ($this->collBranches as $obj) {
-                        if ($obj->isNew()) {
-                            $collBranches[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collBranches = $collBranches;
-                $this->collBranchesPartial = false;
-            }
-        }
-
-        return $this->collBranches;
-    }
-
-    /**
-     * Sets a collection of ChildBranch objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $branches A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildLocation The current object (for fluent API support)
-     */
-    public function setBranches(Collection $branches, ConnectionInterface $con = null)
-    {
-        /** @var ChildBranch[] $branchesToDelete */
-        $branchesToDelete = $this->getBranches(new Criteria(), $con)->diff($branches);
-
-
-        $this->branchesScheduledForDeletion = $branchesToDelete;
-
-        foreach ($branchesToDelete as $branchRemoved) {
-            $branchRemoved->setLocation(null);
-        }
-
-        $this->collBranches = null;
-        foreach ($branches as $branch) {
-            $this->addBranch($branch);
-        }
-
-        $this->collBranches = $branches;
-        $this->collBranchesPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Branch objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Branch objects.
-     * @throws PropelException
-     */
-    public function countBranches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collBranchesPartial && !$this->isNew();
-        if (null === $this->collBranches || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collBranches) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getBranches());
-            }
-
-            $query = ChildBranchQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByLocation($this)
-                ->count($con);
-        }
-
-        return count($this->collBranches);
-    }
-
-    /**
-     * Method called to associate a ChildBranch object to this object
-     * through the ChildBranch foreign key attribute.
-     *
-     * @param  ChildBranch $l ChildBranch
-     * @return $this|\Location The current object (for fluent API support)
-     */
-    public function addBranch(ChildBranch $l)
-    {
-        if ($this->collBranches === null) {
-            $this->initBranches();
-            $this->collBranchesPartial = true;
-        }
-
-        if (!$this->collBranches->contains($l)) {
-            $this->doAddBranch($l);
-
-            if ($this->branchesScheduledForDeletion and $this->branchesScheduledForDeletion->contains($l)) {
-                $this->branchesScheduledForDeletion->remove($this->branchesScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildBranch $branch The ChildBranch object to add.
-     */
-    protected function doAddBranch(ChildBranch $branch)
-    {
-        $this->collBranches[]= $branch;
-        $branch->setLocation($this);
-    }
-
-    /**
-     * @param  ChildBranch $branch The ChildBranch object to remove.
-     * @return $this|ChildLocation The current object (for fluent API support)
-     */
-    public function removeBranch(ChildBranch $branch)
-    {
-        if ($this->getBranches()->contains($branch)) {
-            $pos = $this->collBranches->search($branch);
-            $this->collBranches->remove($pos);
-            if (null === $this->branchesScheduledForDeletion) {
-                $this->branchesScheduledForDeletion = clone $this->collBranches;
-                $this->branchesScheduledForDeletion->clear();
-            }
-            $this->branchesScheduledForDeletion[]= clone $branch;
-            $branch->setLocation(null);
-        }
-
-        return $this;
-    }
-
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1351,7 +1042,7 @@ abstract class Location implements ActiveRecordInterface
     {
         $this->id = null;
         $this->name = null;
-        $this->statecode = null;
+        $this->state_code = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1370,14 +1061,8 @@ abstract class Location implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collBranches) {
-                foreach ($this->collBranches as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collBranches = null;
     }
 
     /**

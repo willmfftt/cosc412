@@ -1,8 +1,11 @@
 {
 	"autoload": {
-		"classmap": ["generated-classes/"]
+		"classmap": ["generated-classes/", "lib/"],
+		"files": ["generated-conf/config.php"]
 	},
 	"require": {
-		"propel/propel": "~2.0@dev"
+		"propel/propel": "~2.0@dev",
+		"owasp/phprbac": "2.0.*@dev",
+		"bshaffer/oauth2-server-php": "~1.8"
 	}
 }

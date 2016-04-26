@@ -77,9 +77,9 @@ class TransactionTableMap extends TableMap
     const COL_ID = 'transaction.id';
 
     /**
-     * the column name for the userId field
+     * the column name for the user_id field
      */
-    const COL_USERID = 'transaction.userId';
+    const COL_USER_ID = 'transaction.user_id';
 
     /**
      * the column name for the type field
@@ -98,10 +98,10 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Userid', 'Type', ),
-        self::TYPE_CAMELNAME     => array('id', 'userid', 'type', ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_USERID, TransactionTableMap::COL_TYPE, ),
-        self::TYPE_FIELDNAME     => array('id', 'userId', 'type', ),
+        self::TYPE_PHPNAME       => array('Id', 'UserId', 'Type', ),
+        self::TYPE_CAMELNAME     => array('id', 'userId', 'type', ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_USER_ID, TransactionTableMap::COL_TYPE, ),
+        self::TYPE_FIELDNAME     => array('id', 'user_id', 'type', ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -112,10 +112,10 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Userid' => 1, 'Type' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userid' => 1, 'type' => 2, ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_USERID => 1, TransactionTableMap::COL_TYPE => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'userId' => 1, 'type' => 2, ),
+        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'Type' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'type' => 2, ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_USER_ID => 1, TransactionTableMap::COL_TYPE => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'type' => 2, ),
         self::TYPE_NUM           => array(0, 1, 2, )
     );
 
@@ -137,7 +137,7 @@ class TransactionTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('userId', 'Userid', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addColumn('user_id', 'UserId', 'INTEGER', true, null, null);
         $this->addColumn('type', 'Type', 'VARCHAR', true, 20, 'internal');
     } // initialize()
 
@@ -146,27 +146,6 @@ class TransactionTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':userId',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Purchase', '\\Purchase', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':transactionId',
-    1 => ':id',
-  ),
-), null, null, 'Purchases', false);
-        $this->addRelation('Refund', '\\Refund', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':transactionId',
-    1 => ':id',
-  ),
-), null, null, 'Refunds', false);
     } // buildRelations()
 
     /**
@@ -311,11 +290,11 @@ class TransactionTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(TransactionTableMap::COL_ID);
-            $criteria->addSelectColumn(TransactionTableMap::COL_USERID);
+            $criteria->addSelectColumn(TransactionTableMap::COL_USER_ID);
             $criteria->addSelectColumn(TransactionTableMap::COL_TYPE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.userId');
+            $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.type');
         }
     }

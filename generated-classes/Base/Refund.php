@@ -3,8 +3,6 @@
 namespace Base;
 
 use \RefundQuery as ChildRefundQuery;
-use \Transaction as ChildTransaction;
-use \TransactionQuery as ChildTransactionQuery;
 use \Exception;
 use \PDO;
 use Map\RefundTableMap;
@@ -69,11 +67,11 @@ abstract class Refund implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the transactionid field.
+     * The value for the transaction_id field.
      *
      * @var        int
      */
-    protected $transactionid;
+    protected $transaction_id;
 
     /**
      * The value for the amount field.
@@ -81,11 +79,6 @@ abstract class Refund implements ActiveRecordInterface
      * @var        double
      */
     protected $amount;
-
-    /**
-     * @var        ChildTransaction
-     */
-    protected $aTransaction;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -331,13 +324,13 @@ abstract class Refund implements ActiveRecordInterface
     }
 
     /**
-     * Get the [transactionid] column value.
+     * Get the [transaction_id] column value.
      *
      * @return int
      */
-    public function getTransactionid()
+    public function getTransactionId()
     {
-        return $this->transactionid;
+        return $this->transaction_id;
     }
 
     /**
@@ -371,28 +364,24 @@ abstract class Refund implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [transactionid] column.
+     * Set the value of [transaction_id] column.
      *
      * @param int $v new value
      * @return $this|\Refund The current object (for fluent API support)
      */
-    public function setTransactionid($v)
+    public function setTransactionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->transactionid !== $v) {
-            $this->transactionid = $v;
-            $this->modifiedColumns[RefundTableMap::COL_TRANSACTIONID] = true;
-        }
-
-        if ($this->aTransaction !== null && $this->aTransaction->getId() !== $v) {
-            $this->aTransaction = null;
+        if ($this->transaction_id !== $v) {
+            $this->transaction_id = $v;
+            $this->modifiedColumns[RefundTableMap::COL_TRANSACTION_ID] = true;
         }
 
         return $this;
-    } // setTransactionid()
+    } // setTransactionId()
 
     /**
      * Set the value of [amount] column.
@@ -453,8 +442,8 @@ abstract class Refund implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RefundTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RefundTableMap::translateFieldName('Transactionid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->transactionid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RefundTableMap::translateFieldName('TransactionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->transaction_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RefundTableMap::translateFieldName('Amount', TableMap::TYPE_PHPNAME, $indexType)];
             $this->amount = (null !== $col) ? (double) $col : null;
@@ -488,9 +477,6 @@ abstract class Refund implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aTransaction !== null && $this->transactionid !== $this->aTransaction->getId()) {
-            $this->aTransaction = null;
-        }
     } // ensureConsistency
 
     /**
@@ -530,7 +516,6 @@ abstract class Refund implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aTransaction = null;
         } // if (deep)
     }
 
@@ -630,18 +615,6 @@ abstract class Refund implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aTransaction !== null) {
-                if ($this->aTransaction->isModified() || $this->aTransaction->isNew()) {
-                    $affectedRows += $this->aTransaction->save($con);
-                }
-                $this->setTransaction($this->aTransaction);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -682,8 +655,8 @@ abstract class Refund implements ActiveRecordInterface
         if ($this->isColumnModified(RefundTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(RefundTableMap::COL_TRANSACTIONID)) {
-            $modifiedColumns[':p' . $index++]  = 'transactionId';
+        if ($this->isColumnModified(RefundTableMap::COL_TRANSACTION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'transaction_id';
         }
         if ($this->isColumnModified(RefundTableMap::COL_AMOUNT)) {
             $modifiedColumns[':p' . $index++]  = 'amount';
@@ -702,8 +675,8 @@ abstract class Refund implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'transactionId':
-                        $stmt->bindValue($identifier, $this->transactionid, PDO::PARAM_INT);
+                    case 'transaction_id':
+                        $stmt->bindValue($identifier, $this->transaction_id, PDO::PARAM_INT);
                         break;
                     case 'amount':
                         $stmt->bindValue($identifier, $this->amount, PDO::PARAM_STR);
@@ -774,7 +747,7 @@ abstract class Refund implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getTransactionid();
+                return $this->getTransactionId();
                 break;
             case 2:
                 return $this->getAmount();
@@ -796,11 +769,10 @@ abstract class Refund implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Refund'][$this->hashCode()])) {
@@ -810,7 +782,7 @@ abstract class Refund implements ActiveRecordInterface
         $keys = RefundTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getTransactionid(),
+            $keys[1] => $this->getTransactionId(),
             $keys[2] => $this->getAmount(),
         );
         $virtualColumns = $this->virtualColumns;
@@ -818,23 +790,6 @@ abstract class Refund implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aTransaction) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'transaction';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'transaction';
-                        break;
-                    default:
-                        $key = 'Transaction';
-                }
-
-                $result[$key] = $this->aTransaction->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -872,7 +827,7 @@ abstract class Refund implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setTransactionid($value);
+                $this->setTransactionId($value);
                 break;
             case 2:
                 $this->setAmount($value);
@@ -907,7 +862,7 @@ abstract class Refund implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTransactionid($arr[$keys[1]]);
+            $this->setTransactionId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
             $this->setAmount($arr[$keys[2]]);
@@ -956,8 +911,8 @@ abstract class Refund implements ActiveRecordInterface
         if ($this->isColumnModified(RefundTableMap::COL_ID)) {
             $criteria->add(RefundTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(RefundTableMap::COL_TRANSACTIONID)) {
-            $criteria->add(RefundTableMap::COL_TRANSACTIONID, $this->transactionid);
+        if ($this->isColumnModified(RefundTableMap::COL_TRANSACTION_ID)) {
+            $criteria->add(RefundTableMap::COL_TRANSACTION_ID, $this->transaction_id);
         }
         if ($this->isColumnModified(RefundTableMap::COL_AMOUNT)) {
             $criteria->add(RefundTableMap::COL_AMOUNT, $this->amount);
@@ -1048,7 +1003,7 @@ abstract class Refund implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setTransactionid($this->getTransactionid());
+        $copyObj->setTransactionId($this->getTransactionId());
         $copyObj->setAmount($this->getAmount());
         if ($makeNew) {
             $copyObj->setNew(true);
@@ -1079,68 +1034,14 @@ abstract class Refund implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildTransaction object.
-     *
-     * @param  ChildTransaction $v
-     * @return $this|\Refund The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setTransaction(ChildTransaction $v = null)
-    {
-        if ($v === null) {
-            $this->setTransactionid(NULL);
-        } else {
-            $this->setTransactionid($v->getId());
-        }
-
-        $this->aTransaction = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildTransaction object, it will not be re-added.
-        if ($v !== null) {
-            $v->addRefund($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildTransaction object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildTransaction The associated ChildTransaction object.
-     * @throws PropelException
-     */
-    public function getTransaction(ConnectionInterface $con = null)
-    {
-        if ($this->aTransaction === null && ($this->transactionid !== null)) {
-            $this->aTransaction = ChildTransactionQuery::create()->findPk($this->transactionid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aTransaction->addRefunds($this);
-             */
-        }
-
-        return $this->aTransaction;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aTransaction) {
-            $this->aTransaction->removeRefund($this);
-        }
         $this->id = null;
-        $this->transactionid = null;
+        $this->transaction_id = null;
         $this->amount = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -1162,7 +1063,6 @@ abstract class Refund implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aTransaction = null;
     }
 
     /**

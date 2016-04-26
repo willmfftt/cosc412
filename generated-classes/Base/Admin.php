@@ -2,22 +2,15 @@
 
 namespace Base;
 
-use \Admin as ChildAdmin;
 use \AdminQuery as ChildAdminQuery;
-use \Manager as ChildManager;
-use \ManagerQuery as ChildManagerQuery;
-use \User as ChildUser;
-use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\AdminTableMap;
-use Map\ManagerTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -74,22 +67,11 @@ abstract class Admin implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
-
-    /**
-     * @var        ChildUser
-     */
-    protected $aUser;
-
-    /**
-     * @var        ObjectCollection|ChildManager[] Collection to store aggregation of ChildManager objects.
-     */
-    protected $collManagers;
-    protected $collManagersPartial;
+    protected $user_id;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -98,12 +80,6 @@ abstract class Admin implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildManager[]
-     */
-    protected $managersScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Admin object.
@@ -341,13 +317,13 @@ abstract class Admin implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
@@ -371,28 +347,24 @@ abstract class Admin implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\Admin The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[AdminTableMap::COL_USERID] = true;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[AdminTableMap::COL_USER_ID] = true;
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -433,8 +405,8 @@ abstract class Admin implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AdminTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AdminTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AdminTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -465,9 +437,6 @@ abstract class Admin implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->userid !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
     } // ensureConsistency
 
     /**
@@ -506,9 +475,6 @@ abstract class Admin implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->aUser = null;
-            $this->collManagers = null;
 
         } // if (deep)
     }
@@ -609,18 +575,6 @@ abstract class Admin implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -630,23 +584,6 @@ abstract class Admin implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->managersScheduledForDeletion !== null) {
-                if (!$this->managersScheduledForDeletion->isEmpty()) {
-                    \ManagerQuery::create()
-                        ->filterByPrimaryKeys($this->managersScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->managersScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collManagers !== null) {
-                foreach ($this->collManagers as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -678,8 +615,8 @@ abstract class Admin implements ActiveRecordInterface
         if ($this->isColumnModified(AdminTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(AdminTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(AdminTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
 
         $sql = sprintf(
@@ -695,8 +632,8 @@ abstract class Admin implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -764,7 +701,7 @@ abstract class Admin implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
                 break;
             default:
                 return null;
@@ -783,11 +720,10 @@ abstract class Admin implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
         if (isset($alreadyDumpedObjects['Admin'][$this->hashCode()])) {
@@ -797,45 +733,13 @@ abstract class Admin implements ActiveRecordInterface
         $keys = AdminTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
+            $keys[1] => $this->getUserId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aUser) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'user';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user';
-                        break;
-                    default:
-                        $key = 'User';
-                }
-
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collManagers) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'managers';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'managers';
-                        break;
-                    default:
-                        $key = 'Managers';
-                }
-
-                $result[$key] = $this->collManagers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -873,7 +777,7 @@ abstract class Admin implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
                 break;
         } // switch()
 
@@ -905,7 +809,7 @@ abstract class Admin implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
     }
 
@@ -951,8 +855,8 @@ abstract class Admin implements ActiveRecordInterface
         if ($this->isColumnModified(AdminTableMap::COL_ID)) {
             $criteria->add(AdminTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(AdminTableMap::COL_USERID)) {
-            $criteria->add(AdminTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(AdminTableMap::COL_USER_ID)) {
+            $criteria->add(AdminTableMap::COL_USER_ID, $this->user_id);
         }
 
         return $criteria;
@@ -972,6 +876,7 @@ abstract class Admin implements ActiveRecordInterface
     {
         $criteria = ChildAdminQuery::create();
         $criteria->add(AdminTableMap::COL_ID, $this->id);
+        $criteria->add(AdminTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -984,7 +889,8 @@ abstract class Admin implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getId() &&
+            null !== $this->getUserId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -999,23 +905,29 @@ abstract class Admin implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getUserId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -1024,7 +936,7 @@ abstract class Admin implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getUserId());
     }
 
     /**
@@ -1040,21 +952,7 @@ abstract class Admin implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getManagers() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addManager($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setUserId($this->getUserId());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1084,334 +982,14 @@ abstract class Admin implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildUser object.
-     *
-     * @param  ChildUser $v
-     * @return $this|\Admin The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUser(ChildUser $v = null)
-    {
-        if ($v === null) {
-            $this->setUserid(NULL);
-        } else {
-            $this->setUserid($v->getId());
-        }
-
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUser object, it will not be re-added.
-        if ($v !== null) {
-            $v->addAdmin($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildUser object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUser The associated ChildUser object.
-     * @throws PropelException
-     */
-    public function getUser(ConnectionInterface $con = null)
-    {
-        if ($this->aUser === null && ($this->userid !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->userid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addAdmins($this);
-             */
-        }
-
-        return $this->aUser;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Manager' == $relationName) {
-            return $this->initManagers();
-        }
-    }
-
-    /**
-     * Clears out the collManagers collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addManagers()
-     */
-    public function clearManagers()
-    {
-        $this->collManagers = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collManagers collection loaded partially.
-     */
-    public function resetPartialManagers($v = true)
-    {
-        $this->collManagersPartial = $v;
-    }
-
-    /**
-     * Initializes the collManagers collection.
-     *
-     * By default this just sets the collManagers collection to an empty array (like clearcollManagers());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initManagers($overrideExisting = true)
-    {
-        if (null !== $this->collManagers && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = ManagerTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collManagers = new $collectionClassName;
-        $this->collManagers->setModel('\Manager');
-    }
-
-    /**
-     * Gets an array of ChildManager objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildAdmin is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildManager[] List of ChildManager objects
-     * @throws PropelException
-     */
-    public function getManagers(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collManagersPartial && !$this->isNew();
-        if (null === $this->collManagers || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collManagers) {
-                // return empty collection
-                $this->initManagers();
-            } else {
-                $collManagers = ChildManagerQuery::create(null, $criteria)
-                    ->filterByAdmin($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collManagersPartial && count($collManagers)) {
-                        $this->initManagers(false);
-
-                        foreach ($collManagers as $obj) {
-                            if (false == $this->collManagers->contains($obj)) {
-                                $this->collManagers->append($obj);
-                            }
-                        }
-
-                        $this->collManagersPartial = true;
-                    }
-
-                    return $collManagers;
-                }
-
-                if ($partial && $this->collManagers) {
-                    foreach ($this->collManagers as $obj) {
-                        if ($obj->isNew()) {
-                            $collManagers[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collManagers = $collManagers;
-                $this->collManagersPartial = false;
-            }
-        }
-
-        return $this->collManagers;
-    }
-
-    /**
-     * Sets a collection of ChildManager objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $managers A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildAdmin The current object (for fluent API support)
-     */
-    public function setManagers(Collection $managers, ConnectionInterface $con = null)
-    {
-        /** @var ChildManager[] $managersToDelete */
-        $managersToDelete = $this->getManagers(new Criteria(), $con)->diff($managers);
-
-
-        $this->managersScheduledForDeletion = $managersToDelete;
-
-        foreach ($managersToDelete as $managerRemoved) {
-            $managerRemoved->setAdmin(null);
-        }
-
-        $this->collManagers = null;
-        foreach ($managers as $manager) {
-            $this->addManager($manager);
-        }
-
-        $this->collManagers = $managers;
-        $this->collManagersPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Manager objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Manager objects.
-     * @throws PropelException
-     */
-    public function countManagers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collManagersPartial && !$this->isNew();
-        if (null === $this->collManagers || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collManagers) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getManagers());
-            }
-
-            $query = ChildManagerQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByAdmin($this)
-                ->count($con);
-        }
-
-        return count($this->collManagers);
-    }
-
-    /**
-     * Method called to associate a ChildManager object to this object
-     * through the ChildManager foreign key attribute.
-     *
-     * @param  ChildManager $l ChildManager
-     * @return $this|\Admin The current object (for fluent API support)
-     */
-    public function addManager(ChildManager $l)
-    {
-        if ($this->collManagers === null) {
-            $this->initManagers();
-            $this->collManagersPartial = true;
-        }
-
-        if (!$this->collManagers->contains($l)) {
-            $this->doAddManager($l);
-
-            if ($this->managersScheduledForDeletion and $this->managersScheduledForDeletion->contains($l)) {
-                $this->managersScheduledForDeletion->remove($this->managersScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildManager $manager The ChildManager object to add.
-     */
-    protected function doAddManager(ChildManager $manager)
-    {
-        $this->collManagers[]= $manager;
-        $manager->setAdmin($this);
-    }
-
-    /**
-     * @param  ChildManager $manager The ChildManager object to remove.
-     * @return $this|ChildAdmin The current object (for fluent API support)
-     */
-    public function removeManager(ChildManager $manager)
-    {
-        if ($this->getManagers()->contains($manager)) {
-            $pos = $this->collManagers->search($manager);
-            $this->collManagers->remove($pos);
-            if (null === $this->managersScheduledForDeletion) {
-                $this->managersScheduledForDeletion = clone $this->collManagers;
-                $this->managersScheduledForDeletion->clear();
-            }
-            $this->managersScheduledForDeletion[]= clone $manager;
-            $manager->setAdmin(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Admin is new, it will return
-     * an empty collection; or if this Admin has previously
-     * been saved, it will retrieve related Managers from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Admin.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildManager[] List of ChildManager objects
-     */
-    public function getManagersJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildManagerQuery::create(null, $criteria);
-        $query->joinWith('User', $joinBehavior);
-
-        return $this->getManagers($query, $con);
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aUser) {
-            $this->aUser->removeAdmin($this);
-        }
         $this->id = null;
-        $this->userid = null;
+        $this->user_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1430,15 +1008,8 @@ abstract class Admin implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collManagers) {
-                foreach ($this->collManagers as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collManagers = null;
-        $this->aUser = null;
     }
 
     /**

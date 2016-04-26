@@ -132,7 +132,7 @@ class AuditorTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignKey('userId', 'Userid', 'INTEGER', 'user', 'id', true, null, null);
+        $this->addColumn('userId', 'Userid', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -140,13 +140,6 @@ class AuditorTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':userId',
-    1 => ':id',
-  ),
-), null, null, null, false);
     } // buildRelations()
 
     /**

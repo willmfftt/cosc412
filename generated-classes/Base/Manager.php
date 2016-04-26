@@ -2,14 +2,10 @@
 
 namespace Base;
 
-use \Admin as ChildAdmin;
-use \AdminQuery as ChildAdminQuery;
 use \Manager as ChildManager;
 use \ManagerQuery as ChildManagerQuery;
 use \Supervisor as ChildSupervisor;
 use \SupervisorQuery as ChildSupervisorQuery;
-use \User as ChildUser;
-use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\ManagerTableMap;
@@ -76,28 +72,18 @@ abstract class Manager implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
+    protected $user_id;
 
     /**
-     * The value for the adminid field.
+     * The value for the admin_id field.
      *
      * @var        int
      */
-    protected $adminid;
-
-    /**
-     * @var        ChildUser
-     */
-    protected $aUser;
-
-    /**
-     * @var        ChildAdmin
-     */
-    protected $aAdmin;
+    protected $admin_id;
 
     /**
      * @var        ObjectCollection|ChildSupervisor[] Collection to store aggregation of ChildSupervisor objects.
@@ -355,23 +341,23 @@ abstract class Manager implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
-     * Get the [adminid] column value.
+     * Get the [admin_id] column value.
      *
      * @return int
      */
-    public function getAdminid()
+    public function getAdminId()
     {
-        return $this->adminid;
+        return $this->admin_id;
     }
 
     /**
@@ -395,52 +381,44 @@ abstract class Manager implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\Manager The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[ManagerTableMap::COL_USERID] = true;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[ManagerTableMap::COL_USER_ID] = true;
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
 
     /**
-     * Set the value of [adminid] column.
+     * Set the value of [admin_id] column.
      *
      * @param int $v new value
      * @return $this|\Manager The current object (for fluent API support)
      */
-    public function setAdminid($v)
+    public function setAdminId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->adminid !== $v) {
-            $this->adminid = $v;
-            $this->modifiedColumns[ManagerTableMap::COL_ADMINID] = true;
-        }
-
-        if ($this->aAdmin !== null && $this->aAdmin->getId() !== $v) {
-            $this->aAdmin = null;
+        if ($this->admin_id !== $v) {
+            $this->admin_id = $v;
+            $this->modifiedColumns[ManagerTableMap::COL_ADMIN_ID] = true;
         }
 
         return $this;
-    } // setAdminid()
+    } // setAdminId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -481,11 +459,11 @@ abstract class Manager implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ManagerTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ManagerTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ManagerTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ManagerTableMap::translateFieldName('Adminid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->adminid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ManagerTableMap::translateFieldName('AdminId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->admin_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -516,12 +494,6 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->userid !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
-        if ($this->aAdmin !== null && $this->adminid !== $this->aAdmin->getId()) {
-            $this->aAdmin = null;
-        }
     } // ensureConsistency
 
     /**
@@ -561,8 +533,6 @@ abstract class Manager implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aUser = null;
-            $this->aAdmin = null;
             $this->collSupervisors = null;
 
         } // if (deep)
@@ -664,25 +634,6 @@ abstract class Manager implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
-
-            if ($this->aAdmin !== null) {
-                if ($this->aAdmin->isModified() || $this->aAdmin->isNew()) {
-                    $affectedRows += $this->aAdmin->save($con);
-                }
-                $this->setAdmin($this->aAdmin);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -740,11 +691,11 @@ abstract class Manager implements ActiveRecordInterface
         if ($this->isColumnModified(ManagerTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(ManagerTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(ManagerTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(ManagerTableMap::COL_ADMINID)) {
-            $modifiedColumns[':p' . $index++]  = 'adminId';
+        if ($this->isColumnModified(ManagerTableMap::COL_ADMIN_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'admin_id';
         }
 
         $sql = sprintf(
@@ -760,11 +711,11 @@ abstract class Manager implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
-                    case 'adminId':
-                        $stmt->bindValue($identifier, $this->adminid, PDO::PARAM_INT);
+                    case 'admin_id':
+                        $stmt->bindValue($identifier, $this->admin_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -832,10 +783,10 @@ abstract class Manager implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
                 break;
             case 2:
-                return $this->getAdminid();
+                return $this->getAdminId();
                 break;
             default:
                 return null;
@@ -868,8 +819,8 @@ abstract class Manager implements ActiveRecordInterface
         $keys = ManagerTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
-            $keys[2] => $this->getAdminid(),
+            $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getAdminId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -877,36 +828,6 @@ abstract class Manager implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aUser) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'user';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user';
-                        break;
-                    default:
-                        $key = 'User';
-                }
-
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aAdmin) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'admin';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'admin';
-                        break;
-                    default:
-                        $key = 'Admin';
-                }
-
-                $result[$key] = $this->aAdmin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->collSupervisors) {
 
                 switch ($keyType) {
@@ -960,10 +881,10 @@ abstract class Manager implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
                 break;
             case 2:
-                $this->setAdminid($value);
+                $this->setAdminId($value);
                 break;
         } // switch()
 
@@ -995,10 +916,10 @@ abstract class Manager implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setAdminid($arr[$keys[2]]);
+            $this->setAdminId($arr[$keys[2]]);
         }
     }
 
@@ -1044,11 +965,11 @@ abstract class Manager implements ActiveRecordInterface
         if ($this->isColumnModified(ManagerTableMap::COL_ID)) {
             $criteria->add(ManagerTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ManagerTableMap::COL_USERID)) {
-            $criteria->add(ManagerTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(ManagerTableMap::COL_USER_ID)) {
+            $criteria->add(ManagerTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(ManagerTableMap::COL_ADMINID)) {
-            $criteria->add(ManagerTableMap::COL_ADMINID, $this->adminid);
+        if ($this->isColumnModified(ManagerTableMap::COL_ADMIN_ID)) {
+            $criteria->add(ManagerTableMap::COL_ADMIN_ID, $this->admin_id);
         }
 
         return $criteria;
@@ -1068,6 +989,7 @@ abstract class Manager implements ActiveRecordInterface
     {
         $criteria = ChildManagerQuery::create();
         $criteria->add(ManagerTableMap::COL_ID, $this->id);
+        $criteria->add(ManagerTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -1080,7 +1002,8 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getId() &&
+            null !== $this->getUserId();
 
         $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
@@ -1095,23 +1018,29 @@ abstract class Manager implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getUserId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -1120,7 +1049,7 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getUserId());
     }
 
     /**
@@ -1136,8 +1065,8 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
-        $copyObj->setAdminid($this->getAdminid());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setAdminId($this->getAdminId());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1178,108 +1107,6 @@ abstract class Manager implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
-    }
-
-    /**
-     * Declares an association between this object and a ChildUser object.
-     *
-     * @param  ChildUser $v
-     * @return $this|\Manager The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUser(ChildUser $v = null)
-    {
-        if ($v === null) {
-            $this->setUserid(NULL);
-        } else {
-            $this->setUserid($v->getId());
-        }
-
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUser object, it will not be re-added.
-        if ($v !== null) {
-            $v->addManager($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildUser object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUser The associated ChildUser object.
-     * @throws PropelException
-     */
-    public function getUser(ConnectionInterface $con = null)
-    {
-        if ($this->aUser === null && ($this->userid !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->userid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addManagers($this);
-             */
-        }
-
-        return $this->aUser;
-    }
-
-    /**
-     * Declares an association between this object and a ChildAdmin object.
-     *
-     * @param  ChildAdmin $v
-     * @return $this|\Manager The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setAdmin(ChildAdmin $v = null)
-    {
-        if ($v === null) {
-            $this->setAdminid(NULL);
-        } else {
-            $this->setAdminid($v->getId());
-        }
-
-        $this->aAdmin = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildAdmin object, it will not be re-added.
-        if ($v !== null) {
-            $v->addManager($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildAdmin object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildAdmin The associated ChildAdmin object.
-     * @throws PropelException
-     */
-    public function getAdmin(ConnectionInterface $con = null)
-    {
-        if ($this->aAdmin === null && ($this->adminid !== null)) {
-            $this->aAdmin = ChildAdminQuery::create()->findPk($this->adminid, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aAdmin->addManagers($this);
-             */
-        }
-
-        return $this->aAdmin;
     }
 
 
@@ -1523,31 +1350,6 @@ abstract class Manager implements ActiveRecordInterface
         return $this;
     }
 
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Manager is new, it will return
-     * an empty collection; or if this Manager has previously
-     * been saved, it will retrieve related Supervisors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Manager.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildSupervisor[] List of ChildSupervisor objects
-     */
-    public function getSupervisorsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildSupervisorQuery::create(null, $criteria);
-        $query->joinWith('User', $joinBehavior);
-
-        return $this->getSupervisors($query, $con);
-    }
-
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1555,15 +1357,9 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aUser) {
-            $this->aUser->removeManager($this);
-        }
-        if (null !== $this->aAdmin) {
-            $this->aAdmin->removeManager($this);
-        }
         $this->id = null;
-        $this->userid = null;
-        $this->adminid = null;
+        $this->user_id = null;
+        $this->admin_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1590,8 +1386,6 @@ abstract class Manager implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collSupervisors = null;
-        $this->aUser = null;
-        $this->aAdmin = null;
     }
 
     /**
