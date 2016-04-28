@@ -10,6 +10,7 @@ use Map\TransactionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -20,12 +21,14 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildTransactionQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildTransactionQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildTransactionQuery orderByType($order = Criteria::ASC) Order by the type column
+ * @method     ChildTransactionQuery orderByPurchasingAgentId($order = Criteria::ASC) Order by the purchasing_agent_id column
+ * @method     ChildTransactionQuery orderBySupervisorId($order = Criteria::ASC) Order by the supervisor_id column
  *
  * @method     ChildTransactionQuery groupById() Group by the id column
- * @method     ChildTransactionQuery groupByUserId() Group by the user_id column
  * @method     ChildTransactionQuery groupByType() Group by the type column
+ * @method     ChildTransactionQuery groupByPurchasingAgentId() Group by the purchasing_agent_id column
+ * @method     ChildTransactionQuery groupBySupervisorId() Group by the supervisor_id column
  *
  * @method     ChildTransactionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildTransactionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -35,24 +38,69 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransactionQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildTransactionQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildTransactionQuery leftJoinPurchasingAgent($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchasingAgent relation
+ * @method     ChildTransactionQuery rightJoinPurchasingAgent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchasingAgent relation
+ * @method     ChildTransactionQuery innerJoinPurchasingAgent($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchasingAgent relation
+ *
+ * @method     ChildTransactionQuery joinWithPurchasingAgent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the PurchasingAgent relation
+ *
+ * @method     ChildTransactionQuery leftJoinWithPurchasingAgent() Adds a LEFT JOIN clause and with to the query using the PurchasingAgent relation
+ * @method     ChildTransactionQuery rightJoinWithPurchasingAgent() Adds a RIGHT JOIN clause and with to the query using the PurchasingAgent relation
+ * @method     ChildTransactionQuery innerJoinWithPurchasingAgent() Adds a INNER JOIN clause and with to the query using the PurchasingAgent relation
+ *
+ * @method     ChildTransactionQuery leftJoinSupervisor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supervisor relation
+ * @method     ChildTransactionQuery rightJoinSupervisor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supervisor relation
+ * @method     ChildTransactionQuery innerJoinSupervisor($relationAlias = null) Adds a INNER JOIN clause to the query using the Supervisor relation
+ *
+ * @method     ChildTransactionQuery joinWithSupervisor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Supervisor relation
+ *
+ * @method     ChildTransactionQuery leftJoinWithSupervisor() Adds a LEFT JOIN clause and with to the query using the Supervisor relation
+ * @method     ChildTransactionQuery rightJoinWithSupervisor() Adds a RIGHT JOIN clause and with to the query using the Supervisor relation
+ * @method     ChildTransactionQuery innerJoinWithSupervisor() Adds a INNER JOIN clause and with to the query using the Supervisor relation
+ *
+ * @method     ChildTransactionQuery leftJoinPurchase($relationAlias = null) Adds a LEFT JOIN clause to the query using the Purchase relation
+ * @method     ChildTransactionQuery rightJoinPurchase($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Purchase relation
+ * @method     ChildTransactionQuery innerJoinPurchase($relationAlias = null) Adds a INNER JOIN clause to the query using the Purchase relation
+ *
+ * @method     ChildTransactionQuery joinWithPurchase($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Purchase relation
+ *
+ * @method     ChildTransactionQuery leftJoinWithPurchase() Adds a LEFT JOIN clause and with to the query using the Purchase relation
+ * @method     ChildTransactionQuery rightJoinWithPurchase() Adds a RIGHT JOIN clause and with to the query using the Purchase relation
+ * @method     ChildTransactionQuery innerJoinWithPurchase() Adds a INNER JOIN clause and with to the query using the Purchase relation
+ *
+ * @method     ChildTransactionQuery leftJoinRefund($relationAlias = null) Adds a LEFT JOIN clause to the query using the Refund relation
+ * @method     ChildTransactionQuery rightJoinRefund($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Refund relation
+ * @method     ChildTransactionQuery innerJoinRefund($relationAlias = null) Adds a INNER JOIN clause to the query using the Refund relation
+ *
+ * @method     ChildTransactionQuery joinWithRefund($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Refund relation
+ *
+ * @method     ChildTransactionQuery leftJoinWithRefund() Adds a LEFT JOIN clause and with to the query using the Refund relation
+ * @method     ChildTransactionQuery rightJoinWithRefund() Adds a RIGHT JOIN clause and with to the query using the Refund relation
+ * @method     ChildTransactionQuery innerJoinWithRefund() Adds a INNER JOIN clause and with to the query using the Refund relation
+ *
+ * @method     \PurchasingAgentQuery|\SupervisorQuery|\PurchaseQuery|\RefundQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ *
  * @method     ChildTransaction findOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
  *
  * @method     ChildTransaction findOneById(int $id) Return the first ChildTransaction filtered by the id column
- * @method     ChildTransaction findOneByUserId(int $user_id) Return the first ChildTransaction filtered by the user_id column
- * @method     ChildTransaction findOneByType(string $type) Return the first ChildTransaction filtered by the type column *
+ * @method     ChildTransaction findOneByType(string $type) Return the first ChildTransaction filtered by the type column
+ * @method     ChildTransaction findOneByPurchasingAgentId(int $purchasing_agent_id) Return the first ChildTransaction filtered by the purchasing_agent_id column
+ * @method     ChildTransaction findOneBySupervisorId(int $supervisor_id) Return the first ChildTransaction filtered by the supervisor_id column *
 
  * @method     ChildTransaction requirePk($key, ConnectionInterface $con = null) Return the ChildTransaction by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction requireOneById(int $id) Return the first ChildTransaction filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildTransaction requireOneByUserId(int $user_id) Return the first ChildTransaction filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByType(string $type) Return the first ChildTransaction filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByPurchasingAgentId(int $purchasing_agent_id) Return the first ChildTransaction filtered by the purchasing_agent_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneBySupervisorId(int $supervisor_id) Return the first ChildTransaction filtered by the supervisor_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransaction objects based on current ModelCriteria
  * @method     ChildTransaction[]|ObjectCollection findById(int $id) Return ChildTransaction objects filtered by the id column
- * @method     ChildTransaction[]|ObjectCollection findByUserId(int $user_id) Return ChildTransaction objects filtered by the user_id column
  * @method     ChildTransaction[]|ObjectCollection findByType(string $type) Return ChildTransaction objects filtered by the type column
+ * @method     ChildTransaction[]|ObjectCollection findByPurchasingAgentId(int $purchasing_agent_id) Return ChildTransaction objects filtered by the purchasing_agent_id column
+ * @method     ChildTransaction[]|ObjectCollection findBySupervisorId(int $supervisor_id) Return ChildTransaction objects filtered by the supervisor_id column
  * @method     ChildTransaction[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -145,7 +193,7 @@ abstract class TransactionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, user_id, type FROM transaction WHERE id = :p0';
+        $sql = 'SELECT id, type, purchasing_agent_id, supervisor_id FROM transaction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -277,47 +325,6 @@ abstract class TransactionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the user_id column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUserId(1234); // WHERE user_id = 1234
-     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
-     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
-     * </code>
-     *
-     * @param     mixed $userId The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildTransactionQuery The current query, for fluid interface
-     */
-    public function filterByUserId($userId = null, $comparison = null)
-    {
-        if (is_array($userId)) {
-            $useMinMax = false;
-            if (isset($userId['min'])) {
-                $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($userId['max'])) {
-                $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(TransactionTableMap::COL_USER_ID, $userId, $comparison);
-    }
-
-    /**
      * Filter the query on the type column
      *
      * Example usage:
@@ -344,6 +351,392 @@ abstract class TransactionQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TransactionTableMap::COL_TYPE, $type, $comparison);
+    }
+
+    /**
+     * Filter the query on the purchasing_agent_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPurchasingAgentId(1234); // WHERE purchasing_agent_id = 1234
+     * $query->filterByPurchasingAgentId(array(12, 34)); // WHERE purchasing_agent_id IN (12, 34)
+     * $query->filterByPurchasingAgentId(array('min' => 12)); // WHERE purchasing_agent_id > 12
+     * </code>
+     *
+     * @see       filterByPurchasingAgent()
+     *
+     * @param     mixed $purchasingAgentId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByPurchasingAgentId($purchasingAgentId = null, $comparison = null)
+    {
+        if (is_array($purchasingAgentId)) {
+            $useMinMax = false;
+            if (isset($purchasingAgentId['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_PURCHASING_AGENT_ID, $purchasingAgentId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($purchasingAgentId['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_PURCHASING_AGENT_ID, $purchasingAgentId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_PURCHASING_AGENT_ID, $purchasingAgentId, $comparison);
+    }
+
+    /**
+     * Filter the query on the supervisor_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterBySupervisorId(1234); // WHERE supervisor_id = 1234
+     * $query->filterBySupervisorId(array(12, 34)); // WHERE supervisor_id IN (12, 34)
+     * $query->filterBySupervisorId(array('min' => 12)); // WHERE supervisor_id > 12
+     * </code>
+     *
+     * @see       filterBySupervisor()
+     *
+     * @param     mixed $supervisorId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterBySupervisorId($supervisorId = null, $comparison = null)
+    {
+        if (is_array($supervisorId)) {
+            $useMinMax = false;
+            if (isset($supervisorId['min'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_SUPERVISOR_ID, $supervisorId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($supervisorId['max'])) {
+                $this->addUsingAlias(TransactionTableMap::COL_SUPERVISOR_ID, $supervisorId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_SUPERVISOR_ID, $supervisorId, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \PurchasingAgent object
+     *
+     * @param \PurchasingAgent|ObjectCollection $purchasingAgent The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByPurchasingAgent($purchasingAgent, $comparison = null)
+    {
+        if ($purchasingAgent instanceof \PurchasingAgent) {
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_PURCHASING_AGENT_ID, $purchasingAgent->getId(), $comparison);
+        } elseif ($purchasingAgent instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_PURCHASING_AGENT_ID, $purchasingAgent->toKeyValue('Id', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByPurchasingAgent() only accepts arguments of type \PurchasingAgent or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the PurchasingAgent relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function joinPurchasingAgent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('PurchasingAgent');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'PurchasingAgent');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the PurchasingAgent relation PurchasingAgent object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PurchasingAgentQuery A secondary query class using the current class as primary query
+     */
+    public function usePurchasingAgentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPurchasingAgent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PurchasingAgent', '\PurchasingAgentQuery');
+    }
+
+    /**
+     * Filter the query by a related \Supervisor object
+     *
+     * @param \Supervisor|ObjectCollection $supervisor The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterBySupervisor($supervisor, $comparison = null)
+    {
+        if ($supervisor instanceof \Supervisor) {
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_SUPERVISOR_ID, $supervisor->getId(), $comparison);
+        } elseif ($supervisor instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_SUPERVISOR_ID, $supervisor->toKeyValue('Id', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterBySupervisor() only accepts arguments of type \Supervisor or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Supervisor relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function joinSupervisor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Supervisor');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Supervisor');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Supervisor relation Supervisor object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \SupervisorQuery A secondary query class using the current class as primary query
+     */
+    public function useSupervisorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSupervisor($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Supervisor', '\SupervisorQuery');
+    }
+
+    /**
+     * Filter the query by a related \Purchase object
+     *
+     * @param \Purchase|ObjectCollection $purchase the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByPurchase($purchase, $comparison = null)
+    {
+        if ($purchase instanceof \Purchase) {
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_ID, $purchase->getTransactionId(), $comparison);
+        } elseif ($purchase instanceof ObjectCollection) {
+            return $this
+                ->usePurchaseQuery()
+                ->filterByPrimaryKeys($purchase->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPurchase() only accepts arguments of type \Purchase or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Purchase relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function joinPurchase($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Purchase');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Purchase');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Purchase relation Purchase object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \PurchaseQuery A secondary query class using the current class as primary query
+     */
+    public function usePurchaseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinPurchase($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Purchase', '\PurchaseQuery');
+    }
+
+    /**
+     * Filter the query by a related \Refund object
+     *
+     * @param \Refund|ObjectCollection $refund the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByRefund($refund, $comparison = null)
+    {
+        if ($refund instanceof \Refund) {
+            return $this
+                ->addUsingAlias(TransactionTableMap::COL_ID, $refund->getTransactionId(), $comparison);
+        } elseif ($refund instanceof ObjectCollection) {
+            return $this
+                ->useRefundQuery()
+                ->filterByPrimaryKeys($refund->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByRefund() only accepts arguments of type \Refund or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Refund relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function joinRefund($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Refund');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Refund');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Refund relation Refund object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \RefundQuery A secondary query class using the current class as primary query
+     */
+    public function useRefundQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinRefund($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Refund', '\RefundQuery');
     }
 
     /**

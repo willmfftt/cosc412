@@ -59,7 +59,7 @@ class PurchasingAgentTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class PurchasingAgentTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
      * the column name for the id field
@@ -80,6 +80,11 @@ class PurchasingAgentTableMap extends TableMap
      * the column name for the user_id field
      */
     const COL_USER_ID = 'purchasing_agent.user_id';
+
+    /**
+     * the column name for the branch_id field
+     */
+    const COL_BRANCH_ID = 'purchasing_agent.branch_id';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +98,11 @@ class PurchasingAgentTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'UserId', ),
-        self::TYPE_CAMELNAME     => array('id', 'userId', ),
-        self::TYPE_COLNAME       => array(PurchasingAgentTableMap::COL_ID, PurchasingAgentTableMap::COL_USER_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'user_id', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id', 'UserId', 'BranchId', ),
+        self::TYPE_CAMELNAME     => array('id', 'userId', 'branchId', ),
+        self::TYPE_COLNAME       => array(PurchasingAgentTableMap::COL_ID, PurchasingAgentTableMap::COL_USER_ID, PurchasingAgentTableMap::COL_BRANCH_ID, ),
+        self::TYPE_FIELDNAME     => array('id', 'user_id', 'branch_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class PurchasingAgentTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, ),
-        self::TYPE_COLNAME       => array(PurchasingAgentTableMap::COL_ID => 0, PurchasingAgentTableMap::COL_USER_ID => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'BranchId' => 2, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'branchId' => 2, ),
+        self::TYPE_COLNAME       => array(PurchasingAgentTableMap::COL_ID => 0, PurchasingAgentTableMap::COL_USER_ID => 1, PurchasingAgentTableMap::COL_BRANCH_ID => 2, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'branch_id' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -133,6 +138,7 @@ class PurchasingAgentTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignKey('branch_id', 'BranchId', 'INTEGER', 'branch', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -140,6 +146,13 @@ class PurchasingAgentTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Branch', '\\Branch', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
         $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
@@ -147,6 +160,13 @@ class PurchasingAgentTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, null, false);
+        $this->addRelation('Transaction', '\\Transaction', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':purchasing_agent_id',
+    1 => ':id',
+  ),
+), null, null, 'Transactions', false);
     } // buildRelations()
 
     /**
@@ -354,9 +374,11 @@ class PurchasingAgentTableMap extends TableMap
         if (null === $alias) {
             $criteria->addSelectColumn(PurchasingAgentTableMap::COL_ID);
             $criteria->addSelectColumn(PurchasingAgentTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(PurchasingAgentTableMap::COL_BRANCH_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.branch_id');
         }
     }
 

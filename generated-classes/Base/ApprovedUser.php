@@ -3,6 +3,8 @@
 namespace Base;
 
 use \ApprovedUserQuery as ChildApprovedUserQuery;
+use \Branch as ChildBranch;
+use \BranchQuery as ChildBranchQuery;
 use \User as ChildUser;
 use \UserQuery as ChildUserQuery;
 use \Exception;
@@ -74,6 +76,18 @@ abstract class ApprovedUser implements ActiveRecordInterface
      * @var        int
      */
     protected $user_id;
+
+    /**
+     * The value for the branch_id field.
+     *
+     * @var        int
+     */
+    protected $branch_id;
+
+    /**
+     * @var        ChildBranch
+     */
+    protected $aBranch;
 
     /**
      * @var        ChildUser
@@ -334,6 +348,16 @@ abstract class ApprovedUser implements ActiveRecordInterface
     }
 
     /**
+     * Get the [branch_id] column value.
+     *
+     * @return int
+     */
+    public function getBranchId()
+    {
+        return $this->branch_id;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -378,6 +402,30 @@ abstract class ApprovedUser implements ActiveRecordInterface
     } // setUserId()
 
     /**
+     * Set the value of [branch_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\ApprovedUser The current object (for fluent API support)
+     */
+    public function setBranchId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->branch_id !== $v) {
+            $this->branch_id = $v;
+            $this->modifiedColumns[ApprovedUserTableMap::COL_BRANCH_ID] = true;
+        }
+
+        if ($this->aBranch !== null && $this->aBranch->getId() !== $v) {
+            $this->aBranch = null;
+        }
+
+        return $this;
+    } // setBranchId()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -418,6 +466,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ApprovedUserTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->user_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ApprovedUserTableMap::translateFieldName('BranchId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->branch_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -426,7 +477,7 @@ abstract class ApprovedUser implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = ApprovedUserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = ApprovedUserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\ApprovedUser'), 0, $e);
@@ -450,6 +501,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
     {
         if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
             $this->aUser = null;
+        }
+        if ($this->aBranch !== null && $this->branch_id !== $this->aBranch->getId()) {
+            $this->aBranch = null;
         }
     } // ensureConsistency
 
@@ -490,6 +544,7 @@ abstract class ApprovedUser implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aBranch = null;
             $this->aUser = null;
         } // if (deep)
     }
@@ -595,6 +650,13 @@ abstract class ApprovedUser implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
+            if ($this->aBranch !== null) {
+                if ($this->aBranch->isModified() || $this->aBranch->isNew()) {
+                    $affectedRows += $this->aBranch->save($con);
+                }
+                $this->setBranch($this->aBranch);
+            }
+
             if ($this->aUser !== null) {
                 if ($this->aUser->isModified() || $this->aUser->isNew()) {
                     $affectedRows += $this->aUser->save($con);
@@ -645,6 +707,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
         if ($this->isColumnModified(ApprovedUserTableMap::COL_USER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'user_id';
         }
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_BRANCH_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'branch_id';
+        }
 
         $sql = sprintf(
             'INSERT INTO approved_user (%s) VALUES (%s)',
@@ -661,6 +726,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
                         break;
                     case 'user_id':
                         $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
+                        break;
+                    case 'branch_id':
+                        $stmt->bindValue($identifier, $this->branch_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -730,6 +798,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
             case 1:
                 return $this->getUserId();
                 break;
+            case 2:
+                return $this->getBranchId();
+                break;
             default:
                 return null;
                 break;
@@ -762,6 +833,7 @@ abstract class ApprovedUser implements ActiveRecordInterface
         $result = array(
             $keys[0] => $this->getId(),
             $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getBranchId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -769,6 +841,21 @@ abstract class ApprovedUser implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aBranch) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'branch';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'branch';
+                        break;
+                    default:
+                        $key = 'Branch';
+                }
+
+                $result[$key] = $this->aBranch->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aUser) {
 
                 switch ($keyType) {
@@ -824,6 +911,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
             case 1:
                 $this->setUserId($value);
                 break;
+            case 2:
+                $this->setBranchId($value);
+                break;
         } // switch()
 
         return $this;
@@ -855,6 +945,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
         }
         if (array_key_exists($keys[1], $arr)) {
             $this->setUserId($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setBranchId($arr[$keys[2]]);
         }
     }
 
@@ -902,6 +995,9 @@ abstract class ApprovedUser implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ApprovedUserTableMap::COL_USER_ID)) {
             $criteria->add(ApprovedUserTableMap::COL_USER_ID, $this->user_id);
+        }
+        if ($this->isColumnModified(ApprovedUserTableMap::COL_BRANCH_ID)) {
+            $criteria->add(ApprovedUserTableMap::COL_BRANCH_ID, $this->branch_id);
         }
 
         return $criteria;
@@ -1005,6 +1101,7 @@ abstract class ApprovedUser implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setUserId($this->getUserId());
+        $copyObj->setBranchId($this->getBranchId());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1031,6 +1128,57 @@ abstract class ApprovedUser implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildBranch object.
+     *
+     * @param  ChildBranch $v
+     * @return $this|\ApprovedUser The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBranch(ChildBranch $v = null)
+    {
+        if ($v === null) {
+            $this->setBranchId(NULL);
+        } else {
+            $this->setBranchId($v->getId());
+        }
+
+        $this->aBranch = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildBranch object, it will not be re-added.
+        if ($v !== null) {
+            $v->addApprovedUser($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildBranch object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildBranch The associated ChildBranch object.
+     * @throws PropelException
+     */
+    public function getBranch(ConnectionInterface $con = null)
+    {
+        if ($this->aBranch === null && ($this->branch_id !== null)) {
+            $this->aBranch = ChildBranchQuery::create()->findPk($this->branch_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBranch->addApprovedUsers($this);
+             */
+        }
+
+        return $this->aBranch;
     }
 
     /**
@@ -1091,11 +1239,15 @@ abstract class ApprovedUser implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aBranch) {
+            $this->aBranch->removeApprovedUser($this);
+        }
         if (null !== $this->aUser) {
             $this->aUser->removeApprovedUser($this);
         }
         $this->id = null;
         $this->user_id = null;
+        $this->branch_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1116,6 +1268,7 @@ abstract class ApprovedUser implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aBranch = null;
         $this->aUser = null;
     }
 

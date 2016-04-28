@@ -10,6 +10,7 @@ use Map\LocationTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
+use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -34,6 +35,38 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildLocationQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildLocationQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildLocationQuery leftJoinAuditor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Auditor relation
+ * @method     ChildLocationQuery rightJoinAuditor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Auditor relation
+ * @method     ChildLocationQuery innerJoinAuditor($relationAlias = null) Adds a INNER JOIN clause to the query using the Auditor relation
+ *
+ * @method     ChildLocationQuery joinWithAuditor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Auditor relation
+ *
+ * @method     ChildLocationQuery leftJoinWithAuditor() Adds a LEFT JOIN clause and with to the query using the Auditor relation
+ * @method     ChildLocationQuery rightJoinWithAuditor() Adds a RIGHT JOIN clause and with to the query using the Auditor relation
+ * @method     ChildLocationQuery innerJoinWithAuditor() Adds a INNER JOIN clause and with to the query using the Auditor relation
+ *
+ * @method     ChildLocationQuery leftJoinBranch($relationAlias = null) Adds a LEFT JOIN clause to the query using the Branch relation
+ * @method     ChildLocationQuery rightJoinBranch($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Branch relation
+ * @method     ChildLocationQuery innerJoinBranch($relationAlias = null) Adds a INNER JOIN clause to the query using the Branch relation
+ *
+ * @method     ChildLocationQuery joinWithBranch($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Branch relation
+ *
+ * @method     ChildLocationQuery leftJoinWithBranch() Adds a LEFT JOIN clause and with to the query using the Branch relation
+ * @method     ChildLocationQuery rightJoinWithBranch() Adds a RIGHT JOIN clause and with to the query using the Branch relation
+ * @method     ChildLocationQuery innerJoinWithBranch() Adds a INNER JOIN clause and with to the query using the Branch relation
+ *
+ * @method     ChildLocationQuery leftJoinManager($relationAlias = null) Adds a LEFT JOIN clause to the query using the Manager relation
+ * @method     ChildLocationQuery rightJoinManager($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Manager relation
+ * @method     ChildLocationQuery innerJoinManager($relationAlias = null) Adds a INNER JOIN clause to the query using the Manager relation
+ *
+ * @method     ChildLocationQuery joinWithManager($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Manager relation
+ *
+ * @method     ChildLocationQuery leftJoinWithManager() Adds a LEFT JOIN clause and with to the query using the Manager relation
+ * @method     ChildLocationQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
+ * @method     ChildLocationQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
+ *
+ * @method     \AuditorQuery|\BranchQuery|\ManagerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildLocation findOne(ConnectionInterface $con = null) Return the first ChildLocation matching the query
  * @method     ChildLocation findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLocation matching the query, or a new ChildLocation object populated from the query conditions when no match is found
@@ -332,6 +365,225 @@ abstract class LocationQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(LocationTableMap::COL_STATE_CODE, $stateCode, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Auditor object
+     *
+     * @param \Auditor|ObjectCollection $auditor the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildLocationQuery The current query, for fluid interface
+     */
+    public function filterByAuditor($auditor, $comparison = null)
+    {
+        if ($auditor instanceof \Auditor) {
+            return $this
+                ->addUsingAlias(LocationTableMap::COL_ID, $auditor->getLocationId(), $comparison);
+        } elseif ($auditor instanceof ObjectCollection) {
+            return $this
+                ->useAuditorQuery()
+                ->filterByPrimaryKeys($auditor->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAuditor() only accepts arguments of type \Auditor or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Auditor relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildLocationQuery The current query, for fluid interface
+     */
+    public function joinAuditor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Auditor');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Auditor');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Auditor relation Auditor object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \AuditorQuery A secondary query class using the current class as primary query
+     */
+    public function useAuditorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinAuditor($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Auditor', '\AuditorQuery');
+    }
+
+    /**
+     * Filter the query by a related \Branch object
+     *
+     * @param \Branch|ObjectCollection $branch the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildLocationQuery The current query, for fluid interface
+     */
+    public function filterByBranch($branch, $comparison = null)
+    {
+        if ($branch instanceof \Branch) {
+            return $this
+                ->addUsingAlias(LocationTableMap::COL_ID, $branch->getLocationId(), $comparison);
+        } elseif ($branch instanceof ObjectCollection) {
+            return $this
+                ->useBranchQuery()
+                ->filterByPrimaryKeys($branch->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBranch() only accepts arguments of type \Branch or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Branch relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildLocationQuery The current query, for fluid interface
+     */
+    public function joinBranch($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Branch');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Branch');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Branch relation Branch object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BranchQuery A secondary query class using the current class as primary query
+     */
+    public function useBranchQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBranch($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Branch', '\BranchQuery');
+    }
+
+    /**
+     * Filter the query by a related \Manager object
+     *
+     * @param \Manager|ObjectCollection $manager the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildLocationQuery The current query, for fluid interface
+     */
+    public function filterByManager($manager, $comparison = null)
+    {
+        if ($manager instanceof \Manager) {
+            return $this
+                ->addUsingAlias(LocationTableMap::COL_ID, $manager->getLocationId(), $comparison);
+        } elseif ($manager instanceof ObjectCollection) {
+            return $this
+                ->useManagerQuery()
+                ->filterByPrimaryKeys($manager->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByManager() only accepts arguments of type \Manager or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Manager relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildLocationQuery The current query, for fluid interface
+     */
+    public function joinManager($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Manager');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Manager');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Manager relation Manager object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ManagerQuery A secondary query class using the current class as primary query
+     */
+    public function useManagerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinManager($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Manager', '\ManagerQuery');
     }
 
     /**

@@ -3,6 +3,10 @@
 namespace Base;
 
 use \AuditorQuery as ChildAuditorQuery;
+use \Location as ChildLocation;
+use \LocationQuery as ChildLocationQuery;
+use \User as ChildUser;
+use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\AuditorTableMap;
@@ -67,11 +71,28 @@ abstract class Auditor implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
+    protected $user_id;
+
+    /**
+     * The value for the location_id field.
+     *
+     * @var        int
+     */
+    protected $location_id;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUser;
+
+    /**
+     * @var        ChildLocation
+     */
+    protected $aLocation;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -317,13 +338,23 @@ abstract class Auditor implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
+    }
+
+    /**
+     * Get the [location_id] column value.
+     *
+     * @return int
+     */
+    public function getLocationId()
+    {
+        return $this->location_id;
     }
 
     /**
@@ -347,24 +378,52 @@ abstract class Auditor implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\Auditor The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[AuditorTableMap::COL_USERID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[AuditorTableMap::COL_USER_ID] = true;
+        }
+
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
+
+    /**
+     * Set the value of [location_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Auditor The current object (for fluent API support)
+     */
+    public function setLocationId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->location_id !== $v) {
+            $this->location_id = $v;
+            $this->modifiedColumns[AuditorTableMap::COL_LOCATION_ID] = true;
+        }
+
+        if ($this->aLocation !== null && $this->aLocation->getId() !== $v) {
+            $this->aLocation = null;
+        }
+
+        return $this;
+    } // setLocationId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -405,8 +464,11 @@ abstract class Auditor implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AuditorTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AuditorTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AuditorTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AuditorTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->location_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -415,7 +477,7 @@ abstract class Auditor implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = AuditorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 3; // 3 = AuditorTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Auditor'), 0, $e);
@@ -437,6 +499,12 @@ abstract class Auditor implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
+        }
+        if ($this->aLocation !== null && $this->location_id !== $this->aLocation->getId()) {
+            $this->aLocation = null;
+        }
     } // ensureConsistency
 
     /**
@@ -476,6 +544,8 @@ abstract class Auditor implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aUser = null;
+            $this->aLocation = null;
         } // if (deep)
     }
 
@@ -575,6 +645,25 @@ abstract class Auditor implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
+                }
+                $this->setUser($this->aUser);
+            }
+
+            if ($this->aLocation !== null) {
+                if ($this->aLocation->isModified() || $this->aLocation->isNew()) {
+                    $affectedRows += $this->aLocation->save($con);
+                }
+                $this->setLocation($this->aLocation);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -615,8 +704,11 @@ abstract class Auditor implements ActiveRecordInterface
         if ($this->isColumnModified(AuditorTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(AuditorTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(AuditorTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
+        }
+        if ($this->isColumnModified(AuditorTableMap::COL_LOCATION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'location_id';
         }
 
         $sql = sprintf(
@@ -632,8 +724,11 @@ abstract class Auditor implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
+                        break;
+                    case 'location_id':
+                        $stmt->bindValue($identifier, $this->location_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -701,7 +796,10 @@ abstract class Auditor implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
+                break;
+            case 2:
+                return $this->getLocationId();
                 break;
             default:
                 return null;
@@ -720,10 +818,11 @@ abstract class Auditor implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Auditor'][$this->hashCode()])) {
@@ -733,13 +832,46 @@ abstract class Auditor implements ActiveRecordInterface
         $keys = AuditorTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
+            $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getLocationId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aUser) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aLocation) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'location';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'location';
+                        break;
+                    default:
+                        $key = 'Location';
+                }
+
+                $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -777,7 +909,10 @@ abstract class Auditor implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
+                break;
+            case 2:
+                $this->setLocationId($value);
                 break;
         } // switch()
 
@@ -809,7 +944,10 @@ abstract class Auditor implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setLocationId($arr[$keys[2]]);
         }
     }
 
@@ -855,8 +993,11 @@ abstract class Auditor implements ActiveRecordInterface
         if ($this->isColumnModified(AuditorTableMap::COL_ID)) {
             $criteria->add(AuditorTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(AuditorTableMap::COL_USERID)) {
-            $criteria->add(AuditorTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(AuditorTableMap::COL_USER_ID)) {
+            $criteria->add(AuditorTableMap::COL_USER_ID, $this->user_id);
+        }
+        if ($this->isColumnModified(AuditorTableMap::COL_LOCATION_ID)) {
+            $criteria->add(AuditorTableMap::COL_LOCATION_ID, $this->location_id);
         }
 
         return $criteria;
@@ -876,6 +1017,7 @@ abstract class Auditor implements ActiveRecordInterface
     {
         $criteria = ChildAuditorQuery::create();
         $criteria->add(AuditorTableMap::COL_ID, $this->id);
+        $criteria->add(AuditorTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -888,10 +1030,18 @@ abstract class Auditor implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getId() &&
+            null !== $this->getUserId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
+
+        //relation fk_auditor_user1 to table user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -903,23 +1053,29 @@ abstract class Auditor implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getUserId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -928,7 +1084,7 @@ abstract class Auditor implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getUserId());
     }
 
     /**
@@ -944,7 +1100,8 @@ abstract class Auditor implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setLocationId($this->getLocationId());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -974,14 +1131,123 @@ abstract class Auditor implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\Auditor The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUser(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setUserId(NULL);
+        } else {
+            $this->setUserId($v->getId());
+        }
+
+        $this->aUser = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addAuditor($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getUser(ConnectionInterface $con = null)
+    {
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUser->addAuditors($this);
+             */
+        }
+
+        return $this->aUser;
+    }
+
+    /**
+     * Declares an association between this object and a ChildLocation object.
+     *
+     * @param  ChildLocation $v
+     * @return $this|\Auditor The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setLocation(ChildLocation $v = null)
+    {
+        if ($v === null) {
+            $this->setLocationId(NULL);
+        } else {
+            $this->setLocationId($v->getId());
+        }
+
+        $this->aLocation = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildLocation object, it will not be re-added.
+        if ($v !== null) {
+            $v->addAuditor($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildLocation object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildLocation The associated ChildLocation object.
+     * @throws PropelException
+     */
+    public function getLocation(ConnectionInterface $con = null)
+    {
+        if ($this->aLocation === null && ($this->location_id !== null)) {
+            $this->aLocation = ChildLocationQuery::create()->findPk($this->location_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aLocation->addAuditors($this);
+             */
+        }
+
+        return $this->aLocation;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aUser) {
+            $this->aUser->removeAuditor($this);
+        }
+        if (null !== $this->aLocation) {
+            $this->aLocation->removeAuditor($this);
+        }
         $this->id = null;
-        $this->userid = null;
+        $this->user_id = null;
+        $this->location_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1002,6 +1268,8 @@ abstract class Auditor implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aUser = null;
+        $this->aLocation = null;
     }
 
     /**

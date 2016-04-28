@@ -146,6 +146,27 @@ class LocationTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Auditor', '\\Auditor', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, 'Auditors', false);
+        $this->addRelation('Branch', '\\Branch', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, 'Branches', false);
+        $this->addRelation('Manager', '\\Manager', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, 'Managers', false);
     } // buildRelations()
 
     /**

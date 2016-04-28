@@ -2,10 +2,16 @@
 
 namespace Base;
 
+use \Admin as ChildAdmin;
+use \AdminQuery as ChildAdminQuery;
+use \Location as ChildLocation;
+use \LocationQuery as ChildLocationQuery;
 use \Manager as ChildManager;
 use \ManagerQuery as ChildManagerQuery;
 use \Supervisor as ChildSupervisor;
 use \SupervisorQuery as ChildSupervisorQuery;
+use \User as ChildUser;
+use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\ManagerTableMap;
@@ -84,6 +90,28 @@ abstract class Manager implements ActiveRecordInterface
      * @var        int
      */
     protected $admin_id;
+
+    /**
+     * The value for the location_id field.
+     *
+     * @var        int
+     */
+    protected $location_id;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUser;
+
+    /**
+     * @var        ChildAdmin
+     */
+    protected $aAdmin;
+
+    /**
+     * @var        ChildLocation
+     */
+    protected $aLocation;
 
     /**
      * @var        ObjectCollection|ChildSupervisor[] Collection to store aggregation of ChildSupervisor objects.
@@ -361,6 +389,16 @@ abstract class Manager implements ActiveRecordInterface
     }
 
     /**
+     * Get the [location_id] column value.
+     *
+     * @return int
+     */
+    public function getLocationId()
+    {
+        return $this->location_id;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -397,6 +435,10 @@ abstract class Manager implements ActiveRecordInterface
             $this->modifiedColumns[ManagerTableMap::COL_USER_ID] = true;
         }
 
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
+        }
+
         return $this;
     } // setUserId()
 
@@ -417,8 +459,36 @@ abstract class Manager implements ActiveRecordInterface
             $this->modifiedColumns[ManagerTableMap::COL_ADMIN_ID] = true;
         }
 
+        if ($this->aAdmin !== null && $this->aAdmin->getId() !== $v) {
+            $this->aAdmin = null;
+        }
+
         return $this;
     } // setAdminId()
+
+    /**
+     * Set the value of [location_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Manager The current object (for fluent API support)
+     */
+    public function setLocationId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->location_id !== $v) {
+            $this->location_id = $v;
+            $this->modifiedColumns[ManagerTableMap::COL_LOCATION_ID] = true;
+        }
+
+        if ($this->aLocation !== null && $this->aLocation->getId() !== $v) {
+            $this->aLocation = null;
+        }
+
+        return $this;
+    } // setLocationId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -464,6 +534,9 @@ abstract class Manager implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ManagerTableMap::translateFieldName('AdminId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->admin_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ManagerTableMap::translateFieldName('LocationId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->location_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -472,7 +545,7 @@ abstract class Manager implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = ManagerTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = ManagerTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Manager'), 0, $e);
@@ -494,6 +567,15 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
+        }
+        if ($this->aAdmin !== null && $this->admin_id !== $this->aAdmin->getId()) {
+            $this->aAdmin = null;
+        }
+        if ($this->aLocation !== null && $this->location_id !== $this->aLocation->getId()) {
+            $this->aLocation = null;
+        }
     } // ensureConsistency
 
     /**
@@ -533,6 +615,9 @@ abstract class Manager implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aUser = null;
+            $this->aAdmin = null;
+            $this->aLocation = null;
             $this->collSupervisors = null;
 
         } // if (deep)
@@ -634,6 +719,32 @@ abstract class Manager implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
+                }
+                $this->setUser($this->aUser);
+            }
+
+            if ($this->aAdmin !== null) {
+                if ($this->aAdmin->isModified() || $this->aAdmin->isNew()) {
+                    $affectedRows += $this->aAdmin->save($con);
+                }
+                $this->setAdmin($this->aAdmin);
+            }
+
+            if ($this->aLocation !== null) {
+                if ($this->aLocation->isModified() || $this->aLocation->isNew()) {
+                    $affectedRows += $this->aLocation->save($con);
+                }
+                $this->setLocation($this->aLocation);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -697,6 +808,9 @@ abstract class Manager implements ActiveRecordInterface
         if ($this->isColumnModified(ManagerTableMap::COL_ADMIN_ID)) {
             $modifiedColumns[':p' . $index++]  = 'admin_id';
         }
+        if ($this->isColumnModified(ManagerTableMap::COL_LOCATION_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'location_id';
+        }
 
         $sql = sprintf(
             'INSERT INTO manager (%s) VALUES (%s)',
@@ -716,6 +830,9 @@ abstract class Manager implements ActiveRecordInterface
                         break;
                     case 'admin_id':
                         $stmt->bindValue($identifier, $this->admin_id, PDO::PARAM_INT);
+                        break;
+                    case 'location_id':
+                        $stmt->bindValue($identifier, $this->location_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -788,6 +905,9 @@ abstract class Manager implements ActiveRecordInterface
             case 2:
                 return $this->getAdminId();
                 break;
+            case 3:
+                return $this->getLocationId();
+                break;
             default:
                 return null;
                 break;
@@ -821,6 +941,7 @@ abstract class Manager implements ActiveRecordInterface
             $keys[0] => $this->getId(),
             $keys[1] => $this->getUserId(),
             $keys[2] => $this->getAdminId(),
+            $keys[3] => $this->getLocationId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -828,6 +949,51 @@ abstract class Manager implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aUser) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aAdmin) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'admin';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'admin';
+                        break;
+                    default:
+                        $key = 'Admin';
+                }
+
+                $result[$key] = $this->aAdmin->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aLocation) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'location';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'location';
+                        break;
+                    default:
+                        $key = 'Location';
+                }
+
+                $result[$key] = $this->aLocation->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collSupervisors) {
 
                 switch ($keyType) {
@@ -886,6 +1052,9 @@ abstract class Manager implements ActiveRecordInterface
             case 2:
                 $this->setAdminId($value);
                 break;
+            case 3:
+                $this->setLocationId($value);
+                break;
         } // switch()
 
         return $this;
@@ -920,6 +1089,9 @@ abstract class Manager implements ActiveRecordInterface
         }
         if (array_key_exists($keys[2], $arr)) {
             $this->setAdminId($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setLocationId($arr[$keys[3]]);
         }
     }
 
@@ -971,6 +1143,9 @@ abstract class Manager implements ActiveRecordInterface
         if ($this->isColumnModified(ManagerTableMap::COL_ADMIN_ID)) {
             $criteria->add(ManagerTableMap::COL_ADMIN_ID, $this->admin_id);
         }
+        if ($this->isColumnModified(ManagerTableMap::COL_LOCATION_ID)) {
+            $criteria->add(ManagerTableMap::COL_LOCATION_ID, $this->location_id);
+        }
 
         return $criteria;
     }
@@ -1005,8 +1180,15 @@ abstract class Manager implements ActiveRecordInterface
         $validPk = null !== $this->getId() &&
             null !== $this->getUserId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
+
+        //relation fk_manager_user1 to table user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1067,6 +1249,7 @@ abstract class Manager implements ActiveRecordInterface
     {
         $copyObj->setUserId($this->getUserId());
         $copyObj->setAdminId($this->getAdminId());
+        $copyObj->setLocationId($this->getLocationId());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1107,6 +1290,161 @@ abstract class Manager implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\Manager The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUser(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setUserId(NULL);
+        } else {
+            $this->setUserId($v->getId());
+        }
+
+        $this->aUser = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addManager($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getUser(ConnectionInterface $con = null)
+    {
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUser->addManagers($this);
+             */
+        }
+
+        return $this->aUser;
+    }
+
+    /**
+     * Declares an association between this object and a ChildAdmin object.
+     *
+     * @param  ChildAdmin $v
+     * @return $this|\Manager The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setAdmin(ChildAdmin $v = null)
+    {
+        if ($v === null) {
+            $this->setAdminId(NULL);
+        } else {
+            $this->setAdminId($v->getId());
+        }
+
+        $this->aAdmin = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildAdmin object, it will not be re-added.
+        if ($v !== null) {
+            $v->addManager($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildAdmin object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildAdmin The associated ChildAdmin object.
+     * @throws PropelException
+     */
+    public function getAdmin(ConnectionInterface $con = null)
+    {
+        if ($this->aAdmin === null && ($this->admin_id !== null)) {
+            $this->aAdmin = ChildAdminQuery::create()
+                ->filterByManager($this) // here
+                ->findOne($con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aAdmin->addManagers($this);
+             */
+        }
+
+        return $this->aAdmin;
+    }
+
+    /**
+     * Declares an association between this object and a ChildLocation object.
+     *
+     * @param  ChildLocation $v
+     * @return $this|\Manager The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setLocation(ChildLocation $v = null)
+    {
+        if ($v === null) {
+            $this->setLocationId(NULL);
+        } else {
+            $this->setLocationId($v->getId());
+        }
+
+        $this->aLocation = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildLocation object, it will not be re-added.
+        if ($v !== null) {
+            $v->addManager($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildLocation object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildLocation The associated ChildLocation object.
+     * @throws PropelException
+     */
+    public function getLocation(ConnectionInterface $con = null)
+    {
+        if ($this->aLocation === null && ($this->location_id !== null)) {
+            $this->aLocation = ChildLocationQuery::create()->findPk($this->location_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aLocation->addManagers($this);
+             */
+        }
+
+        return $this->aLocation;
     }
 
 
@@ -1350,6 +1688,56 @@ abstract class Manager implements ActiveRecordInterface
         return $this;
     }
 
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Manager is new, it will return
+     * an empty collection; or if this Manager has previously
+     * been saved, it will retrieve related Supervisors from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Manager.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildSupervisor[] List of ChildSupervisor objects
+     */
+    public function getSupervisorsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildSupervisorQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
+
+        return $this->getSupervisors($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Manager is new, it will return
+     * an empty collection; or if this Manager has previously
+     * been saved, it will retrieve related Supervisors from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Manager.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildSupervisor[] List of ChildSupervisor objects
+     */
+    public function getSupervisorsJoinBranch(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildSupervisorQuery::create(null, $criteria);
+        $query->joinWith('Branch', $joinBehavior);
+
+        return $this->getSupervisors($query, $con);
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1357,9 +1745,19 @@ abstract class Manager implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aUser) {
+            $this->aUser->removeManager($this);
+        }
+        if (null !== $this->aAdmin) {
+            $this->aAdmin->removeManager($this);
+        }
+        if (null !== $this->aLocation) {
+            $this->aLocation->removeManager($this);
+        }
         $this->id = null;
         $this->user_id = null;
         $this->admin_id = null;
+        $this->location_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1386,6 +1784,9 @@ abstract class Manager implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collSupervisors = null;
+        $this->aUser = null;
+        $this->aAdmin = null;
+        $this->aLocation = null;
     }
 
     /**

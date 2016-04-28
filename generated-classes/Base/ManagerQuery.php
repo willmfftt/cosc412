@@ -23,10 +23,12 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildManagerQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildManagerQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
  * @method     ChildManagerQuery orderByAdminId($order = Criteria::ASC) Order by the admin_id column
+ * @method     ChildManagerQuery orderByLocationId($order = Criteria::ASC) Order by the location_id column
  *
  * @method     ChildManagerQuery groupById() Group by the id column
  * @method     ChildManagerQuery groupByUserId() Group by the user_id column
  * @method     ChildManagerQuery groupByAdminId() Group by the admin_id column
+ * @method     ChildManagerQuery groupByLocationId() Group by the location_id column
  *
  * @method     ChildManagerQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildManagerQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -35,6 +37,36 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildManagerQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildManagerQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildManagerQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildManagerQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildManagerQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildManagerQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ *
+ * @method     ChildManagerQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ *
+ * @method     ChildManagerQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildManagerQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildManagerQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ *
+ * @method     ChildManagerQuery leftJoinAdmin($relationAlias = null) Adds a LEFT JOIN clause to the query using the Admin relation
+ * @method     ChildManagerQuery rightJoinAdmin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Admin relation
+ * @method     ChildManagerQuery innerJoinAdmin($relationAlias = null) Adds a INNER JOIN clause to the query using the Admin relation
+ *
+ * @method     ChildManagerQuery joinWithAdmin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Admin relation
+ *
+ * @method     ChildManagerQuery leftJoinWithAdmin() Adds a LEFT JOIN clause and with to the query using the Admin relation
+ * @method     ChildManagerQuery rightJoinWithAdmin() Adds a RIGHT JOIN clause and with to the query using the Admin relation
+ * @method     ChildManagerQuery innerJoinWithAdmin() Adds a INNER JOIN clause and with to the query using the Admin relation
+ *
+ * @method     ChildManagerQuery leftJoinLocation($relationAlias = null) Adds a LEFT JOIN clause to the query using the Location relation
+ * @method     ChildManagerQuery rightJoinLocation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Location relation
+ * @method     ChildManagerQuery innerJoinLocation($relationAlias = null) Adds a INNER JOIN clause to the query using the Location relation
+ *
+ * @method     ChildManagerQuery joinWithLocation($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Location relation
+ *
+ * @method     ChildManagerQuery leftJoinWithLocation() Adds a LEFT JOIN clause and with to the query using the Location relation
+ * @method     ChildManagerQuery rightJoinWithLocation() Adds a RIGHT JOIN clause and with to the query using the Location relation
+ * @method     ChildManagerQuery innerJoinWithLocation() Adds a INNER JOIN clause and with to the query using the Location relation
  *
  * @method     ChildManagerQuery leftJoinSupervisor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supervisor relation
  * @method     ChildManagerQuery rightJoinSupervisor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supervisor relation
@@ -46,14 +78,15 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildManagerQuery rightJoinWithSupervisor() Adds a RIGHT JOIN clause and with to the query using the Supervisor relation
  * @method     ChildManagerQuery innerJoinWithSupervisor() Adds a INNER JOIN clause and with to the query using the Supervisor relation
  *
- * @method     \SupervisorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \UserQuery|\AdminQuery|\LocationQuery|\SupervisorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildManager findOne(ConnectionInterface $con = null) Return the first ChildManager matching the query
  * @method     ChildManager findOneOrCreate(ConnectionInterface $con = null) Return the first ChildManager matching the query, or a new ChildManager object populated from the query conditions when no match is found
  *
  * @method     ChildManager findOneById(int $id) Return the first ChildManager filtered by the id column
  * @method     ChildManager findOneByUserId(int $user_id) Return the first ChildManager filtered by the user_id column
- * @method     ChildManager findOneByAdminId(int $admin_id) Return the first ChildManager filtered by the admin_id column *
+ * @method     ChildManager findOneByAdminId(int $admin_id) Return the first ChildManager filtered by the admin_id column
+ * @method     ChildManager findOneByLocationId(int $location_id) Return the first ChildManager filtered by the location_id column *
 
  * @method     ChildManager requirePk($key, ConnectionInterface $con = null) Return the ChildManager by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildManager requireOne(ConnectionInterface $con = null) Return the first ChildManager matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -61,11 +94,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildManager requireOneById(int $id) Return the first ChildManager filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildManager requireOneByUserId(int $user_id) Return the first ChildManager filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildManager requireOneByAdminId(int $admin_id) Return the first ChildManager filtered by the admin_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildManager requireOneByLocationId(int $location_id) Return the first ChildManager filtered by the location_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildManager[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildManager objects based on current ModelCriteria
  * @method     ChildManager[]|ObjectCollection findById(int $id) Return ChildManager objects filtered by the id column
  * @method     ChildManager[]|ObjectCollection findByUserId(int $user_id) Return ChildManager objects filtered by the user_id column
  * @method     ChildManager[]|ObjectCollection findByAdminId(int $admin_id) Return ChildManager objects filtered by the admin_id column
+ * @method     ChildManager[]|ObjectCollection findByLocationId(int $location_id) Return ChildManager objects filtered by the location_id column
  * @method     ChildManager[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -158,7 +193,7 @@ abstract class ManagerQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, user_id, admin_id FROM manager WHERE id = :p0 AND user_id = :p1';
+        $sql = 'SELECT id, user_id, admin_id, location_id FROM manager WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -311,6 +346,8 @@ abstract class ManagerQuery extends ModelCriteria
      * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
+     * @see       filterByUser()
+     *
      * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -352,6 +389,8 @@ abstract class ManagerQuery extends ModelCriteria
      * $query->filterByAdminId(array('min' => 12)); // WHERE admin_id > 12
      * </code>
      *
+     * @see       filterByAdmin()
+     *
      * @param     mixed $adminId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -384,6 +423,280 @@ abstract class ManagerQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the location_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLocationId(1234); // WHERE location_id = 1234
+     * $query->filterByLocationId(array(12, 34)); // WHERE location_id IN (12, 34)
+     * $query->filterByLocationId(array('min' => 12)); // WHERE location_id > 12
+     * </code>
+     *
+     * @see       filterByLocation()
+     *
+     * @param     mixed $locationId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildManagerQuery The current query, for fluid interface
+     */
+    public function filterByLocationId($locationId = null, $comparison = null)
+    {
+        if (is_array($locationId)) {
+            $useMinMax = false;
+            if (isset($locationId['min'])) {
+                $this->addUsingAlias(ManagerTableMap::COL_LOCATION_ID, $locationId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($locationId['max'])) {
+                $this->addUsingAlias(ManagerTableMap::COL_LOCATION_ID, $locationId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ManagerTableMap::COL_LOCATION_ID, $locationId, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \User object
+     *
+     * @param \User|ObjectCollection $user The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildManagerQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = null)
+    {
+        if ($user instanceof \User) {
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_USER_ID, $user->getId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the User relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildManagerQuery The current query, for fluid interface
+     */
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('User');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'User');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the User relation User object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UserQuery A secondary query class using the current class as primary query
+     */
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
+    }
+
+    /**
+     * Filter the query by a related \Admin object
+     *
+     * @param \Admin|ObjectCollection $admin The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildManagerQuery The current query, for fluid interface
+     */
+    public function filterByAdmin($admin, $comparison = null)
+    {
+        if ($admin instanceof \Admin) {
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_ADMIN_ID, $admin->getId(), $comparison);
+        } elseif ($admin instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_ADMIN_ID, $admin->toKeyValue('Id', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByAdmin() only accepts arguments of type \Admin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Admin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildManagerQuery The current query, for fluid interface
+     */
+    public function joinAdmin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Admin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Admin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Admin relation Admin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \AdminQuery A secondary query class using the current class as primary query
+     */
+    public function useAdminQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinAdmin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Admin', '\AdminQuery');
+    }
+
+    /**
+     * Filter the query by a related \Location object
+     *
+     * @param \Location|ObjectCollection $location The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildManagerQuery The current query, for fluid interface
+     */
+    public function filterByLocation($location, $comparison = null)
+    {
+        if ($location instanceof \Location) {
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_LOCATION_ID, $location->getId(), $comparison);
+        } elseif ($location instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ManagerTableMap::COL_LOCATION_ID, $location->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByLocation() only accepts arguments of type \Location or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Location relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildManagerQuery The current query, for fluid interface
+     */
+    public function joinLocation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Location');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Location');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Location relation Location object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \LocationQuery A secondary query class using the current class as primary query
+     */
+    public function useLocationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinLocation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Location', '\LocationQuery');
+    }
+
+    /**
      * Filter the query by a related \Supervisor object
      *
      * @param \Supervisor|ObjectCollection $supervisor the related object to use as filter
@@ -395,7 +708,7 @@ abstract class ManagerQuery extends ModelCriteria
     {
         if ($supervisor instanceof \Supervisor) {
             return $this
-                ->addUsingAlias(ManagerTableMap::COL_ID, $supervisor->getManagerid(), $comparison);
+                ->addUsingAlias(ManagerTableMap::COL_ID, $supervisor->getManagerId(), $comparison);
         } elseif ($supervisor instanceof ObjectCollection) {
             return $this
                 ->useSupervisorQuery()
