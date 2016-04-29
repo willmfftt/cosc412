@@ -22,9 +22,11 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildApprovedUserQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildApprovedUserQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
+ * @method     ChildApprovedUserQuery orderByBranchId($order = Criteria::ASC) Order by the branch_id column
  *
  * @method     ChildApprovedUserQuery groupById() Group by the id column
  * @method     ChildApprovedUserQuery groupByUserId() Group by the user_id column
+ * @method     ChildApprovedUserQuery groupByBranchId() Group by the branch_id column
  *
  * @method     ChildApprovedUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildApprovedUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -33,6 +35,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildApprovedUserQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
  * @method     ChildApprovedUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildApprovedUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ *
+ * @method     ChildApprovedUserQuery leftJoinBranch($relationAlias = null) Adds a LEFT JOIN clause to the query using the Branch relation
+ * @method     ChildApprovedUserQuery rightJoinBranch($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Branch relation
+ * @method     ChildApprovedUserQuery innerJoinBranch($relationAlias = null) Adds a INNER JOIN clause to the query using the Branch relation
+ *
+ * @method     ChildApprovedUserQuery joinWithBranch($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Branch relation
+ *
+ * @method     ChildApprovedUserQuery leftJoinWithBranch() Adds a LEFT JOIN clause and with to the query using the Branch relation
+ * @method     ChildApprovedUserQuery rightJoinWithBranch() Adds a RIGHT JOIN clause and with to the query using the Branch relation
+ * @method     ChildApprovedUserQuery innerJoinWithBranch() Adds a INNER JOIN clause and with to the query using the Branch relation
  *
  * @method     ChildApprovedUserQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
  * @method     ChildApprovedUserQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
@@ -44,23 +56,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildApprovedUserQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
  * @method     ChildApprovedUserQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
  *
- * @method     \UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \BranchQuery|\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildApprovedUser findOne(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query
  * @method     ChildApprovedUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query, or a new ChildApprovedUser object populated from the query conditions when no match is found
  *
  * @method     ChildApprovedUser findOneById(int $id) Return the first ChildApprovedUser filtered by the id column
- * @method     ChildApprovedUser findOneByUserId(int $user_id) Return the first ChildApprovedUser filtered by the user_id column *
+ * @method     ChildApprovedUser findOneByUserId(int $user_id) Return the first ChildApprovedUser filtered by the user_id column
+ * @method     ChildApprovedUser findOneByBranchId(int $branch_id) Return the first ChildApprovedUser filtered by the branch_id column *
 
  * @method     ChildApprovedUser requirePk($key, ConnectionInterface $con = null) Return the ChildApprovedUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildApprovedUser requireOne(ConnectionInterface $con = null) Return the first ChildApprovedUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildApprovedUser requireOneById(int $id) Return the first ChildApprovedUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildApprovedUser requireOneByUserId(int $user_id) Return the first ChildApprovedUser filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildApprovedUser requireOneByBranchId(int $branch_id) Return the first ChildApprovedUser filtered by the branch_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildApprovedUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildApprovedUser objects based on current ModelCriteria
  * @method     ChildApprovedUser[]|ObjectCollection findById(int $id) Return ChildApprovedUser objects filtered by the id column
  * @method     ChildApprovedUser[]|ObjectCollection findByUserId(int $user_id) Return ChildApprovedUser objects filtered by the user_id column
+ * @method     ChildApprovedUser[]|ObjectCollection findByBranchId(int $branch_id) Return ChildApprovedUser objects filtered by the branch_id column
  * @method     ChildApprovedUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -153,7 +168,7 @@ abstract class ApprovedUserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, user_id FROM approved_user WHERE id = :p0 AND user_id = :p1';
+        $sql = 'SELECT id, user_id, branch_id FROM approved_user WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -337,6 +352,126 @@ abstract class ApprovedUserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ApprovedUserTableMap::COL_USER_ID, $userId, $comparison);
+    }
+
+    /**
+     * Filter the query on the branch_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByBranchId(1234); // WHERE branch_id = 1234
+     * $query->filterByBranchId(array(12, 34)); // WHERE branch_id IN (12, 34)
+     * $query->filterByBranchId(array('min' => 12)); // WHERE branch_id > 12
+     * </code>
+     *
+     * @see       filterByBranch()
+     *
+     * @param     mixed $branchId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
+     */
+    public function filterByBranchId($branchId = null, $comparison = null)
+    {
+        if (is_array($branchId)) {
+            $useMinMax = false;
+            if (isset($branchId['min'])) {
+                $this->addUsingAlias(ApprovedUserTableMap::COL_BRANCH_ID, $branchId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($branchId['max'])) {
+                $this->addUsingAlias(ApprovedUserTableMap::COL_BRANCH_ID, $branchId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ApprovedUserTableMap::COL_BRANCH_ID, $branchId, $comparison);
+    }
+
+    /**
+     * Filter the query by a related \Branch object
+     *
+     * @param \Branch|ObjectCollection $branch The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildApprovedUserQuery The current query, for fluid interface
+     */
+    public function filterByBranch($branch, $comparison = null)
+    {
+        if ($branch instanceof \Branch) {
+            return $this
+                ->addUsingAlias(ApprovedUserTableMap::COL_BRANCH_ID, $branch->getId(), $comparison);
+        } elseif ($branch instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ApprovedUserTableMap::COL_BRANCH_ID, $branch->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByBranch() only accepts arguments of type \Branch or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Branch relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildApprovedUserQuery The current query, for fluid interface
+     */
+    public function joinBranch($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Branch');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Branch');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Branch relation Branch object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BranchQuery A secondary query class using the current class as primary query
+     */
+    public function useBranchQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBranch($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Branch', '\BranchQuery');
     }
 
     /**

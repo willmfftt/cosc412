@@ -21,12 +21,14 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildSupervisorQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildSupervisorQuery orderByUserid($order = Criteria::ASC) Order by the userId column
- * @method     ChildSupervisorQuery orderByManagerid($order = Criteria::ASC) Order by the managerId column
+ * @method     ChildSupervisorQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
+ * @method     ChildSupervisorQuery orderByManagerId($order = Criteria::ASC) Order by the manager_id column
+ * @method     ChildSupervisorQuery orderByBranchId($order = Criteria::ASC) Order by the branch_id column
  *
  * @method     ChildSupervisorQuery groupById() Group by the id column
- * @method     ChildSupervisorQuery groupByUserid() Group by the userId column
- * @method     ChildSupervisorQuery groupByManagerid() Group by the managerId column
+ * @method     ChildSupervisorQuery groupByUserId() Group by the user_id column
+ * @method     ChildSupervisorQuery groupByManagerId() Group by the manager_id column
+ * @method     ChildSupervisorQuery groupByBranchId() Group by the branch_id column
  *
  * @method     ChildSupervisorQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildSupervisorQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -46,26 +48,59 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildSupervisorQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
  * @method     ChildSupervisorQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
  *
- * @method     \ManagerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildSupervisorQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
+ * @method     ChildSupervisorQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
+ * @method     ChildSupervisorQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
+ *
+ * @method     ChildSupervisorQuery joinWithUser($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the User relation
+ *
+ * @method     ChildSupervisorQuery leftJoinWithUser() Adds a LEFT JOIN clause and with to the query using the User relation
+ * @method     ChildSupervisorQuery rightJoinWithUser() Adds a RIGHT JOIN clause and with to the query using the User relation
+ * @method     ChildSupervisorQuery innerJoinWithUser() Adds a INNER JOIN clause and with to the query using the User relation
+ *
+ * @method     ChildSupervisorQuery leftJoinBranch($relationAlias = null) Adds a LEFT JOIN clause to the query using the Branch relation
+ * @method     ChildSupervisorQuery rightJoinBranch($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Branch relation
+ * @method     ChildSupervisorQuery innerJoinBranch($relationAlias = null) Adds a INNER JOIN clause to the query using the Branch relation
+ *
+ * @method     ChildSupervisorQuery joinWithBranch($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Branch relation
+ *
+ * @method     ChildSupervisorQuery leftJoinWithBranch() Adds a LEFT JOIN clause and with to the query using the Branch relation
+ * @method     ChildSupervisorQuery rightJoinWithBranch() Adds a RIGHT JOIN clause and with to the query using the Branch relation
+ * @method     ChildSupervisorQuery innerJoinWithBranch() Adds a INNER JOIN clause and with to the query using the Branch relation
+ *
+ * @method     ChildSupervisorQuery leftJoinTransaction($relationAlias = null) Adds a LEFT JOIN clause to the query using the Transaction relation
+ * @method     ChildSupervisorQuery rightJoinTransaction($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Transaction relation
+ * @method     ChildSupervisorQuery innerJoinTransaction($relationAlias = null) Adds a INNER JOIN clause to the query using the Transaction relation
+ *
+ * @method     ChildSupervisorQuery joinWithTransaction($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Transaction relation
+ *
+ * @method     ChildSupervisorQuery leftJoinWithTransaction() Adds a LEFT JOIN clause and with to the query using the Transaction relation
+ * @method     ChildSupervisorQuery rightJoinWithTransaction() Adds a RIGHT JOIN clause and with to the query using the Transaction relation
+ * @method     ChildSupervisorQuery innerJoinWithTransaction() Adds a INNER JOIN clause and with to the query using the Transaction relation
+ *
+ * @method     \ManagerQuery|\UserQuery|\BranchQuery|\TransactionQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildSupervisor findOne(ConnectionInterface $con = null) Return the first ChildSupervisor matching the query
  * @method     ChildSupervisor findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSupervisor matching the query, or a new ChildSupervisor object populated from the query conditions when no match is found
  *
  * @method     ChildSupervisor findOneById(int $id) Return the first ChildSupervisor filtered by the id column
- * @method     ChildSupervisor findOneByUserid(int $userId) Return the first ChildSupervisor filtered by the userId column
- * @method     ChildSupervisor findOneByManagerid(int $managerId) Return the first ChildSupervisor filtered by the managerId column *
+ * @method     ChildSupervisor findOneByUserId(int $user_id) Return the first ChildSupervisor filtered by the user_id column
+ * @method     ChildSupervisor findOneByManagerId(int $manager_id) Return the first ChildSupervisor filtered by the manager_id column
+ * @method     ChildSupervisor findOneByBranchId(int $branch_id) Return the first ChildSupervisor filtered by the branch_id column *
 
  * @method     ChildSupervisor requirePk($key, ConnectionInterface $con = null) Return the ChildSupervisor by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSupervisor requireOne(ConnectionInterface $con = null) Return the first ChildSupervisor matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSupervisor requireOneById(int $id) Return the first ChildSupervisor filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSupervisor requireOneByUserid(int $userId) Return the first ChildSupervisor filtered by the userId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSupervisor requireOneByManagerid(int $managerId) Return the first ChildSupervisor filtered by the managerId column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSupervisor requireOneByUserId(int $user_id) Return the first ChildSupervisor filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSupervisor requireOneByManagerId(int $manager_id) Return the first ChildSupervisor filtered by the manager_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSupervisor requireOneByBranchId(int $branch_id) Return the first ChildSupervisor filtered by the branch_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSupervisor[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSupervisor objects based on current ModelCriteria
  * @method     ChildSupervisor[]|ObjectCollection findById(int $id) Return ChildSupervisor objects filtered by the id column
- * @method     ChildSupervisor[]|ObjectCollection findByUserid(int $userId) Return ChildSupervisor objects filtered by the userId column
- * @method     ChildSupervisor[]|ObjectCollection findByManagerid(int $managerId) Return ChildSupervisor objects filtered by the managerId column
+ * @method     ChildSupervisor[]|ObjectCollection findByUserId(int $user_id) Return ChildSupervisor objects filtered by the user_id column
+ * @method     ChildSupervisor[]|ObjectCollection findByManagerId(int $manager_id) Return ChildSupervisor objects filtered by the manager_id column
+ * @method     ChildSupervisor[]|ObjectCollection findByBranchId(int $branch_id) Return ChildSupervisor objects filtered by the branch_id column
  * @method     ChildSupervisor[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -115,10 +150,10 @@ abstract class SupervisorQuery extends ModelCriteria
      * Go fast if the query is untouched.
      *
      * <code>
-     * $obj  = $c->findPk(12, $con);
+     * $obj = $c->findPk(array(12, 34), $con);
      * </code>
      *
-     * @param mixed $key Primary key to use for the query
+     * @param array[$id, $user_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildSupervisor|array|mixed the result, formatted by the current formatter
@@ -128,7 +163,7 @@ abstract class SupervisorQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = SupervisorTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = SupervisorTableMap::getInstanceFromPool(serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])])))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -158,10 +193,11 @@ abstract class SupervisorQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, userId, managerId FROM supervisor WHERE id = :p0';
+        $sql = 'SELECT id, user_id, manager_id, branch_id FROM supervisor WHERE id = :p0 AND user_id = :p1';
         try {
             $stmt = $con->prepare($sql);
-            $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
+            $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
+            $stmt->bindValue(':p1', $key[1], PDO::PARAM_INT);
             $stmt->execute();
         } catch (Exception $e) {
             Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -172,7 +208,7 @@ abstract class SupervisorQuery extends ModelCriteria
             /** @var ChildSupervisor $obj */
             $obj = new ChildSupervisor();
             $obj->hydrate($row);
-            SupervisorTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            SupervisorTableMap::addInstanceToPool($obj, serialize([(null === $key[0] || is_scalar($key[0]) || is_callable([$key[0], '__toString']) ? (string) $key[0] : $key[0]), (null === $key[1] || is_scalar($key[1]) || is_callable([$key[1], '__toString']) ? (string) $key[1] : $key[1])]));
         }
         $stmt->closeCursor();
 
@@ -201,7 +237,7 @@ abstract class SupervisorQuery extends ModelCriteria
     /**
      * Find objects by primary key
      * <code>
-     * $objs = $c->findPks(array(12, 56, 832), $con);
+     * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
      * </code>
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
@@ -231,8 +267,10 @@ abstract class SupervisorQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+        $this->addUsingAlias(SupervisorTableMap::COL_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(SupervisorTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
 
-        return $this->addUsingAlias(SupervisorTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this;
     }
 
     /**
@@ -244,8 +282,17 @@ abstract class SupervisorQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+        if (empty($keys)) {
+            return $this->add(null, '1<>1', Criteria::CUSTOM);
+        }
+        foreach ($keys as $key) {
+            $cton0 = $this->getNewCriterion(SupervisorTableMap::COL_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(SupervisorTableMap::COL_USER_ID, $key[1], Criteria::EQUAL);
+            $cton0->addAnd($cton1);
+            $this->addOr($cton0);
+        }
 
-        return $this->addUsingAlias(SupervisorTableMap::COL_ID, $keys, Criteria::IN);
+        return $this;
     }
 
     /**
@@ -290,16 +337,18 @@ abstract class SupervisorQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the userId column
+     * Filter the query on the user_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByUserid(1234); // WHERE userId = 1234
-     * $query->filterByUserid(array(12, 34)); // WHERE userId IN (12, 34)
-     * $query->filterByUserid(array('min' => 12)); // WHERE userId > 12
+     * $query->filterByUserId(1234); // WHERE user_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE user_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE user_id > 12
      * </code>
      *
-     * @param     mixed $userid The value to use as filter.
+     * @see       filterByUser()
+     *
+     * @param     mixed $userId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -307,16 +356,16 @@ abstract class SupervisorQuery extends ModelCriteria
      *
      * @return $this|ChildSupervisorQuery The current query, for fluid interface
      */
-    public function filterByUserid($userid = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
-        if (is_array($userid)) {
+        if (is_array($userId)) {
             $useMinMax = false;
-            if (isset($userid['min'])) {
-                $this->addUsingAlias(SupervisorTableMap::COL_USERID, $userid['min'], Criteria::GREATER_EQUAL);
+            if (isset($userId['min'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_USER_ID, $userId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($userid['max'])) {
-                $this->addUsingAlias(SupervisorTableMap::COL_USERID, $userid['max'], Criteria::LESS_EQUAL);
+            if (isset($userId['max'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_USER_ID, $userId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -327,22 +376,22 @@ abstract class SupervisorQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SupervisorTableMap::COL_USERID, $userid, $comparison);
+        return $this->addUsingAlias(SupervisorTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
-     * Filter the query on the managerId column
+     * Filter the query on the manager_id column
      *
      * Example usage:
      * <code>
-     * $query->filterByManagerid(1234); // WHERE managerId = 1234
-     * $query->filterByManagerid(array(12, 34)); // WHERE managerId IN (12, 34)
-     * $query->filterByManagerid(array('min' => 12)); // WHERE managerId > 12
+     * $query->filterByManagerId(1234); // WHERE manager_id = 1234
+     * $query->filterByManagerId(array(12, 34)); // WHERE manager_id IN (12, 34)
+     * $query->filterByManagerId(array('min' => 12)); // WHERE manager_id > 12
      * </code>
      *
      * @see       filterByManager()
      *
-     * @param     mixed $managerid The value to use as filter.
+     * @param     mixed $managerId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -350,16 +399,16 @@ abstract class SupervisorQuery extends ModelCriteria
      *
      * @return $this|ChildSupervisorQuery The current query, for fluid interface
      */
-    public function filterByManagerid($managerid = null, $comparison = null)
+    public function filterByManagerId($managerId = null, $comparison = null)
     {
-        if (is_array($managerid)) {
+        if (is_array($managerId)) {
             $useMinMax = false;
-            if (isset($managerid['min'])) {
-                $this->addUsingAlias(SupervisorTableMap::COL_MANAGERID, $managerid['min'], Criteria::GREATER_EQUAL);
+            if (isset($managerId['min'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_MANAGER_ID, $managerId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($managerid['max'])) {
-                $this->addUsingAlias(SupervisorTableMap::COL_MANAGERID, $managerid['max'], Criteria::LESS_EQUAL);
+            if (isset($managerId['max'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_MANAGER_ID, $managerId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -370,7 +419,50 @@ abstract class SupervisorQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SupervisorTableMap::COL_MANAGERID, $managerid, $comparison);
+        return $this->addUsingAlias(SupervisorTableMap::COL_MANAGER_ID, $managerId, $comparison);
+    }
+
+    /**
+     * Filter the query on the branch_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByBranchId(1234); // WHERE branch_id = 1234
+     * $query->filterByBranchId(array(12, 34)); // WHERE branch_id IN (12, 34)
+     * $query->filterByBranchId(array('min' => 12)); // WHERE branch_id > 12
+     * </code>
+     *
+     * @see       filterByBranch()
+     *
+     * @param     mixed $branchId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function filterByBranchId($branchId = null, $comparison = null)
+    {
+        if (is_array($branchId)) {
+            $useMinMax = false;
+            if (isset($branchId['min'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_BRANCH_ID, $branchId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($branchId['max'])) {
+                $this->addUsingAlias(SupervisorTableMap::COL_BRANCH_ID, $branchId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(SupervisorTableMap::COL_BRANCH_ID, $branchId, $comparison);
     }
 
     /**
@@ -387,14 +479,14 @@ abstract class SupervisorQuery extends ModelCriteria
     {
         if ($manager instanceof \Manager) {
             return $this
-                ->addUsingAlias(SupervisorTableMap::COL_MANAGERID, $manager->getId(), $comparison);
+                ->addUsingAlias(SupervisorTableMap::COL_MANAGER_ID, $manager->getId(), $comparison);
         } elseif ($manager instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(SupervisorTableMap::COL_MANAGERID, $manager->toKeyValue('Id', 'Id'), $comparison);
+                ->addUsingAlias(SupervisorTableMap::COL_MANAGER_ID, $manager->toKeyValue('Id', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByManager() only accepts arguments of type \Manager or Collection');
         }
@@ -451,6 +543,233 @@ abstract class SupervisorQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \User object
+     *
+     * @param \User|ObjectCollection $user The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = null)
+    {
+        if ($user instanceof \User) {
+            return $this
+                ->addUsingAlias(SupervisorTableMap::COL_USER_ID, $user->getId(), $comparison);
+        } elseif ($user instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(SupervisorTableMap::COL_USER_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByUser() only accepts arguments of type \User or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the User relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function joinUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('User');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'User');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the User relation User object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \UserQuery A secondary query class using the current class as primary query
+     */
+    public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\UserQuery');
+    }
+
+    /**
+     * Filter the query by a related \Branch object
+     *
+     * @param \Branch|ObjectCollection $branch The related object(s) to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
+     * @return ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function filterByBranch($branch, $comparison = null)
+    {
+        if ($branch instanceof \Branch) {
+            return $this
+                ->addUsingAlias(SupervisorTableMap::COL_BRANCH_ID, $branch->getId(), $comparison);
+        } elseif ($branch instanceof ObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(SupervisorTableMap::COL_BRANCH_ID, $branch->toKeyValue('PrimaryKey', 'Id'), $comparison);
+        } else {
+            throw new PropelException('filterByBranch() only accepts arguments of type \Branch or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Branch relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function joinBranch($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Branch');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Branch');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Branch relation Branch object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BranchQuery A secondary query class using the current class as primary query
+     */
+    public function useBranchQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBranch($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Branch', '\BranchQuery');
+    }
+
+    /**
+     * Filter the query by a related \Transaction object
+     *
+     * @param \Transaction|ObjectCollection $transaction the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function filterByTransaction($transaction, $comparison = null)
+    {
+        if ($transaction instanceof \Transaction) {
+            return $this
+                ->addUsingAlias(SupervisorTableMap::COL_ID, $transaction->getSupervisorId(), $comparison);
+        } elseif ($transaction instanceof ObjectCollection) {
+            return $this
+                ->useTransactionQuery()
+                ->filterByPrimaryKeys($transaction->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByTransaction() only accepts arguments of type \Transaction or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Transaction relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildSupervisorQuery The current query, for fluid interface
+     */
+    public function joinTransaction($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Transaction');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Transaction');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Transaction relation Transaction object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \TransactionQuery A secondary query class using the current class as primary query
+     */
+    public function useTransactionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinTransaction($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Transaction', '\TransactionQuery');
+    }
+
+    /**
      * Exclude object from result
      *
      * @param   ChildSupervisor $supervisor Object to remove from the list of results
@@ -460,7 +779,9 @@ abstract class SupervisorQuery extends ModelCriteria
     public function prune($supervisor = null)
     {
         if ($supervisor) {
-            $this->addUsingAlias(SupervisorTableMap::COL_ID, $supervisor->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(SupervisorTableMap::COL_ID), $supervisor->getId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(SupervisorTableMap::COL_USER_ID), $supervisor->getUserId(), Criteria::NOT_EQUAL);
+            $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
         return $this;

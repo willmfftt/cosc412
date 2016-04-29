@@ -3,6 +3,8 @@
 namespace Base;
 
 use \RefundQuery as ChildRefundQuery;
+use \Transaction as ChildTransaction;
+use \TransactionQuery as ChildTransactionQuery;
 use \Exception;
 use \PDO;
 use Map\RefundTableMap;
@@ -79,6 +81,11 @@ abstract class Refund implements ActiveRecordInterface
      * @var        double
      */
     protected $amount;
+
+    /**
+     * @var        ChildTransaction
+     */
+    protected $aTransaction;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -380,6 +387,10 @@ abstract class Refund implements ActiveRecordInterface
             $this->modifiedColumns[RefundTableMap::COL_TRANSACTION_ID] = true;
         }
 
+        if ($this->aTransaction !== null && $this->aTransaction->getId() !== $v) {
+            $this->aTransaction = null;
+        }
+
         return $this;
     } // setTransactionId()
 
@@ -477,6 +488,9 @@ abstract class Refund implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aTransaction !== null && $this->transaction_id !== $this->aTransaction->getId()) {
+            $this->aTransaction = null;
+        }
     } // ensureConsistency
 
     /**
@@ -516,6 +530,7 @@ abstract class Refund implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aTransaction = null;
         } // if (deep)
     }
 
@@ -614,6 +629,18 @@ abstract class Refund implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aTransaction !== null) {
+                if ($this->aTransaction->isModified() || $this->aTransaction->isNew()) {
+                    $affectedRows += $this->aTransaction->save($con);
+                }
+                $this->setTransaction($this->aTransaction);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -769,10 +796,11 @@ abstract class Refund implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Refund'][$this->hashCode()])) {
@@ -790,6 +818,23 @@ abstract class Refund implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->aTransaction) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'transaction';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'transaction';
+                        break;
+                    default:
+                        $key = 'Transaction';
+                }
+
+                $result[$key] = $this->aTransaction->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+        }
 
         return $result;
     }
@@ -1034,12 +1079,66 @@ abstract class Refund implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildTransaction object.
+     *
+     * @param  ChildTransaction $v
+     * @return $this|\Refund The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setTransaction(ChildTransaction $v = null)
+    {
+        if ($v === null) {
+            $this->setTransactionId(NULL);
+        } else {
+            $this->setTransactionId($v->getId());
+        }
+
+        $this->aTransaction = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildTransaction object, it will not be re-added.
+        if ($v !== null) {
+            $v->addRefund($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildTransaction object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildTransaction The associated ChildTransaction object.
+     * @throws PropelException
+     */
+    public function getTransaction(ConnectionInterface $con = null)
+    {
+        if ($this->aTransaction === null && ($this->transaction_id !== null)) {
+            $this->aTransaction = ChildTransactionQuery::create()->findPk($this->transaction_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aTransaction->addRefunds($this);
+             */
+        }
+
+        return $this->aTransaction;
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aTransaction) {
+            $this->aTransaction->removeRefund($this);
+        }
         $this->id = null;
         $this->transaction_id = null;
         $this->amount = null;
@@ -1063,6 +1162,7 @@ abstract class Refund implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
+        $this->aTransaction = null;
     }
 
     /**

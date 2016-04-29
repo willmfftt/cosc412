@@ -42,6 +42,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildUserQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
+ * @method     ChildUserQuery leftJoinAdmin($relationAlias = null) Adds a LEFT JOIN clause to the query using the Admin relation
+ * @method     ChildUserQuery rightJoinAdmin($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Admin relation
+ * @method     ChildUserQuery innerJoinAdmin($relationAlias = null) Adds a INNER JOIN clause to the query using the Admin relation
+ *
+ * @method     ChildUserQuery joinWithAdmin($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Admin relation
+ *
+ * @method     ChildUserQuery leftJoinWithAdmin() Adds a LEFT JOIN clause and with to the query using the Admin relation
+ * @method     ChildUserQuery rightJoinWithAdmin() Adds a RIGHT JOIN clause and with to the query using the Admin relation
+ * @method     ChildUserQuery innerJoinWithAdmin() Adds a INNER JOIN clause and with to the query using the Admin relation
+ *
  * @method     ChildUserQuery leftJoinApprovedUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the ApprovedUser relation
  * @method     ChildUserQuery rightJoinApprovedUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ApprovedUser relation
  * @method     ChildUserQuery innerJoinApprovedUser($relationAlias = null) Adds a INNER JOIN clause to the query using the ApprovedUser relation
@@ -51,6 +61,26 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery leftJoinWithApprovedUser() Adds a LEFT JOIN clause and with to the query using the ApprovedUser relation
  * @method     ChildUserQuery rightJoinWithApprovedUser() Adds a RIGHT JOIN clause and with to the query using the ApprovedUser relation
  * @method     ChildUserQuery innerJoinWithApprovedUser() Adds a INNER JOIN clause and with to the query using the ApprovedUser relation
+ *
+ * @method     ChildUserQuery leftJoinAuditor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Auditor relation
+ * @method     ChildUserQuery rightJoinAuditor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Auditor relation
+ * @method     ChildUserQuery innerJoinAuditor($relationAlias = null) Adds a INNER JOIN clause to the query using the Auditor relation
+ *
+ * @method     ChildUserQuery joinWithAuditor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Auditor relation
+ *
+ * @method     ChildUserQuery leftJoinWithAuditor() Adds a LEFT JOIN clause and with to the query using the Auditor relation
+ * @method     ChildUserQuery rightJoinWithAuditor() Adds a RIGHT JOIN clause and with to the query using the Auditor relation
+ * @method     ChildUserQuery innerJoinWithAuditor() Adds a INNER JOIN clause and with to the query using the Auditor relation
+ *
+ * @method     ChildUserQuery leftJoinManager($relationAlias = null) Adds a LEFT JOIN clause to the query using the Manager relation
+ * @method     ChildUserQuery rightJoinManager($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Manager relation
+ * @method     ChildUserQuery innerJoinManager($relationAlias = null) Adds a INNER JOIN clause to the query using the Manager relation
+ *
+ * @method     ChildUserQuery joinWithManager($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Manager relation
+ *
+ * @method     ChildUserQuery leftJoinWithManager() Adds a LEFT JOIN clause and with to the query using the Manager relation
+ * @method     ChildUserQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
+ * @method     ChildUserQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
  *
  * @method     ChildUserQuery leftJoinPurchasingAgent($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchasingAgent relation
  * @method     ChildUserQuery rightJoinPurchasingAgent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchasingAgent relation
@@ -62,7 +92,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoinWithPurchasingAgent() Adds a RIGHT JOIN clause and with to the query using the PurchasingAgent relation
  * @method     ChildUserQuery innerJoinWithPurchasingAgent() Adds a INNER JOIN clause and with to the query using the PurchasingAgent relation
  *
- * @method     \ApprovedUserQuery|\PurchasingAgentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     ChildUserQuery leftJoinSupervisor($relationAlias = null) Adds a LEFT JOIN clause to the query using the Supervisor relation
+ * @method     ChildUserQuery rightJoinSupervisor($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Supervisor relation
+ * @method     ChildUserQuery innerJoinSupervisor($relationAlias = null) Adds a INNER JOIN clause to the query using the Supervisor relation
+ *
+ * @method     ChildUserQuery joinWithSupervisor($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Supervisor relation
+ *
+ * @method     ChildUserQuery leftJoinWithSupervisor() Adds a LEFT JOIN clause and with to the query using the Supervisor relation
+ * @method     ChildUserQuery rightJoinWithSupervisor() Adds a RIGHT JOIN clause and with to the query using the Supervisor relation
+ * @method     ChildUserQuery innerJoinWithSupervisor() Adds a INNER JOIN clause and with to the query using the Supervisor relation
+ *
+ * @method     \AdminQuery|\ApprovedUserQuery|\AuditorQuery|\ManagerQuery|\PurchasingAgentQuery|\SupervisorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -460,6 +500,79 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Admin object
+     *
+     * @param \Admin|ObjectCollection $admin the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByAdmin($admin, $comparison = null)
+    {
+        if ($admin instanceof \Admin) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $admin->getUserId(), $comparison);
+        } elseif ($admin instanceof ObjectCollection) {
+            return $this
+                ->useAdminQuery()
+                ->filterByPrimaryKeys($admin->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAdmin() only accepts arguments of type \Admin or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Admin relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinAdmin($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Admin');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Admin');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Admin relation Admin object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \AdminQuery A secondary query class using the current class as primary query
+     */
+    public function useAdminQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinAdmin($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Admin', '\AdminQuery');
+    }
+
+    /**
      * Filter the query by a related \ApprovedUser object
      *
      * @param \ApprovedUser|ObjectCollection $approvedUser the related object to use as filter
@@ -533,6 +646,152 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query by a related \Auditor object
+     *
+     * @param \Auditor|ObjectCollection $auditor the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByAuditor($auditor, $comparison = null)
+    {
+        if ($auditor instanceof \Auditor) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $auditor->getUserId(), $comparison);
+        } elseif ($auditor instanceof ObjectCollection) {
+            return $this
+                ->useAuditorQuery()
+                ->filterByPrimaryKeys($auditor->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAuditor() only accepts arguments of type \Auditor or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Auditor relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinAuditor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Auditor');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Auditor');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Auditor relation Auditor object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \AuditorQuery A secondary query class using the current class as primary query
+     */
+    public function useAuditorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinAuditor($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Auditor', '\AuditorQuery');
+    }
+
+    /**
+     * Filter the query by a related \Manager object
+     *
+     * @param \Manager|ObjectCollection $manager the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByManager($manager, $comparison = null)
+    {
+        if ($manager instanceof \Manager) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $manager->getUserId(), $comparison);
+        } elseif ($manager instanceof ObjectCollection) {
+            return $this
+                ->useManagerQuery()
+                ->filterByPrimaryKeys($manager->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByManager() only accepts arguments of type \Manager or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Manager relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinManager($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Manager');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Manager');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Manager relation Manager object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \ManagerQuery A secondary query class using the current class as primary query
+     */
+    public function useManagerQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinManager($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Manager', '\ManagerQuery');
+    }
+
+    /**
      * Filter the query by a related \PurchasingAgent object
      *
      * @param \PurchasingAgent|ObjectCollection $purchasingAgent the related object to use as filter
@@ -603,6 +862,79 @@ abstract class UserQuery extends ModelCriteria
         return $this
             ->joinPurchasingAgent($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'PurchasingAgent', '\PurchasingAgentQuery');
+    }
+
+    /**
+     * Filter the query by a related \Supervisor object
+     *
+     * @param \Supervisor|ObjectCollection $supervisor the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildUserQuery The current query, for fluid interface
+     */
+    public function filterBySupervisor($supervisor, $comparison = null)
+    {
+        if ($supervisor instanceof \Supervisor) {
+            return $this
+                ->addUsingAlias(UserTableMap::COL_ID, $supervisor->getUserId(), $comparison);
+        } elseif ($supervisor instanceof ObjectCollection) {
+            return $this
+                ->useSupervisorQuery()
+                ->filterByPrimaryKeys($supervisor->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterBySupervisor() only accepts arguments of type \Supervisor or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Supervisor relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function joinSupervisor($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Supervisor');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Supervisor');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Supervisor relation Supervisor object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \SupervisorQuery A secondary query class using the current class as primary query
+     */
+    public function useSupervisorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinSupervisor($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Supervisor', '\SupervisorQuery');
     }
 
     /**

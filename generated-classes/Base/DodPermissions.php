@@ -2,24 +2,15 @@
 
 namespace Base;
 
-use \Branch as ChildBranch;
-use \BranchQuery as ChildBranchQuery;
-use \PurchasingAgent as ChildPurchasingAgent;
-use \PurchasingAgentQuery as ChildPurchasingAgentQuery;
-use \Transaction as ChildTransaction;
-use \TransactionQuery as ChildTransactionQuery;
-use \User as ChildUser;
-use \UserQuery as ChildUserQuery;
+use \DodPermissionsQuery as ChildDodPermissionsQuery;
 use \Exception;
 use \PDO;
-use Map\PurchasingAgentTableMap;
-use Map\TransactionTableMap;
+use Map\DodPermissionsTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -28,18 +19,18 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 
 /**
- * Base class that represents a row from the 'purchasing_agent' table.
+ * Base class that represents a row from the 'dod_permissions' table.
  *
  *
  *
 * @package    propel.generator..Base
 */
-abstract class PurchasingAgent implements ActiveRecordInterface
+abstract class DodPermissions implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\PurchasingAgentTableMap';
+    const TABLE_MAP = '\\Map\\DodPermissionsTableMap';
 
 
     /**
@@ -76,34 +67,32 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the user_id field.
+     * The value for the lft field.
      *
      * @var        int
      */
-    protected $user_id;
+    protected $lft;
 
     /**
-     * The value for the branch_id field.
+     * The value for the rght field.
      *
      * @var        int
      */
-    protected $branch_id;
+    protected $rght;
 
     /**
-     * @var        ChildBranch
+     * The value for the title field.
+     *
+     * @var        string
      */
-    protected $aBranch;
+    protected $title;
 
     /**
-     * @var        ChildUser
+     * The value for the description field.
+     *
+     * @var        string
      */
-    protected $aUser;
-
-    /**
-     * @var        ObjectCollection|ChildTransaction[] Collection to store aggregation of ChildTransaction objects.
-     */
-    protected $collTransactions;
-    protected $collTransactionsPartial;
+    protected $description;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -114,13 +103,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildTransaction[]
-     */
-    protected $transactionsScheduledForDeletion = null;
-
-    /**
-     * Initializes internal state of Base\PurchasingAgent object.
+     * Initializes internal state of Base\DodPermissions object.
      */
     public function __construct()
     {
@@ -215,9 +198,9 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>PurchasingAgent</code> instance.  If
-     * <code>obj</code> is an instance of <code>PurchasingAgent</code>, delegates to
-     * <code>equals(PurchasingAgent)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>DodPermissions</code> instance.  If
+     * <code>obj</code> is an instance of <code>DodPermissions</code>, delegates to
+     * <code>equals(DodPermissions)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -283,7 +266,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|PurchasingAgent The current object, for fluid interface
+     * @return $this|DodPermissions The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -355,30 +338,50 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     }
 
     /**
-     * Get the [user_id] column value.
+     * Get the [lft] column value.
      *
      * @return int
      */
-    public function getUserId()
+    public function getLft()
     {
-        return $this->user_id;
+        return $this->lft;
     }
 
     /**
-     * Get the [branch_id] column value.
+     * Get the [rght] column value.
      *
      * @return int
      */
-    public function getBranchId()
+    public function getRght()
     {
-        return $this->branch_id;
+        return $this->rght;
+    }
+
+    /**
+     * Get the [title] column value.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Get the [description] column value.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
+     * @return $this|\DodPermissions The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -388,59 +391,91 @@ abstract class PurchasingAgent implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[PurchasingAgentTableMap::COL_ID] = true;
+            $this->modifiedColumns[DodPermissionsTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [user_id] column.
+     * Set the value of [lft] column.
      *
      * @param int $v new value
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
+     * @return $this|\DodPermissions The current object (for fluent API support)
      */
-    public function setUserId($v)
+    public function setLft($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->user_id !== $v) {
-            $this->user_id = $v;
-            $this->modifiedColumns[PurchasingAgentTableMap::COL_USER_ID] = true;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
+        if ($this->lft !== $v) {
+            $this->lft = $v;
+            $this->modifiedColumns[DodPermissionsTableMap::COL_LFT] = true;
         }
 
         return $this;
-    } // setUserId()
+    } // setLft()
 
     /**
-     * Set the value of [branch_id] column.
+     * Set the value of [rght] column.
      *
      * @param int $v new value
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
+     * @return $this|\DodPermissions The current object (for fluent API support)
      */
-    public function setBranchId($v)
+    public function setRght($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->branch_id !== $v) {
-            $this->branch_id = $v;
-            $this->modifiedColumns[PurchasingAgentTableMap::COL_BRANCH_ID] = true;
-        }
-
-        if ($this->aBranch !== null && $this->aBranch->getId() !== $v) {
-            $this->aBranch = null;
+        if ($this->rght !== $v) {
+            $this->rght = $v;
+            $this->modifiedColumns[DodPermissionsTableMap::COL_RGHT] = true;
         }
 
         return $this;
-    } // setBranchId()
+    } // setRght()
+
+    /**
+     * Set the value of [title] column.
+     *
+     * @param string $v new value
+     * @return $this|\DodPermissions The current object (for fluent API support)
+     */
+    public function setTitle($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[DodPermissionsTableMap::COL_TITLE] = true;
+        }
+
+        return $this;
+    } // setTitle()
+
+    /**
+     * Set the value of [description] column.
+     *
+     * @param string $v new value
+     * @return $this|\DodPermissions The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[DodPermissionsTableMap::COL_DESCRIPTION] = true;
+        }
+
+        return $this;
+    } // setDescription()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -478,14 +513,20 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PurchasingAgentTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : DodPermissionsTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PurchasingAgentTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->user_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : DodPermissionsTableMap::translateFieldName('Lft', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->lft = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PurchasingAgentTableMap::translateFieldName('BranchId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->branch_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : DodPermissionsTableMap::translateFieldName('Rght', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->rght = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : DodPermissionsTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->title = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : DodPermissionsTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -494,10 +535,10 @@ abstract class PurchasingAgent implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = PurchasingAgentTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = DodPermissionsTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\PurchasingAgent'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\DodPermissions'), 0, $e);
         }
     }
 
@@ -516,12 +557,6 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
-        if ($this->aBranch !== null && $this->branch_id !== $this->aBranch->getId()) {
-            $this->aBranch = null;
-        }
     } // ensureConsistency
 
     /**
@@ -545,13 +580,13 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PurchasingAgentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(DodPermissionsTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildPurchasingAgentQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildDodPermissionsQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -560,10 +595,6 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
-            $this->aBranch = null;
-            $this->aUser = null;
-            $this->collTransactions = null;
 
         } // if (deep)
     }
@@ -574,8 +605,8 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see PurchasingAgent::setDeleted()
-     * @see PurchasingAgent::isDeleted()
+     * @see DodPermissions::setDeleted()
+     * @see DodPermissions::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -584,11 +615,11 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingAgentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodPermissionsTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildPurchasingAgentQuery::create()
+            $deleteQuery = ChildDodPermissionsQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -619,7 +650,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PurchasingAgentTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodPermissionsTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -638,7 +669,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                PurchasingAgentTableMap::addInstanceToPool($this);
+                DodPermissionsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -664,25 +695,6 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aBranch !== null) {
-                if ($this->aBranch->isModified() || $this->aBranch->isNew()) {
-                    $affectedRows += $this->aBranch->save($con);
-                }
-                $this->setBranch($this->aBranch);
-            }
-
-            if ($this->aUser !== null) {
-                if ($this->aUser->isModified() || $this->aUser->isNew()) {
-                    $affectedRows += $this->aUser->save($con);
-                }
-                $this->setUser($this->aUser);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -692,23 +704,6 @@ abstract class PurchasingAgent implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->transactionsScheduledForDeletion !== null) {
-                if (!$this->transactionsScheduledForDeletion->isEmpty()) {
-                    \TransactionQuery::create()
-                        ->filterByPrimaryKeys($this->transactionsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->transactionsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collTransactions !== null) {
-                foreach ($this->collTransactions as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -731,24 +726,30 @@ abstract class PurchasingAgent implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[PurchasingAgentTableMap::COL_ID] = true;
+        $this->modifiedColumns[DodPermissionsTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PurchasingAgentTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . DodPermissionsTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'id';
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'ID';
         }
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_USER_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'user_id';
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_LFT)) {
+            $modifiedColumns[':p' . $index++]  = 'Lft';
         }
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_BRANCH_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'branch_id';
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_RGHT)) {
+            $modifiedColumns[':p' . $index++]  = 'Rght';
+        }
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'Title';
+        }
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'Description';
         }
 
         $sql = sprintf(
-            'INSERT INTO purchasing_agent (%s) VALUES (%s)',
+            'INSERT INTO dod_permissions (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -757,14 +758,20 @@ abstract class PurchasingAgent implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'id':
+                    case 'ID':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'user_id':
-                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
+                    case 'Lft':
+                        $stmt->bindValue($identifier, $this->lft, PDO::PARAM_INT);
                         break;
-                    case 'branch_id':
-                        $stmt->bindValue($identifier, $this->branch_id, PDO::PARAM_INT);
+                    case 'Rght':
+                        $stmt->bindValue($identifier, $this->rght, PDO::PARAM_INT);
+                        break;
+                    case 'Title':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
+                        break;
+                    case 'Description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -812,7 +819,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchasingAgentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = DodPermissionsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -832,10 +839,16 @@ abstract class PurchasingAgent implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserId();
+                return $this->getLft();
                 break;
             case 2:
-                return $this->getBranchId();
+                return $this->getRght();
+                break;
+            case 3:
+                return $this->getTitle();
+                break;
+            case 4:
+                return $this->getDescription();
                 break;
             default:
                 return null;
@@ -854,75 +867,29 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['PurchasingAgent'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['DodPermissions'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['PurchasingAgent'][$this->hashCode()] = true;
-        $keys = PurchasingAgentTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['DodPermissions'][$this->hashCode()] = true;
+        $keys = DodPermissionsTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserId(),
-            $keys[2] => $this->getBranchId(),
+            $keys[1] => $this->getLft(),
+            $keys[2] => $this->getRght(),
+            $keys[3] => $this->getTitle(),
+            $keys[4] => $this->getDescription(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aBranch) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'branch';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'branch';
-                        break;
-                    default:
-                        $key = 'Branch';
-                }
-
-                $result[$key] = $this->aBranch->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aUser) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'user';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'user';
-                        break;
-                    default:
-                        $key = 'User';
-                }
-
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->collTransactions) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'transactions';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'transactions';
-                        break;
-                    default:
-                        $key = 'Transactions';
-                }
-
-                $result[$key] = $this->collTransactions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-        }
 
         return $result;
     }
@@ -936,11 +903,11 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\PurchasingAgent
+     * @return $this|\DodPermissions
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = PurchasingAgentTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = DodPermissionsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -951,7 +918,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\PurchasingAgent
+     * @return $this|\DodPermissions
      */
     public function setByPosition($pos, $value)
     {
@@ -960,10 +927,16 @@ abstract class PurchasingAgent implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserId($value);
+                $this->setLft($value);
                 break;
             case 2:
-                $this->setBranchId($value);
+                $this->setRght($value);
+                break;
+            case 3:
+                $this->setTitle($value);
+                break;
+            case 4:
+                $this->setDescription($value);
                 break;
         } // switch()
 
@@ -989,16 +962,22 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = PurchasingAgentTableMap::getFieldNames($keyType);
+        $keys = DodPermissionsTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserId($arr[$keys[1]]);
+            $this->setLft($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setBranchId($arr[$keys[2]]);
+            $this->setRght($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setTitle($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setDescription($arr[$keys[4]]);
         }
     }
 
@@ -1019,7 +998,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\PurchasingAgent The current object, for fluid interface
+     * @return $this|\DodPermissions The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1039,16 +1018,22 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(PurchasingAgentTableMap::DATABASE_NAME);
+        $criteria = new Criteria(DodPermissionsTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_ID)) {
-            $criteria->add(PurchasingAgentTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_ID)) {
+            $criteria->add(DodPermissionsTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_USER_ID)) {
-            $criteria->add(PurchasingAgentTableMap::COL_USER_ID, $this->user_id);
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_LFT)) {
+            $criteria->add(DodPermissionsTableMap::COL_LFT, $this->lft);
         }
-        if ($this->isColumnModified(PurchasingAgentTableMap::COL_BRANCH_ID)) {
-            $criteria->add(PurchasingAgentTableMap::COL_BRANCH_ID, $this->branch_id);
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_RGHT)) {
+            $criteria->add(DodPermissionsTableMap::COL_RGHT, $this->rght);
+        }
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_TITLE)) {
+            $criteria->add(DodPermissionsTableMap::COL_TITLE, $this->title);
+        }
+        if ($this->isColumnModified(DodPermissionsTableMap::COL_DESCRIPTION)) {
+            $criteria->add(DodPermissionsTableMap::COL_DESCRIPTION, $this->description);
         }
 
         return $criteria;
@@ -1066,9 +1051,8 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildPurchasingAgentQuery::create();
-        $criteria->add(PurchasingAgentTableMap::COL_ID, $this->id);
-        $criteria->add(PurchasingAgentTableMap::COL_USER_ID, $this->user_id);
+        $criteria = ChildDodPermissionsQuery::create();
+        $criteria->add(DodPermissionsTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1081,18 +1065,10 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId() &&
-            null !== $this->getUserId();
+        $validPk = null !== $this->getId();
 
-        $validPrimaryKeyFKs = 1;
+        $validPrimaryKeyFKs = 0;
         $primaryKeyFKs = [];
-
-        //relation fk_purchasingAgent_user1 to table user
-        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
-            $primaryKeyFKs[] = $hash;
-        } else {
-            $validPrimaryKeyFKs = false;
-        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1104,29 +1080,23 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     }
 
     /**
-     * Returns the composite primary key for this object.
-     * The array elements will be in same order as specified in XML.
-     * @return array
+     * Returns the primary key for this object (row).
+     * @return int
      */
     public function getPrimaryKey()
     {
-        $pks = array();
-        $pks[0] = $this->getId();
-        $pks[1] = $this->getUserId();
-
-        return $pks;
+        return $this->getId();
     }
 
     /**
-     * Set the [composite] primary key.
+     * Generic method to set the primary key (id column).
      *
-     * @param      array $keys The elements of the composite key (order must match the order in XML file).
+     * @param       int $key Primary key.
      * @return void
      */
-    public function setPrimaryKey($keys)
+    public function setPrimaryKey($key)
     {
-        $this->setId($keys[0]);
-        $this->setUserId($keys[1]);
+        $this->setId($key);
     }
 
     /**
@@ -1135,7 +1105,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return (null === $this->getId()) && (null === $this->getUserId());
+        return null === $this->getId();
     }
 
     /**
@@ -1144,29 +1114,17 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \PurchasingAgent (or compatible) type.
+     * @param      object $copyObj An object of \DodPermissions (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserId($this->getUserId());
-        $copyObj->setBranchId($this->getBranchId());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getTransactions() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addTransaction($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setLft($this->getLft());
+        $copyObj->setRght($this->getRght());
+        $copyObj->setTitle($this->getTitle());
+        $copyObj->setDescription($this->getDescription());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1182,7 +1140,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \PurchasingAgent Clone of current object.
+     * @return \DodPermissions Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1196,389 +1154,17 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildBranch object.
-     *
-     * @param  ChildBranch $v
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setBranch(ChildBranch $v = null)
-    {
-        if ($v === null) {
-            $this->setBranchId(NULL);
-        } else {
-            $this->setBranchId($v->getId());
-        }
-
-        $this->aBranch = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildBranch object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchasingAgent($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildBranch object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildBranch The associated ChildBranch object.
-     * @throws PropelException
-     */
-    public function getBranch(ConnectionInterface $con = null)
-    {
-        if ($this->aBranch === null && ($this->branch_id !== null)) {
-            $this->aBranch = ChildBranchQuery::create()->findPk($this->branch_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aBranch->addPurchasingAgents($this);
-             */
-        }
-
-        return $this->aBranch;
-    }
-
-    /**
-     * Declares an association between this object and a ChildUser object.
-     *
-     * @param  ChildUser $v
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUser(ChildUser $v = null)
-    {
-        if ($v === null) {
-            $this->setUserId(NULL);
-        } else {
-            $this->setUserId($v->getId());
-        }
-
-        $this->aUser = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildUser object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPurchasingAgent($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildUser object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildUser The associated ChildUser object.
-     * @throws PropelException
-     */
-    public function getUser(ConnectionInterface $con = null)
-    {
-        if ($this->aUser === null && ($this->user_id !== null)) {
-            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addPurchasingAgents($this);
-             */
-        }
-
-        return $this->aUser;
-    }
-
-
-    /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
-     *
-     * @param      string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Transaction' == $relationName) {
-            return $this->initTransactions();
-        }
-    }
-
-    /**
-     * Clears out the collTransactions collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addTransactions()
-     */
-    public function clearTransactions()
-    {
-        $this->collTransactions = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collTransactions collection loaded partially.
-     */
-    public function resetPartialTransactions($v = true)
-    {
-        $this->collTransactionsPartial = $v;
-    }
-
-    /**
-     * Initializes the collTransactions collection.
-     *
-     * By default this just sets the collTransactions collection to an empty array (like clearcollTransactions());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initTransactions($overrideExisting = true)
-    {
-        if (null !== $this->collTransactions && !$overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = TransactionTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collTransactions = new $collectionClassName;
-        $this->collTransactions->setModel('\Transaction');
-    }
-
-    /**
-     * Gets an array of ChildTransaction objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildPurchasingAgent is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
-     * @throws PropelException
-     */
-    public function getTransactions(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collTransactions) {
-                // return empty collection
-                $this->initTransactions();
-            } else {
-                $collTransactions = ChildTransactionQuery::create(null, $criteria)
-                    ->filterByPurchasingAgent($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collTransactionsPartial && count($collTransactions)) {
-                        $this->initTransactions(false);
-
-                        foreach ($collTransactions as $obj) {
-                            if (false == $this->collTransactions->contains($obj)) {
-                                $this->collTransactions->append($obj);
-                            }
-                        }
-
-                        $this->collTransactionsPartial = true;
-                    }
-
-                    return $collTransactions;
-                }
-
-                if ($partial && $this->collTransactions) {
-                    foreach ($this->collTransactions as $obj) {
-                        if ($obj->isNew()) {
-                            $collTransactions[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collTransactions = $collTransactions;
-                $this->collTransactionsPartial = false;
-            }
-        }
-
-        return $this->collTransactions;
-    }
-
-    /**
-     * Sets a collection of ChildTransaction objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $transactions A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildPurchasingAgent The current object (for fluent API support)
-     */
-    public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
-    {
-        /** @var ChildTransaction[] $transactionsToDelete */
-        $transactionsToDelete = $this->getTransactions(new Criteria(), $con)->diff($transactions);
-
-
-        $this->transactionsScheduledForDeletion = $transactionsToDelete;
-
-        foreach ($transactionsToDelete as $transactionRemoved) {
-            $transactionRemoved->setPurchasingAgent(null);
-        }
-
-        $this->collTransactions = null;
-        foreach ($transactions as $transaction) {
-            $this->addTransaction($transaction);
-        }
-
-        $this->collTransactions = $transactions;
-        $this->collTransactionsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Transaction objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Transaction objects.
-     * @throws PropelException
-     */
-    public function countTransactions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collTransactionsPartial && !$this->isNew();
-        if (null === $this->collTransactions || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collTransactions) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getTransactions());
-            }
-
-            $query = ChildTransactionQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByPurchasingAgent($this)
-                ->count($con);
-        }
-
-        return count($this->collTransactions);
-    }
-
-    /**
-     * Method called to associate a ChildTransaction object to this object
-     * through the ChildTransaction foreign key attribute.
-     *
-     * @param  ChildTransaction $l ChildTransaction
-     * @return $this|\PurchasingAgent The current object (for fluent API support)
-     */
-    public function addTransaction(ChildTransaction $l)
-    {
-        if ($this->collTransactions === null) {
-            $this->initTransactions();
-            $this->collTransactionsPartial = true;
-        }
-
-        if (!$this->collTransactions->contains($l)) {
-            $this->doAddTransaction($l);
-
-            if ($this->transactionsScheduledForDeletion and $this->transactionsScheduledForDeletion->contains($l)) {
-                $this->transactionsScheduledForDeletion->remove($this->transactionsScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildTransaction $transaction The ChildTransaction object to add.
-     */
-    protected function doAddTransaction(ChildTransaction $transaction)
-    {
-        $this->collTransactions[]= $transaction;
-        $transaction->setPurchasingAgent($this);
-    }
-
-    /**
-     * @param  ChildTransaction $transaction The ChildTransaction object to remove.
-     * @return $this|ChildPurchasingAgent The current object (for fluent API support)
-     */
-    public function removeTransaction(ChildTransaction $transaction)
-    {
-        if ($this->getTransactions()->contains($transaction)) {
-            $pos = $this->collTransactions->search($transaction);
-            $this->collTransactions->remove($pos);
-            if (null === $this->transactionsScheduledForDeletion) {
-                $this->transactionsScheduledForDeletion = clone $this->collTransactions;
-                $this->transactionsScheduledForDeletion->clear();
-            }
-            $this->transactionsScheduledForDeletion[]= clone $transaction;
-            $transaction->setPurchasingAgent(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this PurchasingAgent is new, it will return
-     * an empty collection; or if this PurchasingAgent has previously
-     * been saved, it will retrieve related Transactions from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in PurchasingAgent.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
-     */
-    public function getTransactionsJoinSupervisor(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildTransactionQuery::create(null, $criteria);
-        $query->joinWith('Supervisor', $joinBehavior);
-
-        return $this->getTransactions($query, $con);
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aBranch) {
-            $this->aBranch->removePurchasingAgent($this);
-        }
-        if (null !== $this->aUser) {
-            $this->aUser->removePurchasingAgent($this);
-        }
         $this->id = null;
-        $this->user_id = null;
-        $this->branch_id = null;
+        $this->lft = null;
+        $this->rght = null;
+        $this->title = null;
+        $this->description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1597,16 +1183,8 @@ abstract class PurchasingAgent implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collTransactions) {
-                foreach ($this->collTransactions as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collTransactions = null;
-        $this->aBranch = null;
-        $this->aUser = null;
     }
 
     /**
@@ -1616,7 +1194,7 @@ abstract class PurchasingAgent implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(PurchasingAgentTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(DodPermissionsTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

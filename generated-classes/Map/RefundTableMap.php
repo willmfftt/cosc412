@@ -137,7 +137,7 @@ class RefundTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('transaction_id', 'TransactionId', 'INTEGER', true, null, null);
+        $this->addForeignKey('transaction_id', 'TransactionId', 'INTEGER', 'transaction', 'id', true, null, null);
         $this->addColumn('amount', 'Amount', 'FLOAT', true, 10, null);
     } // initialize()
 
@@ -146,6 +146,13 @@ class RefundTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Transaction', '\\Transaction', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':transaction_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
     } // buildRelations()
 
     /**

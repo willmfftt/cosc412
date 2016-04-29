@@ -59,7 +59,7 @@ class ManagerTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class ManagerTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
@@ -87,6 +87,11 @@ class ManagerTableMap extends TableMap
     const COL_ADMIN_ID = 'manager.admin_id';
 
     /**
+     * the column name for the location_id field
+     */
+    const COL_LOCATION_ID = 'manager.location_id';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -98,11 +103,11 @@ class ManagerTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'UserId', 'AdminId', ),
-        self::TYPE_CAMELNAME     => array('id', 'userId', 'adminId', ),
-        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID, ManagerTableMap::COL_USER_ID, ManagerTableMap::COL_ADMIN_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'user_id', 'admin_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'UserId', 'AdminId', 'LocationId', ),
+        self::TYPE_CAMELNAME     => array('id', 'userId', 'adminId', 'locationId', ),
+        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID, ManagerTableMap::COL_USER_ID, ManagerTableMap::COL_ADMIN_ID, ManagerTableMap::COL_LOCATION_ID, ),
+        self::TYPE_FIELDNAME     => array('id', 'user_id', 'admin_id', 'location_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,11 +117,11 @@ class ManagerTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'AdminId' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'adminId' => 2, ),
-        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID => 0, ManagerTableMap::COL_USER_ID => 1, ManagerTableMap::COL_ADMIN_ID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'admin_id' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'AdminId' => 2, 'LocationId' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'adminId' => 2, 'locationId' => 3, ),
+        self::TYPE_COLNAME       => array(ManagerTableMap::COL_ID => 0, ManagerTableMap::COL_USER_ID => 1, ManagerTableMap::COL_ADMIN_ID => 2, ManagerTableMap::COL_LOCATION_ID => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'admin_id' => 2, 'location_id' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -137,8 +142,9 @@ class ManagerTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addPrimaryKey('user_id', 'UserId', 'INTEGER', true, null, null);
-        $this->addColumn('admin_id', 'AdminId', 'INTEGER', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignKey('admin_id', 'AdminId', 'INTEGER', 'admin', 'id', true, null, null);
+        $this->addForeignKey('location_id', 'LocationId', 'INTEGER', 'location', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -146,10 +152,31 @@ class ManagerTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Admin', '\\Admin', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':admin_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Location', '\\Location', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
         $this->addRelation('Supervisor', '\\Supervisor', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':managerId',
+    0 => ':manager_id',
     1 => ':id',
   ),
 ), null, null, 'Supervisors', false);
@@ -361,10 +388,12 @@ class ManagerTableMap extends TableMap
             $criteria->addSelectColumn(ManagerTableMap::COL_ID);
             $criteria->addSelectColumn(ManagerTableMap::COL_USER_ID);
             $criteria->addSelectColumn(ManagerTableMap::COL_ADMIN_ID);
+            $criteria->addSelectColumn(ManagerTableMap::COL_LOCATION_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.user_id');
             $criteria->addSelectColumn($alias . '.admin_id');
+            $criteria->addSelectColumn($alias . '.location_id');
         }
     }
 
