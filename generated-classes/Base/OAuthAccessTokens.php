@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \OAuthAccessTokensQuery as ChildOAuthAccessTokensQuery;
+use \OauthAccessTokensQuery as ChildOauthAccessTokensQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\OAuthAccessTokensTableMap;
+use Map\OauthAccessTokensTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -27,12 +27,12 @@ use Propel\Runtime\Util\PropelDateTime;
  *
 * @package    propel.generator..Base
 */
-abstract class OAuthAccessTokens implements ActiveRecordInterface
+abstract class OauthAccessTokens implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\OAuthAccessTokensTableMap';
+    const TABLE_MAP = '\\Map\\OauthAccessTokensTableMap';
 
 
     /**
@@ -116,7 +116,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\OAuthAccessTokens object.
+     * Initializes internal state of Base\OauthAccessTokens object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -213,9 +213,9 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>OAuthAccessTokens</code> instance.  If
-     * <code>obj</code> is an instance of <code>OAuthAccessTokens</code>, delegates to
-     * <code>equals(OAuthAccessTokens)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>OauthAccessTokens</code> instance.  If
+     * <code>obj</code> is an instance of <code>OauthAccessTokens</code>, delegates to
+     * <code>equals(OauthAccessTokens)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -281,7 +281,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|OAuthAccessTokens The current object, for fluid interface
+     * @return $this|OauthAccessTokens The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -406,7 +406,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * Set the value of [access_token] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthAccessTokens The current object (for fluent API support)
+     * @return $this|\OauthAccessTokens The current object (for fluent API support)
      */
     public function setAccessToken($v)
     {
@@ -416,7 +416,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
 
         if ($this->access_token !== $v) {
             $this->access_token = $v;
-            $this->modifiedColumns[OAuthAccessTokensTableMap::COL_ACCESS_TOKEN] = true;
+            $this->modifiedColumns[OauthAccessTokensTableMap::COL_ACCESS_TOKEN] = true;
         }
 
         return $this;
@@ -426,7 +426,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * Set the value of [client_id] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthAccessTokens The current object (for fluent API support)
+     * @return $this|\OauthAccessTokens The current object (for fluent API support)
      */
     public function setClientId($v)
     {
@@ -436,7 +436,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
 
         if ($this->client_id !== $v) {
             $this->client_id = $v;
-            $this->modifiedColumns[OAuthAccessTokensTableMap::COL_CLIENT_ID] = true;
+            $this->modifiedColumns[OauthAccessTokensTableMap::COL_CLIENT_ID] = true;
         }
 
         return $this;
@@ -446,7 +446,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * Set the value of [user_id] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthAccessTokens The current object (for fluent API support)
+     * @return $this|\OauthAccessTokens The current object (for fluent API support)
      */
     public function setUserId($v)
     {
@@ -456,7 +456,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
 
         if ($this->user_id !== $v) {
             $this->user_id = $v;
-            $this->modifiedColumns[OAuthAccessTokensTableMap::COL_USER_ID] = true;
+            $this->modifiedColumns[OauthAccessTokensTableMap::COL_USER_ID] = true;
         }
 
         return $this;
@@ -467,7 +467,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\OAuthAccessTokens The current object (for fluent API support)
+     * @return $this|\OauthAccessTokens The current object (for fluent API support)
      */
     public function setExpires($v)
     {
@@ -475,7 +475,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
         if ($this->expires !== null || $dt !== null) {
             if ($this->expires === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->expires->format("Y-m-d H:i:s")) {
                 $this->expires = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[OAuthAccessTokensTableMap::COL_EXPIRES] = true;
+                $this->modifiedColumns[OauthAccessTokensTableMap::COL_EXPIRES] = true;
             }
         } // if either are not null
 
@@ -486,7 +486,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * Set the value of [scope] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthAccessTokens The current object (for fluent API support)
+     * @return $this|\OauthAccessTokens The current object (for fluent API support)
      */
     public function setScope($v)
     {
@@ -496,7 +496,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
 
         if ($this->scope !== $v) {
             $this->scope = $v;
-            $this->modifiedColumns[OAuthAccessTokensTableMap::COL_SCOPE] = true;
+            $this->modifiedColumns[OauthAccessTokensTableMap::COL_SCOPE] = true;
         }
 
         return $this;
@@ -538,22 +538,22 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : OAuthAccessTokensTableMap::translateFieldName('AccessToken', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : OauthAccessTokensTableMap::translateFieldName('AccessToken', TableMap::TYPE_PHPNAME, $indexType)];
             $this->access_token = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OAuthAccessTokensTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OauthAccessTokensTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->client_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OAuthAccessTokensTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OauthAccessTokensTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->user_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OAuthAccessTokensTableMap::translateFieldName('Expires', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OauthAccessTokensTableMap::translateFieldName('Expires', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->expires = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : OAuthAccessTokensTableMap::translateFieldName('Scope', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : OauthAccessTokensTableMap::translateFieldName('Scope', TableMap::TYPE_PHPNAME, $indexType)];
             $this->scope = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -563,10 +563,10 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = OAuthAccessTokensTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = OauthAccessTokensTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\OAuthAccessTokens'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\OauthAccessTokens'), 0, $e);
         }
     }
 
@@ -608,13 +608,13 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(OAuthAccessTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(OauthAccessTokensTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildOAuthAccessTokensQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildOauthAccessTokensQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -633,8 +633,8 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see OAuthAccessTokens::setDeleted()
-     * @see OAuthAccessTokens::isDeleted()
+     * @see OauthAccessTokens::setDeleted()
+     * @see OauthAccessTokens::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -643,11 +643,11 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthAccessTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthAccessTokensTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildOAuthAccessTokensQuery::create()
+            $deleteQuery = ChildOauthAccessTokensQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -678,7 +678,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthAccessTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthAccessTokensTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -697,7 +697,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                OAuthAccessTokensTableMap::addInstanceToPool($this);
+                OauthAccessTokensTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -756,19 +756,19 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN)) {
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_ACCESS_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = 'access_token';
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_CLIENT_ID)) {
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_CLIENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'client_id';
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_USER_ID)) {
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_USER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_EXPIRES)) {
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_EXPIRES)) {
             $modifiedColumns[':p' . $index++]  = 'expires';
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_SCOPE)) {
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_SCOPE)) {
             $modifiedColumns[':p' . $index++]  = 'scope';
         }
 
@@ -836,7 +836,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = OAuthAccessTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = OauthAccessTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -890,11 +890,11 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['OAuthAccessTokens'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['OauthAccessTokens'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['OAuthAccessTokens'][$this->hashCode()] = true;
-        $keys = OAuthAccessTokensTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['OauthAccessTokens'][$this->hashCode()] = true;
+        $keys = OauthAccessTokensTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getAccessToken(),
             $keys[1] => $this->getClientId(),
@@ -924,11 +924,11 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\OAuthAccessTokens
+     * @return $this|\OauthAccessTokens
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = OAuthAccessTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = OauthAccessTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -939,7 +939,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\OAuthAccessTokens
+     * @return $this|\OauthAccessTokens
      */
     public function setByPosition($pos, $value)
     {
@@ -983,7 +983,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = OAuthAccessTokensTableMap::getFieldNames($keyType);
+        $keys = OauthAccessTokensTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setAccessToken($arr[$keys[0]]);
@@ -1019,7 +1019,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\OAuthAccessTokens The current object, for fluid interface
+     * @return $this|\OauthAccessTokens The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1039,22 +1039,22 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(OAuthAccessTokensTableMap::DATABASE_NAME);
+        $criteria = new Criteria(OauthAccessTokensTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN)) {
-            $criteria->add(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN, $this->access_token);
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_ACCESS_TOKEN)) {
+            $criteria->add(OauthAccessTokensTableMap::COL_ACCESS_TOKEN, $this->access_token);
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_CLIENT_ID)) {
-            $criteria->add(OAuthAccessTokensTableMap::COL_CLIENT_ID, $this->client_id);
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_CLIENT_ID)) {
+            $criteria->add(OauthAccessTokensTableMap::COL_CLIENT_ID, $this->client_id);
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_USER_ID)) {
-            $criteria->add(OAuthAccessTokensTableMap::COL_USER_ID, $this->user_id);
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_USER_ID)) {
+            $criteria->add(OauthAccessTokensTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_EXPIRES)) {
-            $criteria->add(OAuthAccessTokensTableMap::COL_EXPIRES, $this->expires);
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_EXPIRES)) {
+            $criteria->add(OauthAccessTokensTableMap::COL_EXPIRES, $this->expires);
         }
-        if ($this->isColumnModified(OAuthAccessTokensTableMap::COL_SCOPE)) {
-            $criteria->add(OAuthAccessTokensTableMap::COL_SCOPE, $this->scope);
+        if ($this->isColumnModified(OauthAccessTokensTableMap::COL_SCOPE)) {
+            $criteria->add(OauthAccessTokensTableMap::COL_SCOPE, $this->scope);
         }
 
         return $criteria;
@@ -1072,8 +1072,8 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildOAuthAccessTokensQuery::create();
-        $criteria->add(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN, $this->access_token);
+        $criteria = ChildOauthAccessTokensQuery::create();
+        $criteria->add(OauthAccessTokensTableMap::COL_ACCESS_TOKEN, $this->access_token);
 
         return $criteria;
     }
@@ -1135,7 +1135,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \OAuthAccessTokens (or compatible) type.
+     * @param      object $copyObj An object of \OauthAccessTokens (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1161,7 +1161,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \OAuthAccessTokens Clone of current object.
+     * @return \OauthAccessTokens Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1216,7 +1216,7 @@ abstract class OAuthAccessTokens implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(OAuthAccessTokensTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(OauthAccessTokensTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

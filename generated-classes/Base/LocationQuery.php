@@ -56,6 +56,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery rightJoinWithBranch() Adds a RIGHT JOIN clause and with to the query using the Branch relation
  * @method     ChildLocationQuery innerJoinWithBranch() Adds a INNER JOIN clause and with to the query using the Branch relation
  *
+ * @method     ChildLocationQuery leftJoinBudget($relationAlias = null) Adds a LEFT JOIN clause to the query using the Budget relation
+ * @method     ChildLocationQuery rightJoinBudget($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Budget relation
+ * @method     ChildLocationQuery innerJoinBudget($relationAlias = null) Adds a INNER JOIN clause to the query using the Budget relation
+ *
+ * @method     ChildLocationQuery joinWithBudget($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Budget relation
+ *
+ * @method     ChildLocationQuery leftJoinWithBudget() Adds a LEFT JOIN clause and with to the query using the Budget relation
+ * @method     ChildLocationQuery rightJoinWithBudget() Adds a RIGHT JOIN clause and with to the query using the Budget relation
+ * @method     ChildLocationQuery innerJoinWithBudget() Adds a INNER JOIN clause and with to the query using the Budget relation
+ *
  * @method     ChildLocationQuery leftJoinManager($relationAlias = null) Adds a LEFT JOIN clause to the query using the Manager relation
  * @method     ChildLocationQuery rightJoinManager($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Manager relation
  * @method     ChildLocationQuery innerJoinManager($relationAlias = null) Adds a INNER JOIN clause to the query using the Manager relation
@@ -66,7 +76,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLocationQuery rightJoinWithManager() Adds a RIGHT JOIN clause and with to the query using the Manager relation
  * @method     ChildLocationQuery innerJoinWithManager() Adds a INNER JOIN clause and with to the query using the Manager relation
  *
- * @method     \AuditorQuery|\BranchQuery|\ManagerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \AuditorQuery|\BranchQuery|\BudgetQuery|\ManagerQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildLocation findOne(ConnectionInterface $con = null) Return the first ChildLocation matching the query
  * @method     ChildLocation findOneOrCreate(ConnectionInterface $con = null) Return the first ChildLocation matching the query, or a new ChildLocation object populated from the query conditions when no match is found
@@ -511,6 +521,79 @@ abstract class LocationQuery extends ModelCriteria
         return $this
             ->joinBranch($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Branch', '\BranchQuery');
+    }
+
+    /**
+     * Filter the query by a related \Budget object
+     *
+     * @param \Budget|ObjectCollection $budget the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildLocationQuery The current query, for fluid interface
+     */
+    public function filterByBudget($budget, $comparison = null)
+    {
+        if ($budget instanceof \Budget) {
+            return $this
+                ->addUsingAlias(LocationTableMap::COL_ID, $budget->getLocationId(), $comparison);
+        } elseif ($budget instanceof ObjectCollection) {
+            return $this
+                ->useBudgetQuery()
+                ->filterByPrimaryKeys($budget->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBudget() only accepts arguments of type \Budget or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Budget relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildLocationQuery The current query, for fluid interface
+     */
+    public function joinBudget($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Budget');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Budget');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Budget relation Budget object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BudgetQuery A secondary query class using the current class as primary query
+     */
+    public function useBudgetQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinBudget($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Budget', '\BudgetQuery');
     }
 
     /**

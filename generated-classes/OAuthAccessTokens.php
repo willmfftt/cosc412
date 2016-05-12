@@ -1,6 +1,6 @@
 <?php
 
-use Base\OAuthAccessTokens as BaseOAuthAccessTokens;
+use Base\OauthAccessTokens as BaseOauthAccessTokens;
 
 /**
  * Skeleton subclass for representing a row from the 'oauth_access_tokens' table.
@@ -12,7 +12,7 @@ use Base\OAuthAccessTokens as BaseOAuthAccessTokens;
  * long as it does not already exist in the output directory.
  *
  */
-class OAuthAccessTokens extends BaseOAuthAccessTokens
+class OauthAccessTokens extends BaseOauthAccessTokens
 {
 
 }

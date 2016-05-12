@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \OAuthAccessTokens;
-use \OAuthAccessTokensQuery;
+use \OauthAccessTokens;
+use \OauthAccessTokensQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class OAuthAccessTokensTableMap extends TableMap
+class OauthAccessTokensTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class OAuthAccessTokensTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.OAuthAccessTokensTableMap';
+    const CLASS_NAME = '.Map.OauthAccessTokensTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class OAuthAccessTokensTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\OAuthAccessTokens';
+    const OM_CLASS = '\\OauthAccessTokens';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'OAuthAccessTokens';
+    const CLASS_DEFAULT = 'OauthAccessTokens';
 
     /**
      * The total number of columns
@@ -110,7 +110,7 @@ class OAuthAccessTokensTableMap extends TableMap
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('AccessToken', 'ClientId', 'UserId', 'Expires', 'Scope', ),
         self::TYPE_CAMELNAME     => array('accessToken', 'clientId', 'userId', 'expires', 'scope', ),
-        self::TYPE_COLNAME       => array(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN, OAuthAccessTokensTableMap::COL_CLIENT_ID, OAuthAccessTokensTableMap::COL_USER_ID, OAuthAccessTokensTableMap::COL_EXPIRES, OAuthAccessTokensTableMap::COL_SCOPE, ),
+        self::TYPE_COLNAME       => array(OauthAccessTokensTableMap::COL_ACCESS_TOKEN, OauthAccessTokensTableMap::COL_CLIENT_ID, OauthAccessTokensTableMap::COL_USER_ID, OauthAccessTokensTableMap::COL_EXPIRES, OauthAccessTokensTableMap::COL_SCOPE, ),
         self::TYPE_FIELDNAME     => array('access_token', 'client_id', 'user_id', 'expires', 'scope', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -124,7 +124,7 @@ class OAuthAccessTokensTableMap extends TableMap
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('AccessToken' => 0, 'ClientId' => 1, 'UserId' => 2, 'Expires' => 3, 'Scope' => 4, ),
         self::TYPE_CAMELNAME     => array('accessToken' => 0, 'clientId' => 1, 'userId' => 2, 'expires' => 3, 'scope' => 4, ),
-        self::TYPE_COLNAME       => array(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN => 0, OAuthAccessTokensTableMap::COL_CLIENT_ID => 1, OAuthAccessTokensTableMap::COL_USER_ID => 2, OAuthAccessTokensTableMap::COL_EXPIRES => 3, OAuthAccessTokensTableMap::COL_SCOPE => 4, ),
+        self::TYPE_COLNAME       => array(OauthAccessTokensTableMap::COL_ACCESS_TOKEN => 0, OauthAccessTokensTableMap::COL_CLIENT_ID => 1, OauthAccessTokensTableMap::COL_USER_ID => 2, OauthAccessTokensTableMap::COL_EXPIRES => 3, OauthAccessTokensTableMap::COL_SCOPE => 4, ),
         self::TYPE_FIELDNAME     => array('access_token' => 0, 'client_id' => 1, 'user_id' => 2, 'expires' => 3, 'scope' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -140,9 +140,9 @@ class OAuthAccessTokensTableMap extends TableMap
     {
         // attributes
         $this->setName('oauth_access_tokens');
-        $this->setPhpName('OAuthAccessTokens');
+        $this->setPhpName('OauthAccessTokens');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\OAuthAccessTokens');
+        $this->setClassName('\\OauthAccessTokens');
         $this->setPackage('');
         $this->setUseIdGenerator(false);
         // columns
@@ -217,7 +217,7 @@ class OAuthAccessTokensTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? OAuthAccessTokensTableMap::CLASS_DEFAULT : OAuthAccessTokensTableMap::OM_CLASS;
+        return $withPrefix ? OauthAccessTokensTableMap::CLASS_DEFAULT : OauthAccessTokensTableMap::OM_CLASS;
     }
 
     /**
@@ -231,22 +231,22 @@ class OAuthAccessTokensTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (OAuthAccessTokens object, last column rank)
+     * @return array           (OauthAccessTokens object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = OAuthAccessTokensTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = OAuthAccessTokensTableMap::getInstanceFromPool($key))) {
+        $key = OauthAccessTokensTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = OauthAccessTokensTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + OAuthAccessTokensTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + OauthAccessTokensTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = OAuthAccessTokensTableMap::OM_CLASS;
-            /** @var OAuthAccessTokens $obj */
+            $cls = OauthAccessTokensTableMap::OM_CLASS;
+            /** @var OauthAccessTokens $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            OAuthAccessTokensTableMap::addInstanceToPool($obj, $key);
+            OauthAccessTokensTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -269,18 +269,18 @@ class OAuthAccessTokensTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = OAuthAccessTokensTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = OAuthAccessTokensTableMap::getInstanceFromPool($key))) {
+            $key = OauthAccessTokensTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = OauthAccessTokensTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var OAuthAccessTokens $obj */
+                /** @var OauthAccessTokens $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                OAuthAccessTokensTableMap::addInstanceToPool($obj, $key);
+                OauthAccessTokensTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -301,11 +301,11 @@ class OAuthAccessTokensTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN);
-            $criteria->addSelectColumn(OAuthAccessTokensTableMap::COL_CLIENT_ID);
-            $criteria->addSelectColumn(OAuthAccessTokensTableMap::COL_USER_ID);
-            $criteria->addSelectColumn(OAuthAccessTokensTableMap::COL_EXPIRES);
-            $criteria->addSelectColumn(OAuthAccessTokensTableMap::COL_SCOPE);
+            $criteria->addSelectColumn(OauthAccessTokensTableMap::COL_ACCESS_TOKEN);
+            $criteria->addSelectColumn(OauthAccessTokensTableMap::COL_CLIENT_ID);
+            $criteria->addSelectColumn(OauthAccessTokensTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(OauthAccessTokensTableMap::COL_EXPIRES);
+            $criteria->addSelectColumn(OauthAccessTokensTableMap::COL_SCOPE);
         } else {
             $criteria->addSelectColumn($alias . '.access_token');
             $criteria->addSelectColumn($alias . '.client_id');
@@ -324,7 +324,7 @@ class OAuthAccessTokensTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(OAuthAccessTokensTableMap::DATABASE_NAME)->getTable(OAuthAccessTokensTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(OauthAccessTokensTableMap::DATABASE_NAME)->getTable(OauthAccessTokensTableMap::TABLE_NAME);
     }
 
     /**
@@ -332,16 +332,16 @@ class OAuthAccessTokensTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(OAuthAccessTokensTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(OAuthAccessTokensTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new OAuthAccessTokensTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(OauthAccessTokensTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(OauthAccessTokensTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new OauthAccessTokensTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a OAuthAccessTokens or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a OauthAccessTokens or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or OAuthAccessTokens object or primary key or array of primary keys
+     * @param mixed               $values Criteria or OauthAccessTokens object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -352,27 +352,27 @@ class OAuthAccessTokensTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthAccessTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthAccessTokensTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \OAuthAccessTokens) { // it's a model object
+        } elseif ($values instanceof \OauthAccessTokens) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(OAuthAccessTokensTableMap::DATABASE_NAME);
-            $criteria->add(OAuthAccessTokensTableMap::COL_ACCESS_TOKEN, (array) $values, Criteria::IN);
+            $criteria = new Criteria(OauthAccessTokensTableMap::DATABASE_NAME);
+            $criteria->add(OauthAccessTokensTableMap::COL_ACCESS_TOKEN, (array) $values, Criteria::IN);
         }
 
-        $query = OAuthAccessTokensQuery::create()->mergeWith($criteria);
+        $query = OauthAccessTokensQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            OAuthAccessTokensTableMap::clearInstancePool();
+            OauthAccessTokensTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                OAuthAccessTokensTableMap::removeInstanceFromPool($singleval);
+                OauthAccessTokensTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -387,13 +387,13 @@ class OAuthAccessTokensTableMap extends TableMap
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return OAuthAccessTokensQuery::create()->doDeleteAll($con);
+        return OauthAccessTokensQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a OAuthAccessTokens or Criteria object.
+     * Performs an INSERT on the database, given a OauthAccessTokens or Criteria object.
      *
-     * @param mixed               $criteria Criteria or OAuthAccessTokens object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or OauthAccessTokens object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -402,18 +402,18 @@ class OAuthAccessTokensTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthAccessTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthAccessTokensTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from OAuthAccessTokens object
+            $criteria = $criteria->buildCriteria(); // build Criteria from OauthAccessTokens object
         }
 
 
         // Set the correct dbName
-        $query = OAuthAccessTokensQuery::create()->mergeWith($criteria);
+        $query = OauthAccessTokensQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -422,7 +422,7 @@ class OAuthAccessTokensTableMap extends TableMap
         });
     }
 
-} // OAuthAccessTokensTableMap
+} // OauthAccessTokensTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-OAuthAccessTokensTableMap::buildTableMap();
+OauthAccessTokensTableMap::buildTableMap();

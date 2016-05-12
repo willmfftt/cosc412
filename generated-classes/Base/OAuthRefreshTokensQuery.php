@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \OAuthRefreshTokens as ChildOAuthRefreshTokens;
-use \OAuthRefreshTokensQuery as ChildOAuthRefreshTokensQuery;
+use \OauthRefreshTokens as ChildOauthRefreshTokens;
+use \OauthRefreshTokensQuery as ChildOauthRefreshTokensQuery;
 use \Exception;
 use \PDO;
-use Map\OAuthRefreshTokensTableMap;
+use Map\OauthRefreshTokensTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -19,83 +19,83 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildOAuthRefreshTokensQuery orderByRefreshToken($order = Criteria::ASC) Order by the refresh_token column
- * @method     ChildOAuthRefreshTokensQuery orderByClientId($order = Criteria::ASC) Order by the client_id column
- * @method     ChildOAuthRefreshTokensQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
- * @method     ChildOAuthRefreshTokensQuery orderByExpires($order = Criteria::ASC) Order by the expires column
- * @method     ChildOAuthRefreshTokensQuery orderByScope($order = Criteria::ASC) Order by the scope column
+ * @method     ChildOauthRefreshTokensQuery orderByRefreshToken($order = Criteria::ASC) Order by the refresh_token column
+ * @method     ChildOauthRefreshTokensQuery orderByClientId($order = Criteria::ASC) Order by the client_id column
+ * @method     ChildOauthRefreshTokensQuery orderByUserId($order = Criteria::ASC) Order by the user_id column
+ * @method     ChildOauthRefreshTokensQuery orderByExpires($order = Criteria::ASC) Order by the expires column
+ * @method     ChildOauthRefreshTokensQuery orderByScope($order = Criteria::ASC) Order by the scope column
  *
- * @method     ChildOAuthRefreshTokensQuery groupByRefreshToken() Group by the refresh_token column
- * @method     ChildOAuthRefreshTokensQuery groupByClientId() Group by the client_id column
- * @method     ChildOAuthRefreshTokensQuery groupByUserId() Group by the user_id column
- * @method     ChildOAuthRefreshTokensQuery groupByExpires() Group by the expires column
- * @method     ChildOAuthRefreshTokensQuery groupByScope() Group by the scope column
+ * @method     ChildOauthRefreshTokensQuery groupByRefreshToken() Group by the refresh_token column
+ * @method     ChildOauthRefreshTokensQuery groupByClientId() Group by the client_id column
+ * @method     ChildOauthRefreshTokensQuery groupByUserId() Group by the user_id column
+ * @method     ChildOauthRefreshTokensQuery groupByExpires() Group by the expires column
+ * @method     ChildOauthRefreshTokensQuery groupByScope() Group by the scope column
  *
- * @method     ChildOAuthRefreshTokensQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildOAuthRefreshTokensQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildOAuthRefreshTokensQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildOauthRefreshTokensQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildOauthRefreshTokensQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildOauthRefreshTokensQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildOAuthRefreshTokensQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildOAuthRefreshTokensQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildOAuthRefreshTokensQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildOauthRefreshTokensQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildOauthRefreshTokensQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildOauthRefreshTokensQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildOAuthRefreshTokens findOne(ConnectionInterface $con = null) Return the first ChildOAuthRefreshTokens matching the query
- * @method     ChildOAuthRefreshTokens findOneOrCreate(ConnectionInterface $con = null) Return the first ChildOAuthRefreshTokens matching the query, or a new ChildOAuthRefreshTokens object populated from the query conditions when no match is found
+ * @method     ChildOauthRefreshTokens findOne(ConnectionInterface $con = null) Return the first ChildOauthRefreshTokens matching the query
+ * @method     ChildOauthRefreshTokens findOneOrCreate(ConnectionInterface $con = null) Return the first ChildOauthRefreshTokens matching the query, or a new ChildOauthRefreshTokens object populated from the query conditions when no match is found
  *
- * @method     ChildOAuthRefreshTokens findOneByRefreshToken(string $refresh_token) Return the first ChildOAuthRefreshTokens filtered by the refresh_token column
- * @method     ChildOAuthRefreshTokens findOneByClientId(string $client_id) Return the first ChildOAuthRefreshTokens filtered by the client_id column
- * @method     ChildOAuthRefreshTokens findOneByUserId(string $user_id) Return the first ChildOAuthRefreshTokens filtered by the user_id column
- * @method     ChildOAuthRefreshTokens findOneByExpires(string $expires) Return the first ChildOAuthRefreshTokens filtered by the expires column
- * @method     ChildOAuthRefreshTokens findOneByScope(string $scope) Return the first ChildOAuthRefreshTokens filtered by the scope column *
+ * @method     ChildOauthRefreshTokens findOneByRefreshToken(string $refresh_token) Return the first ChildOauthRefreshTokens filtered by the refresh_token column
+ * @method     ChildOauthRefreshTokens findOneByClientId(string $client_id) Return the first ChildOauthRefreshTokens filtered by the client_id column
+ * @method     ChildOauthRefreshTokens findOneByUserId(string $user_id) Return the first ChildOauthRefreshTokens filtered by the user_id column
+ * @method     ChildOauthRefreshTokens findOneByExpires(string $expires) Return the first ChildOauthRefreshTokens filtered by the expires column
+ * @method     ChildOauthRefreshTokens findOneByScope(string $scope) Return the first ChildOauthRefreshTokens filtered by the scope column *
 
- * @method     ChildOAuthRefreshTokens requirePk($key, ConnectionInterface $con = null) Return the ChildOAuthRefreshTokens by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildOAuthRefreshTokens requireOne(ConnectionInterface $con = null) Return the first ChildOAuthRefreshTokens matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requirePk($key, ConnectionInterface $con = null) Return the ChildOauthRefreshTokens by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOne(ConnectionInterface $con = null) Return the first ChildOauthRefreshTokens matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildOAuthRefreshTokens requireOneByRefreshToken(string $refresh_token) Return the first ChildOAuthRefreshTokens filtered by the refresh_token column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildOAuthRefreshTokens requireOneByClientId(string $client_id) Return the first ChildOAuthRefreshTokens filtered by the client_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildOAuthRefreshTokens requireOneByUserId(string $user_id) Return the first ChildOAuthRefreshTokens filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildOAuthRefreshTokens requireOneByExpires(string $expires) Return the first ChildOAuthRefreshTokens filtered by the expires column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildOAuthRefreshTokens requireOneByScope(string $scope) Return the first ChildOAuthRefreshTokens filtered by the scope column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOneByRefreshToken(string $refresh_token) Return the first ChildOauthRefreshTokens filtered by the refresh_token column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOneByClientId(string $client_id) Return the first ChildOauthRefreshTokens filtered by the client_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOneByUserId(string $user_id) Return the first ChildOauthRefreshTokens filtered by the user_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOneByExpires(string $expires) Return the first ChildOauthRefreshTokens filtered by the expires column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildOauthRefreshTokens requireOneByScope(string $scope) Return the first ChildOauthRefreshTokens filtered by the scope column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildOAuthRefreshTokens objects based on current ModelCriteria
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection findByRefreshToken(string $refresh_token) Return ChildOAuthRefreshTokens objects filtered by the refresh_token column
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection findByClientId(string $client_id) Return ChildOAuthRefreshTokens objects filtered by the client_id column
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection findByUserId(string $user_id) Return ChildOAuthRefreshTokens objects filtered by the user_id column
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection findByExpires(string $expires) Return ChildOAuthRefreshTokens objects filtered by the expires column
- * @method     ChildOAuthRefreshTokens[]|ObjectCollection findByScope(string $scope) Return ChildOAuthRefreshTokens objects filtered by the scope column
- * @method     ChildOAuthRefreshTokens[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildOauthRefreshTokens objects based on current ModelCriteria
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection findByRefreshToken(string $refresh_token) Return ChildOauthRefreshTokens objects filtered by the refresh_token column
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection findByClientId(string $client_id) Return ChildOauthRefreshTokens objects filtered by the client_id column
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection findByUserId(string $user_id) Return ChildOauthRefreshTokens objects filtered by the user_id column
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection findByExpires(string $expires) Return ChildOauthRefreshTokens objects filtered by the expires column
+ * @method     ChildOauthRefreshTokens[]|ObjectCollection findByScope(string $scope) Return ChildOauthRefreshTokens objects filtered by the scope column
+ * @method     ChildOauthRefreshTokens[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class OAuthRefreshTokensQuery extends ModelCriteria
+abstract class OauthRefreshTokensQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Base\OAuthRefreshTokensQuery object.
+     * Initializes internal state of \Base\OauthRefreshTokensQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'default', $modelName = '\\OAuthRefreshTokens', $modelAlias = null)
+    public function __construct($dbName = 'default', $modelName = '\\OauthRefreshTokens', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildOAuthRefreshTokensQuery object.
+     * Returns a new ChildOauthRefreshTokensQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildOAuthRefreshTokensQuery
+     * @return ChildOauthRefreshTokensQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildOAuthRefreshTokensQuery) {
+        if ($criteria instanceof ChildOauthRefreshTokensQuery) {
             return $criteria;
         }
-        $query = new ChildOAuthRefreshTokensQuery();
+        $query = new ChildOauthRefreshTokensQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -118,19 +118,19 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildOAuthRefreshTokens|array|mixed the result, formatted by the current formatter
+     * @return ChildOauthRefreshTokens|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = OAuthRefreshTokensTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
+        if ((null !== ($obj = OauthRefreshTokensTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -151,7 +151,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildOAuthRefreshTokens A model object, or null if the key is not found
+     * @return ChildOauthRefreshTokens A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -166,10 +166,10 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildOAuthRefreshTokens $obj */
-            $obj = new ChildOAuthRefreshTokens();
+            /** @var ChildOauthRefreshTokens $obj */
+            $obj = new ChildOauthRefreshTokens();
             $obj->hydrate($row);
-            OAuthRefreshTokensTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
+            OauthRefreshTokensTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -182,7 +182,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildOAuthRefreshTokens|array|mixed the result, formatted by the current formatter
+     * @return ChildOauthRefreshTokens|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -224,12 +224,12 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $key, Criteria::EQUAL);
     }
 
     /**
@@ -237,12 +237,12 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $keys, Criteria::IN);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $keys, Criteria::IN);
     }
 
     /**
@@ -258,7 +258,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByRefreshToken($refreshToken = null, $comparison = null)
     {
@@ -271,7 +271,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $refreshToken, $comparison);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $refreshToken, $comparison);
     }
 
     /**
@@ -287,7 +287,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByClientId($clientId = null, $comparison = null)
     {
@@ -300,7 +300,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_CLIENT_ID, $clientId, $comparison);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_CLIENT_ID, $clientId, $comparison);
     }
 
     /**
@@ -316,7 +316,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByUserId($userId = null, $comparison = null)
     {
@@ -329,7 +329,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_USER_ID, $userId, $comparison);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_USER_ID, $userId, $comparison);
     }
 
     /**
@@ -350,18 +350,18 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByExpires($expires = null, $comparison = null)
     {
         if (is_array($expires)) {
             $useMinMax = false;
             if (isset($expires['min'])) {
-                $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_EXPIRES, $expires['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(OauthRefreshTokensTableMap::COL_EXPIRES, $expires['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($expires['max'])) {
-                $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_EXPIRES, $expires['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(OauthRefreshTokensTableMap::COL_EXPIRES, $expires['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -372,7 +372,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_EXPIRES, $expires, $comparison);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_EXPIRES, $expires, $comparison);
     }
 
     /**
@@ -388,7 +388,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
     public function filterByScope($scope = null, $comparison = null)
     {
@@ -401,20 +401,20 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_SCOPE, $scope, $comparison);
+        return $this->addUsingAlias(OauthRefreshTokensTableMap::COL_SCOPE, $scope, $comparison);
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildOAuthRefreshTokens $oAuthRefreshTokens Object to remove from the list of results
+     * @param   ChildOauthRefreshTokens $oauthRefreshTokens Object to remove from the list of results
      *
-     * @return $this|ChildOAuthRefreshTokensQuery The current query, for fluid interface
+     * @return $this|ChildOauthRefreshTokensQuery The current query, for fluid interface
      */
-    public function prune($oAuthRefreshTokens = null)
+    public function prune($oauthRefreshTokens = null)
     {
-        if ($oAuthRefreshTokens) {
-            $this->addUsingAlias(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $oAuthRefreshTokens->getRefreshToken(), Criteria::NOT_EQUAL);
+        if ($oauthRefreshTokens) {
+            $this->addUsingAlias(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $oauthRefreshTokens->getRefreshToken(), Criteria::NOT_EQUAL);
         }
 
         return $this;
@@ -429,7 +429,7 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -440,8 +440,8 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            OAuthRefreshTokensTableMap::clearInstancePool();
-            OAuthRefreshTokensTableMap::clearRelatedInstancePool();
+            OauthRefreshTokensTableMap::clearInstancePool();
+            OauthRefreshTokensTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -459,26 +459,26 @@ abstract class OAuthRefreshTokensQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(OAuthRefreshTokensTableMap::DATABASE_NAME);
+        $criteria->setDbName(OauthRefreshTokensTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            OAuthRefreshTokensTableMap::removeInstanceFromPool($criteria);
+            OauthRefreshTokensTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            OAuthRefreshTokensTableMap::clearRelatedInstancePool();
+            OauthRefreshTokensTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // OAuthRefreshTokensQuery
+} // OauthRefreshTokensQuery

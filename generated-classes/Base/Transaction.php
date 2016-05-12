@@ -79,6 +79,13 @@ abstract class Transaction implements ActiveRecordInterface
     protected $id;
 
     /**
+     * The value for the description field.
+     *
+     * @var        string
+     */
+    protected $description;
+
+    /**
      * The value for the type field.
      *
      * Note: this column has a database default value of: 'internal'
@@ -391,6 +398,16 @@ abstract class Transaction implements ActiveRecordInterface
     }
 
     /**
+     * Get the [description] column value.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Get the [type] column value.
      *
      * @return string
@@ -439,6 +456,26 @@ abstract class Transaction implements ActiveRecordInterface
 
         return $this;
     } // setId()
+
+    /**
+     * Set the value of [description] column.
+     *
+     * @param string $v new value
+     * @return $this|\Transaction The current object (for fluent API support)
+     */
+    public function setDescription($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[TransactionTableMap::COL_DESCRIPTION] = true;
+        }
+
+        return $this;
+    } // setDescription()
 
     /**
      * Set the value of [type] column.
@@ -551,13 +588,16 @@ abstract class Transaction implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : TransactionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TransactionTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : TransactionTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : TransactionTableMap::translateFieldName('Type', TableMap::TYPE_PHPNAME, $indexType)];
             $this->type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : TransactionTableMap::translateFieldName('PurchasingAgentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : TransactionTableMap::translateFieldName('PurchasingAgentId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->purchasing_agent_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : TransactionTableMap::translateFieldName('SupervisorId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : TransactionTableMap::translateFieldName('SupervisorId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->supervisor_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -567,7 +607,7 @@ abstract class Transaction implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = TransactionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = TransactionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Transaction'), 0, $e);
@@ -832,6 +872,9 @@ abstract class Transaction implements ActiveRecordInterface
         if ($this->isColumnModified(TransactionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
+        if ($this->isColumnModified(TransactionTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'description';
+        }
         if ($this->isColumnModified(TransactionTableMap::COL_TYPE)) {
             $modifiedColumns[':p' . $index++]  = 'type';
         }
@@ -854,6 +897,9 @@ abstract class Transaction implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                        break;
+                    case 'description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'type':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_STR);
@@ -930,12 +976,15 @@ abstract class Transaction implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getType();
+                return $this->getDescription();
                 break;
             case 2:
-                return $this->getPurchasingAgentId();
+                return $this->getType();
                 break;
             case 3:
+                return $this->getPurchasingAgentId();
+                break;
+            case 4:
                 return $this->getSupervisorId();
                 break;
             default:
@@ -969,9 +1018,10 @@ abstract class Transaction implements ActiveRecordInterface
         $keys = TransactionTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getType(),
-            $keys[2] => $this->getPurchasingAgentId(),
-            $keys[3] => $this->getSupervisorId(),
+            $keys[1] => $this->getDescription(),
+            $keys[2] => $this->getType(),
+            $keys[3] => $this->getPurchasingAgentId(),
+            $keys[4] => $this->getSupervisorId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1077,12 +1127,15 @@ abstract class Transaction implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setType($value);
+                $this->setDescription($value);
                 break;
             case 2:
-                $this->setPurchasingAgentId($value);
+                $this->setType($value);
                 break;
             case 3:
+                $this->setPurchasingAgentId($value);
+                break;
+            case 4:
                 $this->setSupervisorId($value);
                 break;
         } // switch()
@@ -1115,13 +1168,16 @@ abstract class Transaction implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setType($arr[$keys[1]]);
+            $this->setDescription($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setPurchasingAgentId($arr[$keys[2]]);
+            $this->setType($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setSupervisorId($arr[$keys[3]]);
+            $this->setPurchasingAgentId($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setSupervisorId($arr[$keys[4]]);
         }
     }
 
@@ -1166,6 +1222,9 @@ abstract class Transaction implements ActiveRecordInterface
 
         if ($this->isColumnModified(TransactionTableMap::COL_ID)) {
             $criteria->add(TransactionTableMap::COL_ID, $this->id);
+        }
+        if ($this->isColumnModified(TransactionTableMap::COL_DESCRIPTION)) {
+            $criteria->add(TransactionTableMap::COL_DESCRIPTION, $this->description);
         }
         if ($this->isColumnModified(TransactionTableMap::COL_TYPE)) {
             $criteria->add(TransactionTableMap::COL_TYPE, $this->type);
@@ -1262,6 +1321,7 @@ abstract class Transaction implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setDescription($this->getDescription());
         $copyObj->setType($this->getType());
         $copyObj->setPurchasingAgentId($this->getPurchasingAgentId());
         $copyObj->setSupervisorId($this->getSupervisorId());
@@ -1902,6 +1962,7 @@ abstract class Transaction implements ActiveRecordInterface
             $this->aSupervisor->removeTransaction($this);
         }
         $this->id = null;
+        $this->description = null;
         $this->type = null;
         $this->purchasing_agent_id = null;
         $this->supervisor_id = null;

@@ -1,6 +1,6 @@
 <?php
 
-use Base\OAuthRefreshTokensQuery as BaseOAuthRefreshTokensQuery;
+use Base\OauthRefreshTokensQuery as BaseOauthRefreshTokensQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'oauth_refresh_tokens' table.
@@ -12,7 +12,7 @@ use Base\OAuthRefreshTokensQuery as BaseOAuthRefreshTokensQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class OAuthRefreshTokensQuery extends BaseOAuthRefreshTokensQuery
+class OauthRefreshTokensQuery extends BaseOauthRefreshTokensQuery
 {
 
 }

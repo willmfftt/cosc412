@@ -6,6 +6,7 @@
 	"require": {
 		"propel/propel": "~2.0@dev",
 		"owasp/phprbac": "2.0.*@dev",
-		"bshaffer/oauth2-server-php": "~1.8"
+		"bshaffer/oauth2-server-php": "~1.8",
+		"bcosca/fatfree-core": "^3.5"
 	}
 }

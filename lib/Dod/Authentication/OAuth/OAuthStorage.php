@@ -29,7 +29,7 @@ class OAuthStorage implements
 			return null;
 		} else {
 			return array(
-				'expires'   => $accessToken->getExpires(),
+				'expires'   => $accessToken->getExpires()->getTimestamp(),
 				'user_id'   => $accessToken->getUserId(),
 				'client_id' => $accessToken->getClientId(),
 				'scope'     => $accessToken->getScope()
@@ -80,7 +80,7 @@ class OAuthStorage implements
 	
 	public function checkRestrictedGrantType($client_id, $grant_type)
 	{
-		return in_array($grant_type, ['password', 'refresh']);
+		return in_array($grant_type, ['password', 'refresh_token']);
 	}
 	
 	public function getRefreshToken($oauth_token)
@@ -94,7 +94,7 @@ class OAuthStorage implements
 				'refresh_token' => $refreshToken->getRefreshToken(),
 				'client_id'     => $refreshToken->getClientId(),
 				'user_id'		=> $refreshToken->getUserId(),
-				'expires'		=> $refreshToken->getExpires(),
+				'expires'		=> $refreshToken->getExpires()->getTimestamp(),
 				'scope'			=> $refreshToken->getScope()
 			);
 		}

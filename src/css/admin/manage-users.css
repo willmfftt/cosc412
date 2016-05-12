@@ -1,0 +1,26 @@
+@CHARSET "US-ASCII";
+
+.page-header {
+	padding-bottom: 80px;
+}
+
+#addNewUserBtn {
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+#editUserBtn {
+	color: #3f51b5;
+	font-size: 25px;
+	padding: 10px;
+	cursor: pointer;
+	margin-right: 2px;
+}
+
+#deleteUserBtn {
+	color: #f44336;
+	font-size: 26px;
+	padding: 10px;
+	cursor: pointer;
+	margin-left: 2px;
+}

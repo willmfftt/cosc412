@@ -56,6 +56,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBranchQuery rightJoinWithApprovedUser() Adds a RIGHT JOIN clause and with to the query using the ApprovedUser relation
  * @method     ChildBranchQuery innerJoinWithApprovedUser() Adds a INNER JOIN clause and with to the query using the ApprovedUser relation
  *
+ * @method     ChildBranchQuery leftJoinBudget($relationAlias = null) Adds a LEFT JOIN clause to the query using the Budget relation
+ * @method     ChildBranchQuery rightJoinBudget($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Budget relation
+ * @method     ChildBranchQuery innerJoinBudget($relationAlias = null) Adds a INNER JOIN clause to the query using the Budget relation
+ *
+ * @method     ChildBranchQuery joinWithBudget($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Budget relation
+ *
+ * @method     ChildBranchQuery leftJoinWithBudget() Adds a LEFT JOIN clause and with to the query using the Budget relation
+ * @method     ChildBranchQuery rightJoinWithBudget() Adds a RIGHT JOIN clause and with to the query using the Budget relation
+ * @method     ChildBranchQuery innerJoinWithBudget() Adds a INNER JOIN clause and with to the query using the Budget relation
+ *
  * @method     ChildBranchQuery leftJoinPurchasingAgent($relationAlias = null) Adds a LEFT JOIN clause to the query using the PurchasingAgent relation
  * @method     ChildBranchQuery rightJoinPurchasingAgent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PurchasingAgent relation
  * @method     ChildBranchQuery innerJoinPurchasingAgent($relationAlias = null) Adds a INNER JOIN clause to the query using the PurchasingAgent relation
@@ -76,7 +86,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildBranchQuery rightJoinWithSupervisor() Adds a RIGHT JOIN clause and with to the query using the Supervisor relation
  * @method     ChildBranchQuery innerJoinWithSupervisor() Adds a INNER JOIN clause and with to the query using the Supervisor relation
  *
- * @method     \LocationQuery|\ApprovedUserQuery|\PurchasingAgentQuery|\SupervisorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \LocationQuery|\ApprovedUserQuery|\BudgetQuery|\PurchasingAgentQuery|\SupervisorQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildBranch findOne(ConnectionInterface $con = null) Return the first ChildBranch matching the query
  * @method     ChildBranch findOneOrCreate(ConnectionInterface $con = null) Return the first ChildBranch matching the query, or a new ChildBranch object populated from the query conditions when no match is found
@@ -539,6 +549,79 @@ abstract class BranchQuery extends ModelCriteria
         return $this
             ->joinApprovedUser($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'ApprovedUser', '\ApprovedUserQuery');
+    }
+
+    /**
+     * Filter the query by a related \Budget object
+     *
+     * @param \Budget|ObjectCollection $budget the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildBranchQuery The current query, for fluid interface
+     */
+    public function filterByBudget($budget, $comparison = null)
+    {
+        if ($budget instanceof \Budget) {
+            return $this
+                ->addUsingAlias(BranchTableMap::COL_ID, $budget->getBranchId(), $comparison);
+        } elseif ($budget instanceof ObjectCollection) {
+            return $this
+                ->useBudgetQuery()
+                ->filterByPrimaryKeys($budget->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByBudget() only accepts arguments of type \Budget or Collection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Budget relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return $this|ChildBranchQuery The current query, for fluid interface
+     */
+    public function joinBudget($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Budget');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Budget');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Budget relation Budget object
+     *
+     * @see useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return \BudgetQuery A secondary query class using the current class as primary query
+     */
+    public function useBudgetQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinBudget($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Budget', '\BudgetQuery');
     }
 
     /**

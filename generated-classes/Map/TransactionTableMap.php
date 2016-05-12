@@ -59,7 +59,7 @@ class TransactionTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,12 +69,17 @@ class TransactionTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
     const COL_ID = 'transaction.id';
+
+    /**
+     * the column name for the description field
+     */
+    const COL_DESCRIPTION = 'transaction.description';
 
     /**
      * the column name for the type field
@@ -103,11 +108,11 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Type', 'PurchasingAgentId', 'SupervisorId', ),
-        self::TYPE_CAMELNAME     => array('id', 'type', 'purchasingAgentId', 'supervisorId', ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_TYPE, TransactionTableMap::COL_PURCHASING_AGENT_ID, TransactionTableMap::COL_SUPERVISOR_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'type', 'purchasing_agent_id', 'supervisor_id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id', 'Description', 'Type', 'PurchasingAgentId', 'SupervisorId', ),
+        self::TYPE_CAMELNAME     => array('id', 'description', 'type', 'purchasingAgentId', 'supervisorId', ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID, TransactionTableMap::COL_DESCRIPTION, TransactionTableMap::COL_TYPE, TransactionTableMap::COL_PURCHASING_AGENT_ID, TransactionTableMap::COL_SUPERVISOR_ID, ),
+        self::TYPE_FIELDNAME     => array('id', 'description', 'type', 'purchasing_agent_id', 'supervisor_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -117,11 +122,11 @@ class TransactionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Type' => 1, 'PurchasingAgentId' => 2, 'SupervisorId' => 3, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'type' => 1, 'purchasingAgentId' => 2, 'supervisorId' => 3, ),
-        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_TYPE => 1, TransactionTableMap::COL_PURCHASING_AGENT_ID => 2, TransactionTableMap::COL_SUPERVISOR_ID => 3, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'type' => 1, 'purchasing_agent_id' => 2, 'supervisor_id' => 3, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Description' => 1, 'Type' => 2, 'PurchasingAgentId' => 3, 'SupervisorId' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'description' => 1, 'type' => 2, 'purchasingAgentId' => 3, 'supervisorId' => 4, ),
+        self::TYPE_COLNAME       => array(TransactionTableMap::COL_ID => 0, TransactionTableMap::COL_DESCRIPTION => 1, TransactionTableMap::COL_TYPE => 2, TransactionTableMap::COL_PURCHASING_AGENT_ID => 3, TransactionTableMap::COL_SUPERVISOR_ID => 4, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'description' => 1, 'type' => 2, 'purchasing_agent_id' => 3, 'supervisor_id' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -142,6 +147,7 @@ class TransactionTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('description', 'Description', 'VARCHAR', false, 255, null);
         $this->addColumn('type', 'Type', 'VARCHAR', true, 20, 'internal');
         $this->addForeignKey('purchasing_agent_id', 'PurchasingAgentId', 'INTEGER', 'purchasing_agent', 'id', true, null, null);
         $this->addForeignKey('supervisor_id', 'SupervisorId', 'INTEGER', 'supervisor', 'id', true, null, null);
@@ -324,11 +330,13 @@ class TransactionTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(TransactionTableMap::COL_ID);
+            $criteria->addSelectColumn(TransactionTableMap::COL_DESCRIPTION);
             $criteria->addSelectColumn(TransactionTableMap::COL_TYPE);
             $criteria->addSelectColumn(TransactionTableMap::COL_PURCHASING_AGENT_ID);
             $criteria->addSelectColumn(TransactionTableMap::COL_SUPERVISOR_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
+            $criteria->addSelectColumn($alias . '.description');
             $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.purchasing_agent_id');
             $criteria->addSelectColumn($alias . '.supervisor_id');

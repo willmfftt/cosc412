@@ -11,7 +11,7 @@ class Login {
 	public function login()
 	{
 		$tokenController = new OAuthTokenController();
-		$tokenController->handleTokenRequest()->send();
+		return $tokenController->handleTokenRequest();
 	}
 		
 }
