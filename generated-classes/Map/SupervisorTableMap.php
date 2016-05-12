@@ -59,7 +59,7 @@ class SupervisorTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 3;
+    const NUM_COLUMNS = 4;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class SupervisorTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 3;
+    const NUM_HYDRATE_COLUMNS = 4;
 
     /**
      * the column name for the id field
@@ -77,14 +77,19 @@ class SupervisorTableMap extends TableMap
     const COL_ID = 'supervisor.id';
 
     /**
-     * the column name for the userId field
+     * the column name for the user_id field
      */
-    const COL_USERID = 'supervisor.userId';
+    const COL_USER_ID = 'supervisor.user_id';
 
     /**
-     * the column name for the managerId field
+     * the column name for the manager_id field
      */
-    const COL_MANAGERID = 'supervisor.managerId';
+    const COL_MANAGER_ID = 'supervisor.manager_id';
+
+    /**
+     * the column name for the branch_id field
+     */
+    const COL_BRANCH_ID = 'supervisor.branch_id';
 
     /**
      * The default string format for model objects of the related table
@@ -98,11 +103,11 @@ class SupervisorTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Userid', 'Managerid', ),
-        self::TYPE_CAMELNAME     => array('id', 'userid', 'managerid', ),
-        self::TYPE_COLNAME       => array(SupervisorTableMap::COL_ID, SupervisorTableMap::COL_USERID, SupervisorTableMap::COL_MANAGERID, ),
-        self::TYPE_FIELDNAME     => array('id', 'userId', 'managerId', ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id', 'UserId', 'ManagerId', 'BranchId', ),
+        self::TYPE_CAMELNAME     => array('id', 'userId', 'managerId', 'branchId', ),
+        self::TYPE_COLNAME       => array(SupervisorTableMap::COL_ID, SupervisorTableMap::COL_USER_ID, SupervisorTableMap::COL_MANAGER_ID, SupervisorTableMap::COL_BRANCH_ID, ),
+        self::TYPE_FIELDNAME     => array('id', 'user_id', 'manager_id', 'branch_id', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -112,11 +117,11 @@ class SupervisorTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Userid' => 1, 'Managerid' => 2, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userid' => 1, 'managerid' => 2, ),
-        self::TYPE_COLNAME       => array(SupervisorTableMap::COL_ID => 0, SupervisorTableMap::COL_USERID => 1, SupervisorTableMap::COL_MANAGERID => 2, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'userId' => 1, 'managerId' => 2, ),
-        self::TYPE_NUM           => array(0, 1, 2, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, 'ManagerId' => 2, 'BranchId' => 3, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, 'managerId' => 2, 'branchId' => 3, ),
+        self::TYPE_COLNAME       => array(SupervisorTableMap::COL_ID => 0, SupervisorTableMap::COL_USER_ID => 1, SupervisorTableMap::COL_MANAGER_ID => 2, SupervisorTableMap::COL_BRANCH_ID => 3, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, 'manager_id' => 2, 'branch_id' => 3, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, )
     );
 
     /**
@@ -137,8 +142,9 @@ class SupervisorTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('userId', 'Userid', 'INTEGER', true, null, null);
-        $this->addForeignKey('managerId', 'Managerid', 'INTEGER', 'manager', 'id', true, null, null);
+        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addForeignKey('manager_id', 'ManagerId', 'INTEGER', 'manager', 'id', true, null, null);
+        $this->addForeignKey('branch_id', 'BranchId', 'INTEGER', 'branch', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -149,11 +155,85 @@ class SupervisorTableMap extends TableMap
         $this->addRelation('Manager', '\\Manager', RelationMap::MANY_TO_ONE, array (
   0 =>
   array (
-    0 => ':managerId',
+    0 => ':manager_id',
     1 => ':id',
   ),
 ), null, null, null, false);
+        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':user_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Branch', '\\Branch', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('Transaction', '\\Transaction', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':supervisor_id',
+    1 => ':id',
+  ),
+), null, null, 'Transactions', false);
     } // buildRelations()
+
+    /**
+     * Adds an object to the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database. In some cases you may need to explicitly add objects
+     * to the cache in order to ensure that the same objects are always returned by find*()
+     * and findPk*() calls.
+     *
+     * @param \Supervisor $obj A \Supervisor object.
+     * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
+     */
+    public static function addInstanceToPool($obj, $key = null)
+    {
+        if (Propel::isInstancePoolingEnabled()) {
+            if (null === $key) {
+                $key = serialize([(null === $obj->getId() || is_scalar($obj->getId()) || is_callable([$obj->getId(), '__toString']) ? (string) $obj->getId() : $obj->getId()), (null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId())]);
+            } // if key === null
+            self::$instances[$key] = $obj;
+        }
+    }
+
+    /**
+     * Removes an object from the instance pool.
+     *
+     * Propel keeps cached copies of objects in an instance pool when they are retrieved
+     * from the database.  In some cases -- especially when you override doDelete
+     * methods in your stub classes -- you may need to explicitly remove objects
+     * from the cache in order to prevent returning objects that no longer exist.
+     *
+     * @param mixed $value A \Supervisor object or a primary key value.
+     */
+    public static function removeInstanceFromPool($value)
+    {
+        if (Propel::isInstancePoolingEnabled() && null !== $value) {
+            if (is_object($value) && $value instanceof \Supervisor) {
+                $key = serialize([(null === $value->getId() || is_scalar($value->getId()) || is_callable([$value->getId(), '__toString']) ? (string) $value->getId() : $value->getId()), (null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId())]);
+
+            } elseif (is_array($value) && count($value) === 2) {
+                // assume we've been passed a primary key";
+                $key = serialize([(null === $value[0] || is_scalar($value[0]) || is_callable([$value[0], '__toString']) ? (string) $value[0] : $value[0]), (null === $value[1] || is_scalar($value[1]) || is_callable([$value[1], '__toString']) ? (string) $value[1] : $value[1])]);
+            } elseif ($value instanceof Criteria) {
+                self::$instances = [];
+
+                return;
+            } else {
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Supervisor object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                throw $e;
+            }
+
+            unset(self::$instances[$key]);
+        }
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -171,11 +251,11 @@ class SupervisorTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -192,11 +272,20 @@ class SupervisorTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int) $row[
+            $pks = [];
+
+        $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
                 : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
         ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 1 + $offset
+                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -297,12 +386,14 @@ class SupervisorTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(SupervisorTableMap::COL_ID);
-            $criteria->addSelectColumn(SupervisorTableMap::COL_USERID);
-            $criteria->addSelectColumn(SupervisorTableMap::COL_MANAGERID);
+            $criteria->addSelectColumn(SupervisorTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(SupervisorTableMap::COL_MANAGER_ID);
+            $criteria->addSelectColumn(SupervisorTableMap::COL_BRANCH_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.userId');
-            $criteria->addSelectColumn($alias . '.managerId');
+            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.manager_id');
+            $criteria->addSelectColumn($alias . '.branch_id');
         }
     }
 
@@ -354,7 +445,17 @@ class SupervisorTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(SupervisorTableMap::DATABASE_NAME);
-            $criteria->add(SupervisorTableMap::COL_ID, (array) $values, Criteria::IN);
+            // primary key is composite; we therefore, expect
+            // the primary key passed to be an array of pkey values
+            if (count($values) == count($values, COUNT_RECURSIVE)) {
+                // array is not multi-dimensional
+                $values = array($values);
+            }
+            foreach ($values as $value) {
+                $criterion = $criteria->getNewCriterion(SupervisorTableMap::COL_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(SupervisorTableMap::COL_USER_ID, $value[1]));
+                $criteria->addOr($criterion);
+            }
         }
 
         $query = SupervisorQuery::create()->mergeWith($criteria);

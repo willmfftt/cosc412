@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \User;
-use \UserQuery;
+use \DodRoles;
+use \DodRolesQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'user' table.
+ * This class defines the structure of the 'dod_roles' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class UserTableMap extends TableMap
+class DodRolesTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class UserTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.UserTableMap';
+    const CLASS_NAME = '.Map.DodRolesTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class UserTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'user';
+    const TABLE_NAME = 'dod_roles';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\User';
+    const OM_CLASS = '\\DodRoles';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'User';
+    const CLASS_DEFAULT = 'DodRoles';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 6;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,37 +69,32 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 6;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
-     * the column name for the id field
+     * the column name for the ID field
      */
-    const COL_ID = 'user.id';
+    const COL_ID = 'dod_roles.ID';
 
     /**
-     * the column name for the firstname field
+     * the column name for the Lft field
      */
-    const COL_FIRSTNAME = 'user.firstname';
+    const COL_LFT = 'dod_roles.Lft';
 
     /**
-     * the column name for the lastname field
+     * the column name for the Rght field
      */
-    const COL_LASTNAME = 'user.lastname';
+    const COL_RGHT = 'dod_roles.Rght';
 
     /**
-     * the column name for the email_address field
+     * the column name for the Title field
      */
-    const COL_EMAIL_ADDRESS = 'user.email_address';
+    const COL_TITLE = 'dod_roles.Title';
 
     /**
-     * the column name for the username field
+     * the column name for the Description field
      */
-    const COL_USERNAME = 'user.username';
-
-    /**
-     * the column name for the password field
-     */
-    const COL_PASSWORD = 'user.password';
+    const COL_DESCRIPTION = 'dod_roles.Description';
 
     /**
      * The default string format for model objects of the related table
@@ -113,11 +108,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Firstname', 'Lastname', 'EmailAddress', 'Username', 'Password', ),
-        self::TYPE_CAMELNAME     => array('id', 'firstname', 'lastname', 'emailAddress', 'username', 'password', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRSTNAME, UserTableMap::COL_LASTNAME, UserTableMap::COL_EMAIL_ADDRESS, UserTableMap::COL_USERNAME, UserTableMap::COL_PASSWORD, ),
-        self::TYPE_FIELDNAME     => array('id', 'firstname', 'lastname', 'email_address', 'username', 'password', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id', 'Lft', 'Rght', 'Title', 'Description', ),
+        self::TYPE_CAMELNAME     => array('id', 'lft', 'rght', 'title', 'description', ),
+        self::TYPE_COLNAME       => array(DodRolesTableMap::COL_ID, DodRolesTableMap::COL_LFT, DodRolesTableMap::COL_RGHT, DodRolesTableMap::COL_TITLE, DodRolesTableMap::COL_DESCRIPTION, ),
+        self::TYPE_FIELDNAME     => array('ID', 'Lft', 'Rght', 'Title', 'Description', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -127,11 +122,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Firstname' => 1, 'Lastname' => 2, 'EmailAddress' => 3, 'Username' => 4, 'Password' => 5, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'firstname' => 1, 'lastname' => 2, 'emailAddress' => 3, 'username' => 4, 'password' => 5, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRSTNAME => 1, UserTableMap::COL_LASTNAME => 2, UserTableMap::COL_EMAIL_ADDRESS => 3, UserTableMap::COL_USERNAME => 4, UserTableMap::COL_PASSWORD => 5, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'firstname' => 1, 'lastname' => 2, 'email_address' => 3, 'username' => 4, 'password' => 5, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Lft' => 1, 'Rght' => 2, 'Title' => 3, 'Description' => 4, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'lft' => 1, 'rght' => 2, 'title' => 3, 'description' => 4, ),
+        self::TYPE_COLNAME       => array(DodRolesTableMap::COL_ID => 0, DodRolesTableMap::COL_LFT => 1, DodRolesTableMap::COL_RGHT => 2, DodRolesTableMap::COL_TITLE => 3, DodRolesTableMap::COL_DESCRIPTION => 4, ),
+        self::TYPE_FIELDNAME     => array('ID' => 0, 'Lft' => 1, 'Rght' => 2, 'Title' => 3, 'Description' => 4, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
 
     /**
@@ -144,19 +139,18 @@ class UserTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('user');
-        $this->setPhpName('User');
+        $this->setName('dod_roles');
+        $this->setPhpName('DodRoles');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\User');
+        $this->setClassName('\\DodRoles');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('firstname', 'Firstname', 'VARCHAR', true, 45, null);
-        $this->addColumn('lastname', 'Lastname', 'VARCHAR', true, 45, null);
-        $this->addColumn('email_address', 'EmailAddress', 'VARCHAR', true, 80, null);
-        $this->addColumn('username', 'Username', 'VARCHAR', true, 30, null);
-        $this->addColumn('password', 'Password', 'CHAR', true, 60, null);
+        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('Lft', 'Lft', 'INTEGER', true, null, null);
+        $this->addColumn('Rght', 'Rght', 'INTEGER', true, null, null);
+        $this->addColumn('Title', 'Title', 'VARCHAR', true, 128, null);
+        $this->addColumn('Description', 'Description', 'LONGVARCHAR', true, null, null);
     } // initialize()
 
     /**
@@ -164,48 +158,6 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Admin', '\\Admin', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'Admins', false);
-        $this->addRelation('ApprovedUser', '\\ApprovedUser', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'ApprovedUsers', false);
-        $this->addRelation('Auditor', '\\Auditor', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'Auditors', false);
-        $this->addRelation('Manager', '\\Manager', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'Managers', false);
-        $this->addRelation('PurchasingAgent', '\\PurchasingAgent', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'PurchasingAgents', false);
-        $this->addRelation('Supervisor', '\\Supervisor', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, 'Supervisors', false);
     } // buildRelations()
 
     /**
@@ -265,7 +217,7 @@ class UserTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? UserTableMap::CLASS_DEFAULT : UserTableMap::OM_CLASS;
+        return $withPrefix ? DodRolesTableMap::CLASS_DEFAULT : DodRolesTableMap::OM_CLASS;
     }
 
     /**
@@ -279,22 +231,22 @@ class UserTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (User object, last column rank)
+     * @return array           (DodRoles object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = UserTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = UserTableMap::getInstanceFromPool($key))) {
+        $key = DodRolesTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = DodRolesTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + UserTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + DodRolesTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = UserTableMap::OM_CLASS;
-            /** @var User $obj */
+            $cls = DodRolesTableMap::OM_CLASS;
+            /** @var DodRoles $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            UserTableMap::addInstanceToPool($obj, $key);
+            DodRolesTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -317,18 +269,18 @@ class UserTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = UserTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = UserTableMap::getInstanceFromPool($key))) {
+            $key = DodRolesTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = DodRolesTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var User $obj */
+                /** @var DodRoles $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                UserTableMap::addInstanceToPool($obj, $key);
+                DodRolesTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -349,19 +301,17 @@ class UserTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserTableMap::COL_ID);
-            $criteria->addSelectColumn(UserTableMap::COL_FIRSTNAME);
-            $criteria->addSelectColumn(UserTableMap::COL_LASTNAME);
-            $criteria->addSelectColumn(UserTableMap::COL_EMAIL_ADDRESS);
-            $criteria->addSelectColumn(UserTableMap::COL_USERNAME);
-            $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
+            $criteria->addSelectColumn(DodRolesTableMap::COL_ID);
+            $criteria->addSelectColumn(DodRolesTableMap::COL_LFT);
+            $criteria->addSelectColumn(DodRolesTableMap::COL_RGHT);
+            $criteria->addSelectColumn(DodRolesTableMap::COL_TITLE);
+            $criteria->addSelectColumn(DodRolesTableMap::COL_DESCRIPTION);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.firstname');
-            $criteria->addSelectColumn($alias . '.lastname');
-            $criteria->addSelectColumn($alias . '.email_address');
-            $criteria->addSelectColumn($alias . '.username');
-            $criteria->addSelectColumn($alias . '.password');
+            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.Lft');
+            $criteria->addSelectColumn($alias . '.Rght');
+            $criteria->addSelectColumn($alias . '.Title');
+            $criteria->addSelectColumn($alias . '.Description');
         }
     }
 
@@ -374,7 +324,7 @@ class UserTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME)->getTable(UserTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(DodRolesTableMap::DATABASE_NAME)->getTable(DodRolesTableMap::TABLE_NAME);
     }
 
     /**
@@ -382,16 +332,16 @@ class UserTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(UserTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new UserTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DodRolesTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(DodRolesTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new DodRolesTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a User or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a DodRoles or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or User object or primary key or array of primary keys
+     * @param mixed               $values Criteria or DodRoles object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -402,27 +352,27 @@ class UserTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodRolesTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \User) { // it's a model object
+        } elseif ($values instanceof \DodRoles) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(UserTableMap::DATABASE_NAME);
-            $criteria->add(UserTableMap::COL_ID, (array) $values, Criteria::IN);
+            $criteria = new Criteria(DodRolesTableMap::DATABASE_NAME);
+            $criteria->add(DodRolesTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
-        $query = UserQuery::create()->mergeWith($criteria);
+        $query = DodRolesQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            UserTableMap::clearInstancePool();
+            DodRolesTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                UserTableMap::removeInstanceFromPool($singleval);
+                DodRolesTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -430,20 +380,20 @@ class UserTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the user table.
+     * Deletes all rows from the dod_roles table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return UserQuery::create()->doDeleteAll($con);
+        return DodRolesQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a User or Criteria object.
+     * Performs an INSERT on the database, given a DodRoles or Criteria object.
      *
-     * @param mixed               $criteria Criteria or User object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or DodRoles object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -452,22 +402,22 @@ class UserTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodRolesTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from User object
+            $criteria = $criteria->buildCriteria(); // build Criteria from DodRoles object
         }
 
-        if ($criteria->containsKey(UserTableMap::COL_ID) && $criteria->keyContainsValue(UserTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserTableMap::COL_ID.')');
+        if ($criteria->containsKey(DodRolesTableMap::COL_ID) && $criteria->keyContainsValue(DodRolesTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.DodRolesTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = UserQuery::create()->mergeWith($criteria);
+        $query = DodRolesQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -476,7 +426,7 @@ class UserTableMap extends TableMap
         });
     }
 
-} // UserTableMap
+} // DodRolesTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-UserTableMap::buildTableMap();
+DodRolesTableMap::buildTableMap();

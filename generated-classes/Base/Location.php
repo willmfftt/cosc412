@@ -2,15 +2,26 @@
 
 namespace Base;
 
+use \Auditor as ChildAuditor;
+use \AuditorQuery as ChildAuditorQuery;
+use \Branch as ChildBranch;
+use \BranchQuery as ChildBranchQuery;
+use \Location as ChildLocation;
 use \LocationQuery as ChildLocationQuery;
+use \Manager as ChildManager;
+use \ManagerQuery as ChildManagerQuery;
 use \Exception;
 use \PDO;
+use Map\AuditorTableMap;
+use Map\BranchTableMap;
 use Map\LocationTableMap;
+use Map\ManagerTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -81,12 +92,48 @@ abstract class Location implements ActiveRecordInterface
     protected $state_code;
 
     /**
+     * @var        ObjectCollection|ChildAuditor[] Collection to store aggregation of ChildAuditor objects.
+     */
+    protected $collAuditors;
+    protected $collAuditorsPartial;
+
+    /**
+     * @var        ObjectCollection|ChildBranch[] Collection to store aggregation of ChildBranch objects.
+     */
+    protected $collBranches;
+    protected $collBranchesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildManager[] Collection to store aggregation of ChildManager objects.
+     */
+    protected $collManagers;
+    protected $collManagersPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildAuditor[]
+     */
+    protected $auditorsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBranch[]
+     */
+    protected $branchesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildManager[]
+     */
+    protected $managersScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Location object.
@@ -516,6 +563,12 @@ abstract class Location implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->collAuditors = null;
+
+            $this->collBranches = null;
+
+            $this->collManagers = null;
+
         } // if (deep)
     }
 
@@ -624,6 +677,57 @@ abstract class Location implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->auditorsScheduledForDeletion !== null) {
+                if (!$this->auditorsScheduledForDeletion->isEmpty()) {
+                    \AuditorQuery::create()
+                        ->filterByPrimaryKeys($this->auditorsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->auditorsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collAuditors !== null) {
+                foreach ($this->collAuditors as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->branchesScheduledForDeletion !== null) {
+                if (!$this->branchesScheduledForDeletion->isEmpty()) {
+                    \BranchQuery::create()
+                        ->filterByPrimaryKeys($this->branchesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->branchesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBranches !== null) {
+                foreach ($this->collBranches as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->managersScheduledForDeletion !== null) {
+                if (!$this->managersScheduledForDeletion->isEmpty()) {
+                    \ManagerQuery::create()
+                        ->filterByPrimaryKeys($this->managersScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->managersScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collManagers !== null) {
+                foreach ($this->collManagers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -769,10 +873,11 @@ abstract class Location implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
         if (isset($alreadyDumpedObjects['Location'][$this->hashCode()])) {
@@ -790,6 +895,53 @@ abstract class Location implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->collAuditors) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'auditors';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'auditors';
+                        break;
+                    default:
+                        $key = 'Auditors';
+                }
+
+                $result[$key] = $this->collAuditors->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBranches) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'branches';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'branches';
+                        break;
+                    default:
+                        $key = 'Branches';
+                }
+
+                $result[$key] = $this->collBranches->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collManagers) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'managers';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'managers';
+                        break;
+                    default:
+                        $key = 'Managers';
+                }
+
+                $result[$key] = $this->collManagers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -1005,6 +1157,32 @@ abstract class Location implements ActiveRecordInterface
     {
         $copyObj->setName($this->getName());
         $copyObj->setStateCode($this->getStateCode());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getAuditors() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addAuditor($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getBranches() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBranch($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getManagers() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addManager($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1031,6 +1209,778 @@ abstract class Location implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('Auditor' == $relationName) {
+            return $this->initAuditors();
+        }
+        if ('Branch' == $relationName) {
+            return $this->initBranches();
+        }
+        if ('Manager' == $relationName) {
+            return $this->initManagers();
+        }
+    }
+
+    /**
+     * Clears out the collAuditors collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addAuditors()
+     */
+    public function clearAuditors()
+    {
+        $this->collAuditors = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collAuditors collection loaded partially.
+     */
+    public function resetPartialAuditors($v = true)
+    {
+        $this->collAuditorsPartial = $v;
+    }
+
+    /**
+     * Initializes the collAuditors collection.
+     *
+     * By default this just sets the collAuditors collection to an empty array (like clearcollAuditors());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initAuditors($overrideExisting = true)
+    {
+        if (null !== $this->collAuditors && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = AuditorTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collAuditors = new $collectionClassName;
+        $this->collAuditors->setModel('\Auditor');
+    }
+
+    /**
+     * Gets an array of ChildAuditor objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildAuditor[] List of ChildAuditor objects
+     * @throws PropelException
+     */
+    public function getAuditors(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAuditorsPartial && !$this->isNew();
+        if (null === $this->collAuditors || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collAuditors) {
+                // return empty collection
+                $this->initAuditors();
+            } else {
+                $collAuditors = ChildAuditorQuery::create(null, $criteria)
+                    ->filterByLocation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collAuditorsPartial && count($collAuditors)) {
+                        $this->initAuditors(false);
+
+                        foreach ($collAuditors as $obj) {
+                            if (false == $this->collAuditors->contains($obj)) {
+                                $this->collAuditors->append($obj);
+                            }
+                        }
+
+                        $this->collAuditorsPartial = true;
+                    }
+
+                    return $collAuditors;
+                }
+
+                if ($partial && $this->collAuditors) {
+                    foreach ($this->collAuditors as $obj) {
+                        if ($obj->isNew()) {
+                            $collAuditors[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAuditors = $collAuditors;
+                $this->collAuditorsPartial = false;
+            }
+        }
+
+        return $this->collAuditors;
+    }
+
+    /**
+     * Sets a collection of ChildAuditor objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $auditors A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function setAuditors(Collection $auditors, ConnectionInterface $con = null)
+    {
+        /** @var ChildAuditor[] $auditorsToDelete */
+        $auditorsToDelete = $this->getAuditors(new Criteria(), $con)->diff($auditors);
+
+
+        $this->auditorsScheduledForDeletion = $auditorsToDelete;
+
+        foreach ($auditorsToDelete as $auditorRemoved) {
+            $auditorRemoved->setLocation(null);
+        }
+
+        $this->collAuditors = null;
+        foreach ($auditors as $auditor) {
+            $this->addAuditor($auditor);
+        }
+
+        $this->collAuditors = $auditors;
+        $this->collAuditorsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Auditor objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Auditor objects.
+     * @throws PropelException
+     */
+    public function countAuditors(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collAuditorsPartial && !$this->isNew();
+        if (null === $this->collAuditors || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAuditors) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getAuditors());
+            }
+
+            $query = ChildAuditorQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByLocation($this)
+                ->count($con);
+        }
+
+        return count($this->collAuditors);
+    }
+
+    /**
+     * Method called to associate a ChildAuditor object to this object
+     * through the ChildAuditor foreign key attribute.
+     *
+     * @param  ChildAuditor $l ChildAuditor
+     * @return $this|\Location The current object (for fluent API support)
+     */
+    public function addAuditor(ChildAuditor $l)
+    {
+        if ($this->collAuditors === null) {
+            $this->initAuditors();
+            $this->collAuditorsPartial = true;
+        }
+
+        if (!$this->collAuditors->contains($l)) {
+            $this->doAddAuditor($l);
+
+            if ($this->auditorsScheduledForDeletion and $this->auditorsScheduledForDeletion->contains($l)) {
+                $this->auditorsScheduledForDeletion->remove($this->auditorsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildAuditor $auditor The ChildAuditor object to add.
+     */
+    protected function doAddAuditor(ChildAuditor $auditor)
+    {
+        $this->collAuditors[]= $auditor;
+        $auditor->setLocation($this);
+    }
+
+    /**
+     * @param  ChildAuditor $auditor The ChildAuditor object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function removeAuditor(ChildAuditor $auditor)
+    {
+        if ($this->getAuditors()->contains($auditor)) {
+            $pos = $this->collAuditors->search($auditor);
+            $this->collAuditors->remove($pos);
+            if (null === $this->auditorsScheduledForDeletion) {
+                $this->auditorsScheduledForDeletion = clone $this->collAuditors;
+                $this->auditorsScheduledForDeletion->clear();
+            }
+            $this->auditorsScheduledForDeletion[]= clone $auditor;
+            $auditor->setLocation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Auditors from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Location.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildAuditor[] List of ChildAuditor objects
+     */
+    public function getAuditorsJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildAuditorQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
+
+        return $this->getAuditors($query, $con);
+    }
+
+    /**
+     * Clears out the collBranches collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBranches()
+     */
+    public function clearBranches()
+    {
+        $this->collBranches = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBranches collection loaded partially.
+     */
+    public function resetPartialBranches($v = true)
+    {
+        $this->collBranchesPartial = $v;
+    }
+
+    /**
+     * Initializes the collBranches collection.
+     *
+     * By default this just sets the collBranches collection to an empty array (like clearcollBranches());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBranches($overrideExisting = true)
+    {
+        if (null !== $this->collBranches && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = BranchTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBranches = new $collectionClassName;
+        $this->collBranches->setModel('\Branch');
+    }
+
+    /**
+     * Gets an array of ChildBranch objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBranch[] List of ChildBranch objects
+     * @throws PropelException
+     */
+    public function getBranches(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBranchesPartial && !$this->isNew();
+        if (null === $this->collBranches || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBranches) {
+                // return empty collection
+                $this->initBranches();
+            } else {
+                $collBranches = ChildBranchQuery::create(null, $criteria)
+                    ->filterByLocation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBranchesPartial && count($collBranches)) {
+                        $this->initBranches(false);
+
+                        foreach ($collBranches as $obj) {
+                            if (false == $this->collBranches->contains($obj)) {
+                                $this->collBranches->append($obj);
+                            }
+                        }
+
+                        $this->collBranchesPartial = true;
+                    }
+
+                    return $collBranches;
+                }
+
+                if ($partial && $this->collBranches) {
+                    foreach ($this->collBranches as $obj) {
+                        if ($obj->isNew()) {
+                            $collBranches[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBranches = $collBranches;
+                $this->collBranchesPartial = false;
+            }
+        }
+
+        return $this->collBranches;
+    }
+
+    /**
+     * Sets a collection of ChildBranch objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $branches A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function setBranches(Collection $branches, ConnectionInterface $con = null)
+    {
+        /** @var ChildBranch[] $branchesToDelete */
+        $branchesToDelete = $this->getBranches(new Criteria(), $con)->diff($branches);
+
+
+        $this->branchesScheduledForDeletion = $branchesToDelete;
+
+        foreach ($branchesToDelete as $branchRemoved) {
+            $branchRemoved->setLocation(null);
+        }
+
+        $this->collBranches = null;
+        foreach ($branches as $branch) {
+            $this->addBranch($branch);
+        }
+
+        $this->collBranches = $branches;
+        $this->collBranchesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Branch objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Branch objects.
+     * @throws PropelException
+     */
+    public function countBranches(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBranchesPartial && !$this->isNew();
+        if (null === $this->collBranches || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBranches) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBranches());
+            }
+
+            $query = ChildBranchQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByLocation($this)
+                ->count($con);
+        }
+
+        return count($this->collBranches);
+    }
+
+    /**
+     * Method called to associate a ChildBranch object to this object
+     * through the ChildBranch foreign key attribute.
+     *
+     * @param  ChildBranch $l ChildBranch
+     * @return $this|\Location The current object (for fluent API support)
+     */
+    public function addBranch(ChildBranch $l)
+    {
+        if ($this->collBranches === null) {
+            $this->initBranches();
+            $this->collBranchesPartial = true;
+        }
+
+        if (!$this->collBranches->contains($l)) {
+            $this->doAddBranch($l);
+
+            if ($this->branchesScheduledForDeletion and $this->branchesScheduledForDeletion->contains($l)) {
+                $this->branchesScheduledForDeletion->remove($this->branchesScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBranch $branch The ChildBranch object to add.
+     */
+    protected function doAddBranch(ChildBranch $branch)
+    {
+        $this->collBranches[]= $branch;
+        $branch->setLocation($this);
+    }
+
+    /**
+     * @param  ChildBranch $branch The ChildBranch object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function removeBranch(ChildBranch $branch)
+    {
+        if ($this->getBranches()->contains($branch)) {
+            $pos = $this->collBranches->search($branch);
+            $this->collBranches->remove($pos);
+            if (null === $this->branchesScheduledForDeletion) {
+                $this->branchesScheduledForDeletion = clone $this->collBranches;
+                $this->branchesScheduledForDeletion->clear();
+            }
+            $this->branchesScheduledForDeletion[]= clone $branch;
+            $branch->setLocation(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collManagers collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addManagers()
+     */
+    public function clearManagers()
+    {
+        $this->collManagers = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collManagers collection loaded partially.
+     */
+    public function resetPartialManagers($v = true)
+    {
+        $this->collManagersPartial = $v;
+    }
+
+    /**
+     * Initializes the collManagers collection.
+     *
+     * By default this just sets the collManagers collection to an empty array (like clearcollManagers());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initManagers($overrideExisting = true)
+    {
+        if (null !== $this->collManagers && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ManagerTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collManagers = new $collectionClassName;
+        $this->collManagers->setModel('\Manager');
+    }
+
+    /**
+     * Gets an array of ChildManager objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildLocation is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildManager[] List of ChildManager objects
+     * @throws PropelException
+     */
+    public function getManagers(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collManagersPartial && !$this->isNew();
+        if (null === $this->collManagers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collManagers) {
+                // return empty collection
+                $this->initManagers();
+            } else {
+                $collManagers = ChildManagerQuery::create(null, $criteria)
+                    ->filterByLocation($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collManagersPartial && count($collManagers)) {
+                        $this->initManagers(false);
+
+                        foreach ($collManagers as $obj) {
+                            if (false == $this->collManagers->contains($obj)) {
+                                $this->collManagers->append($obj);
+                            }
+                        }
+
+                        $this->collManagersPartial = true;
+                    }
+
+                    return $collManagers;
+                }
+
+                if ($partial && $this->collManagers) {
+                    foreach ($this->collManagers as $obj) {
+                        if ($obj->isNew()) {
+                            $collManagers[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collManagers = $collManagers;
+                $this->collManagersPartial = false;
+            }
+        }
+
+        return $this->collManagers;
+    }
+
+    /**
+     * Sets a collection of ChildManager objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $managers A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function setManagers(Collection $managers, ConnectionInterface $con = null)
+    {
+        /** @var ChildManager[] $managersToDelete */
+        $managersToDelete = $this->getManagers(new Criteria(), $con)->diff($managers);
+
+
+        $this->managersScheduledForDeletion = $managersToDelete;
+
+        foreach ($managersToDelete as $managerRemoved) {
+            $managerRemoved->setLocation(null);
+        }
+
+        $this->collManagers = null;
+        foreach ($managers as $manager) {
+            $this->addManager($manager);
+        }
+
+        $this->collManagers = $managers;
+        $this->collManagersPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Manager objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Manager objects.
+     * @throws PropelException
+     */
+    public function countManagers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collManagersPartial && !$this->isNew();
+        if (null === $this->collManagers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collManagers) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getManagers());
+            }
+
+            $query = ChildManagerQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByLocation($this)
+                ->count($con);
+        }
+
+        return count($this->collManagers);
+    }
+
+    /**
+     * Method called to associate a ChildManager object to this object
+     * through the ChildManager foreign key attribute.
+     *
+     * @param  ChildManager $l ChildManager
+     * @return $this|\Location The current object (for fluent API support)
+     */
+    public function addManager(ChildManager $l)
+    {
+        if ($this->collManagers === null) {
+            $this->initManagers();
+            $this->collManagersPartial = true;
+        }
+
+        if (!$this->collManagers->contains($l)) {
+            $this->doAddManager($l);
+
+            if ($this->managersScheduledForDeletion and $this->managersScheduledForDeletion->contains($l)) {
+                $this->managersScheduledForDeletion->remove($this->managersScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildManager $manager The ChildManager object to add.
+     */
+    protected function doAddManager(ChildManager $manager)
+    {
+        $this->collManagers[]= $manager;
+        $manager->setLocation($this);
+    }
+
+    /**
+     * @param  ChildManager $manager The ChildManager object to remove.
+     * @return $this|ChildLocation The current object (for fluent API support)
+     */
+    public function removeManager(ChildManager $manager)
+    {
+        if ($this->getManagers()->contains($manager)) {
+            $pos = $this->collManagers->search($manager);
+            $this->collManagers->remove($pos);
+            if (null === $this->managersScheduledForDeletion) {
+                $this->managersScheduledForDeletion = clone $this->collManagers;
+                $this->managersScheduledForDeletion->clear();
+            }
+            $this->managersScheduledForDeletion[]= clone $manager;
+            $manager->setLocation(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Managers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Location.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildManager[] List of ChildManager objects
+     */
+    public function getManagersJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildManagerQuery::create(null, $criteria);
+        $query->joinWith('User', $joinBehavior);
+
+        return $this->getManagers($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Location is new, it will return
+     * an empty collection; or if this Location has previously
+     * been saved, it will retrieve related Managers from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Location.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildManager[] List of ChildManager objects
+     */
+    public function getManagersJoinAdmin(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildManagerQuery::create(null, $criteria);
+        $query->joinWith('Admin', $joinBehavior);
+
+        return $this->getManagers($query, $con);
     }
 
     /**
@@ -1061,8 +2011,26 @@ abstract class Location implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collAuditors) {
+                foreach ($this->collAuditors as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collBranches) {
+                foreach ($this->collBranches as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collManagers) {
+                foreach ($this->collManagers as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collAuditors = null;
+        $this->collBranches = null;
+        $this->collManagers = null;
     }
 
     /**

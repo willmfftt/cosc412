@@ -2,17 +2,26 @@
 
 namespace Base;
 
+use \Branch as ChildBranch;
+use \BranchQuery as ChildBranchQuery;
 use \Manager as ChildManager;
 use \ManagerQuery as ChildManagerQuery;
+use \Supervisor as ChildSupervisor;
 use \SupervisorQuery as ChildSupervisorQuery;
+use \Transaction as ChildTransaction;
+use \TransactionQuery as ChildTransactionQuery;
+use \User as ChildUser;
+use \UserQuery as ChildUserQuery;
 use \Exception;
 use \PDO;
 use Map\SupervisorTableMap;
+use Map\TransactionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -69,23 +78,46 @@ abstract class Supervisor implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the userid field.
+     * The value for the user_id field.
      *
      * @var        int
      */
-    protected $userid;
+    protected $user_id;
 
     /**
-     * The value for the managerid field.
+     * The value for the manager_id field.
      *
      * @var        int
      */
-    protected $managerid;
+    protected $manager_id;
+
+    /**
+     * The value for the branch_id field.
+     *
+     * @var        int
+     */
+    protected $branch_id;
 
     /**
      * @var        ChildManager
      */
     protected $aManager;
+
+    /**
+     * @var        ChildUser
+     */
+    protected $aUser;
+
+    /**
+     * @var        ChildBranch
+     */
+    protected $aBranch;
+
+    /**
+     * @var        ObjectCollection|ChildTransaction[] Collection to store aggregation of ChildTransaction objects.
+     */
+    protected $collTransactions;
+    protected $collTransactionsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -94,6 +126,12 @@ abstract class Supervisor implements ActiveRecordInterface
      * @var boolean
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildTransaction[]
+     */
+    protected $transactionsScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Base\Supervisor object.
@@ -331,23 +369,33 @@ abstract class Supervisor implements ActiveRecordInterface
     }
 
     /**
-     * Get the [userid] column value.
+     * Get the [user_id] column value.
      *
      * @return int
      */
-    public function getUserid()
+    public function getUserId()
     {
-        return $this->userid;
+        return $this->user_id;
     }
 
     /**
-     * Get the [managerid] column value.
+     * Get the [manager_id] column value.
      *
      * @return int
      */
-    public function getManagerid()
+    public function getManagerId()
     {
-        return $this->managerid;
+        return $this->manager_id;
+    }
+
+    /**
+     * Get the [branch_id] column value.
+     *
+     * @return int
+     */
+    public function getBranchId()
+    {
+        return $this->branch_id;
     }
 
     /**
@@ -371,40 +419,44 @@ abstract class Supervisor implements ActiveRecordInterface
     } // setId()
 
     /**
-     * Set the value of [userid] column.
+     * Set the value of [user_id] column.
      *
      * @param int $v new value
      * @return $this|\Supervisor The current object (for fluent API support)
      */
-    public function setUserid($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->userid !== $v) {
-            $this->userid = $v;
-            $this->modifiedColumns[SupervisorTableMap::COL_USERID] = true;
+        if ($this->user_id !== $v) {
+            $this->user_id = $v;
+            $this->modifiedColumns[SupervisorTableMap::COL_USER_ID] = true;
+        }
+
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
         }
 
         return $this;
-    } // setUserid()
+    } // setUserId()
 
     /**
-     * Set the value of [managerid] column.
+     * Set the value of [manager_id] column.
      *
      * @param int $v new value
      * @return $this|\Supervisor The current object (for fluent API support)
      */
-    public function setManagerid($v)
+    public function setManagerId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
         }
 
-        if ($this->managerid !== $v) {
-            $this->managerid = $v;
-            $this->modifiedColumns[SupervisorTableMap::COL_MANAGERID] = true;
+        if ($this->manager_id !== $v) {
+            $this->manager_id = $v;
+            $this->modifiedColumns[SupervisorTableMap::COL_MANAGER_ID] = true;
         }
 
         if ($this->aManager !== null && $this->aManager->getId() !== $v) {
@@ -412,7 +464,31 @@ abstract class Supervisor implements ActiveRecordInterface
         }
 
         return $this;
-    } // setManagerid()
+    } // setManagerId()
+
+    /**
+     * Set the value of [branch_id] column.
+     *
+     * @param int $v new value
+     * @return $this|\Supervisor The current object (for fluent API support)
+     */
+    public function setBranchId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->branch_id !== $v) {
+            $this->branch_id = $v;
+            $this->modifiedColumns[SupervisorTableMap::COL_BRANCH_ID] = true;
+        }
+
+        if ($this->aBranch !== null && $this->aBranch->getId() !== $v) {
+            $this->aBranch = null;
+        }
+
+        return $this;
+    } // setBranchId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -453,11 +529,14 @@ abstract class Supervisor implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SupervisorTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SupervisorTableMap::translateFieldName('Userid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->userid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SupervisorTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->user_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SupervisorTableMap::translateFieldName('Managerid', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->managerid = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SupervisorTableMap::translateFieldName('ManagerId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->manager_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SupervisorTableMap::translateFieldName('BranchId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->branch_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -466,7 +545,7 @@ abstract class Supervisor implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 3; // 3 = SupervisorTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = SupervisorTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Supervisor'), 0, $e);
@@ -488,8 +567,14 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aManager !== null && $this->managerid !== $this->aManager->getId()) {
+        if ($this->aUser !== null && $this->user_id !== $this->aUser->getId()) {
+            $this->aUser = null;
+        }
+        if ($this->aManager !== null && $this->manager_id !== $this->aManager->getId()) {
             $this->aManager = null;
+        }
+        if ($this->aBranch !== null && $this->branch_id !== $this->aBranch->getId()) {
+            $this->aBranch = null;
         }
     } // ensureConsistency
 
@@ -531,6 +616,10 @@ abstract class Supervisor implements ActiveRecordInterface
         if ($deep) {  // also de-associate any related objects?
 
             $this->aManager = null;
+            $this->aUser = null;
+            $this->aBranch = null;
+            $this->collTransactions = null;
+
         } // if (deep)
     }
 
@@ -642,6 +731,20 @@ abstract class Supervisor implements ActiveRecordInterface
                 $this->setManager($this->aManager);
             }
 
+            if ($this->aUser !== null) {
+                if ($this->aUser->isModified() || $this->aUser->isNew()) {
+                    $affectedRows += $this->aUser->save($con);
+                }
+                $this->setUser($this->aUser);
+            }
+
+            if ($this->aBranch !== null) {
+                if ($this->aBranch->isModified() || $this->aBranch->isNew()) {
+                    $affectedRows += $this->aBranch->save($con);
+                }
+                $this->setBranch($this->aBranch);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -651,6 +754,23 @@ abstract class Supervisor implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->transactionsScheduledForDeletion !== null) {
+                if (!$this->transactionsScheduledForDeletion->isEmpty()) {
+                    \TransactionQuery::create()
+                        ->filterByPrimaryKeys($this->transactionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->transactionsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collTransactions !== null) {
+                foreach ($this->collTransactions as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             $this->alreadyInSave = false;
@@ -682,11 +802,14 @@ abstract class Supervisor implements ActiveRecordInterface
         if ($this->isColumnModified(SupervisorTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(SupervisorTableMap::COL_USERID)) {
-            $modifiedColumns[':p' . $index++]  = 'userId';
+        if ($this->isColumnModified(SupervisorTableMap::COL_USER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(SupervisorTableMap::COL_MANAGERID)) {
-            $modifiedColumns[':p' . $index++]  = 'managerId';
+        if ($this->isColumnModified(SupervisorTableMap::COL_MANAGER_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'manager_id';
+        }
+        if ($this->isColumnModified(SupervisorTableMap::COL_BRANCH_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'branch_id';
         }
 
         $sql = sprintf(
@@ -702,11 +825,14 @@ abstract class Supervisor implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'userId':
-                        $stmt->bindValue($identifier, $this->userid, PDO::PARAM_INT);
+                    case 'user_id':
+                        $stmt->bindValue($identifier, $this->user_id, PDO::PARAM_INT);
                         break;
-                    case 'managerId':
-                        $stmt->bindValue($identifier, $this->managerid, PDO::PARAM_INT);
+                    case 'manager_id':
+                        $stmt->bindValue($identifier, $this->manager_id, PDO::PARAM_INT);
+                        break;
+                    case 'branch_id':
+                        $stmt->bindValue($identifier, $this->branch_id, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -774,10 +900,13 @@ abstract class Supervisor implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getUserid();
+                return $this->getUserId();
                 break;
             case 2:
-                return $this->getManagerid();
+                return $this->getManagerId();
+                break;
+            case 3:
+                return $this->getBranchId();
                 break;
             default:
                 return null;
@@ -810,8 +939,9 @@ abstract class Supervisor implements ActiveRecordInterface
         $keys = SupervisorTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getUserid(),
-            $keys[2] => $this->getManagerid(),
+            $keys[1] => $this->getUserId(),
+            $keys[2] => $this->getManagerId(),
+            $keys[3] => $this->getBranchId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -833,6 +963,51 @@ abstract class Supervisor implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->aManager->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUser) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'user';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aBranch) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'branch';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'branch';
+                        break;
+                    default:
+                        $key = 'Branch';
+                }
+
+                $result[$key] = $this->aBranch->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collTransactions) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'transactions';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'transactions';
+                        break;
+                    default:
+                        $key = 'Transactions';
+                }
+
+                $result[$key] = $this->collTransactions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -872,10 +1047,13 @@ abstract class Supervisor implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setUserid($value);
+                $this->setUserId($value);
                 break;
             case 2:
-                $this->setManagerid($value);
+                $this->setManagerId($value);
+                break;
+            case 3:
+                $this->setBranchId($value);
                 break;
         } // switch()
 
@@ -907,10 +1085,13 @@ abstract class Supervisor implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setUserid($arr[$keys[1]]);
+            $this->setUserId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setManagerid($arr[$keys[2]]);
+            $this->setManagerId($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setBranchId($arr[$keys[3]]);
         }
     }
 
@@ -956,11 +1137,14 @@ abstract class Supervisor implements ActiveRecordInterface
         if ($this->isColumnModified(SupervisorTableMap::COL_ID)) {
             $criteria->add(SupervisorTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(SupervisorTableMap::COL_USERID)) {
-            $criteria->add(SupervisorTableMap::COL_USERID, $this->userid);
+        if ($this->isColumnModified(SupervisorTableMap::COL_USER_ID)) {
+            $criteria->add(SupervisorTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(SupervisorTableMap::COL_MANAGERID)) {
-            $criteria->add(SupervisorTableMap::COL_MANAGERID, $this->managerid);
+        if ($this->isColumnModified(SupervisorTableMap::COL_MANAGER_ID)) {
+            $criteria->add(SupervisorTableMap::COL_MANAGER_ID, $this->manager_id);
+        }
+        if ($this->isColumnModified(SupervisorTableMap::COL_BRANCH_ID)) {
+            $criteria->add(SupervisorTableMap::COL_BRANCH_ID, $this->branch_id);
         }
 
         return $criteria;
@@ -980,6 +1164,7 @@ abstract class Supervisor implements ActiveRecordInterface
     {
         $criteria = ChildSupervisorQuery::create();
         $criteria->add(SupervisorTableMap::COL_ID, $this->id);
+        $criteria->add(SupervisorTableMap::COL_USER_ID, $this->user_id);
 
         return $criteria;
     }
@@ -992,10 +1177,18 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function hashCode()
     {
-        $validPk = null !== $this->getId();
+        $validPk = null !== $this->getId() &&
+            null !== $this->getUserId();
 
-        $validPrimaryKeyFKs = 0;
+        $validPrimaryKeyFKs = 1;
         $primaryKeyFKs = [];
+
+        //relation fk_supervisor_user1 to table user
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1007,23 +1200,29 @@ abstract class Supervisor implements ActiveRecordInterface
     }
 
     /**
-     * Returns the primary key for this object (row).
-     * @return int
+     * Returns the composite primary key for this object.
+     * The array elements will be in same order as specified in XML.
+     * @return array
      */
     public function getPrimaryKey()
     {
-        return $this->getId();
+        $pks = array();
+        $pks[0] = $this->getId();
+        $pks[1] = $this->getUserId();
+
+        return $pks;
     }
 
     /**
-     * Generic method to set the primary key (id column).
+     * Set the [composite] primary key.
      *
-     * @param       int $key Primary key.
+     * @param      array $keys The elements of the composite key (order must match the order in XML file).
      * @return void
      */
-    public function setPrimaryKey($key)
+    public function setPrimaryKey($keys)
     {
-        $this->setId($key);
+        $this->setId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -1032,7 +1231,7 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-        return null === $this->getId();
+        return (null === $this->getId()) && (null === $this->getUserId());
     }
 
     /**
@@ -1048,8 +1247,23 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setUserid($this->getUserid());
-        $copyObj->setManagerid($this->getManagerid());
+        $copyObj->setUserId($this->getUserId());
+        $copyObj->setManagerId($this->getManagerId());
+        $copyObj->setBranchId($this->getBranchId());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getTransactions() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addTransaction($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1088,9 +1302,9 @@ abstract class Supervisor implements ActiveRecordInterface
     public function setManager(ChildManager $v = null)
     {
         if ($v === null) {
-            $this->setManagerid(NULL);
+            $this->setManagerId(NULL);
         } else {
-            $this->setManagerid($v->getId());
+            $this->setManagerId($v->getId());
         }
 
         $this->aManager = $v;
@@ -1115,7 +1329,7 @@ abstract class Supervisor implements ActiveRecordInterface
      */
     public function getManager(ConnectionInterface $con = null)
     {
-        if ($this->aManager === null && ($this->managerid !== null)) {
+        if ($this->aManager === null && ($this->manager_id !== null)) {
             $this->aManager = ChildManagerQuery::create()
                 ->filterBySupervisor($this) // here
                 ->findOne($con);
@@ -1132,6 +1346,374 @@ abstract class Supervisor implements ActiveRecordInterface
     }
 
     /**
+     * Declares an association between this object and a ChildUser object.
+     *
+     * @param  ChildUser $v
+     * @return $this|\Supervisor The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setUser(ChildUser $v = null)
+    {
+        if ($v === null) {
+            $this->setUserId(NULL);
+        } else {
+            $this->setUserId($v->getId());
+        }
+
+        $this->aUser = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildUser object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSupervisor($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildUser object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
+     * @throws PropelException
+     */
+    public function getUser(ConnectionInterface $con = null)
+    {
+        if ($this->aUser === null && ($this->user_id !== null)) {
+            $this->aUser = ChildUserQuery::create()->findPk($this->user_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUser->addSupervisors($this);
+             */
+        }
+
+        return $this->aUser;
+    }
+
+    /**
+     * Declares an association between this object and a ChildBranch object.
+     *
+     * @param  ChildBranch $v
+     * @return $this|\Supervisor The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setBranch(ChildBranch $v = null)
+    {
+        if ($v === null) {
+            $this->setBranchId(NULL);
+        } else {
+            $this->setBranchId($v->getId());
+        }
+
+        $this->aBranch = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildBranch object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSupervisor($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildBranch object
+     *
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildBranch The associated ChildBranch object.
+     * @throws PropelException
+     */
+    public function getBranch(ConnectionInterface $con = null)
+    {
+        if ($this->aBranch === null && ($this->branch_id !== null)) {
+            $this->aBranch = ChildBranchQuery::create()->findPk($this->branch_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aBranch->addSupervisors($this);
+             */
+        }
+
+        return $this->aBranch;
+    }
+
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('Transaction' == $relationName) {
+            return $this->initTransactions();
+        }
+    }
+
+    /**
+     * Clears out the collTransactions collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addTransactions()
+     */
+    public function clearTransactions()
+    {
+        $this->collTransactions = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collTransactions collection loaded partially.
+     */
+    public function resetPartialTransactions($v = true)
+    {
+        $this->collTransactionsPartial = $v;
+    }
+
+    /**
+     * Initializes the collTransactions collection.
+     *
+     * By default this just sets the collTransactions collection to an empty array (like clearcollTransactions());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initTransactions($overrideExisting = true)
+    {
+        if (null !== $this->collTransactions && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = TransactionTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collTransactions = new $collectionClassName;
+        $this->collTransactions->setModel('\Transaction');
+    }
+
+    /**
+     * Gets an array of ChildTransaction objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildSupervisor is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
+     * @throws PropelException
+     */
+    public function getTransactions(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionsPartial && !$this->isNew();
+        if (null === $this->collTransactions || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTransactions) {
+                // return empty collection
+                $this->initTransactions();
+            } else {
+                $collTransactions = ChildTransactionQuery::create(null, $criteria)
+                    ->filterBySupervisor($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collTransactionsPartial && count($collTransactions)) {
+                        $this->initTransactions(false);
+
+                        foreach ($collTransactions as $obj) {
+                            if (false == $this->collTransactions->contains($obj)) {
+                                $this->collTransactions->append($obj);
+                            }
+                        }
+
+                        $this->collTransactionsPartial = true;
+                    }
+
+                    return $collTransactions;
+                }
+
+                if ($partial && $this->collTransactions) {
+                    foreach ($this->collTransactions as $obj) {
+                        if ($obj->isNew()) {
+                            $collTransactions[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collTransactions = $collTransactions;
+                $this->collTransactionsPartial = false;
+            }
+        }
+
+        return $this->collTransactions;
+    }
+
+    /**
+     * Sets a collection of ChildTransaction objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $transactions A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildSupervisor The current object (for fluent API support)
+     */
+    public function setTransactions(Collection $transactions, ConnectionInterface $con = null)
+    {
+        /** @var ChildTransaction[] $transactionsToDelete */
+        $transactionsToDelete = $this->getTransactions(new Criteria(), $con)->diff($transactions);
+
+
+        $this->transactionsScheduledForDeletion = $transactionsToDelete;
+
+        foreach ($transactionsToDelete as $transactionRemoved) {
+            $transactionRemoved->setSupervisor(null);
+        }
+
+        $this->collTransactions = null;
+        foreach ($transactions as $transaction) {
+            $this->addTransaction($transaction);
+        }
+
+        $this->collTransactions = $transactions;
+        $this->collTransactionsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Transaction objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Transaction objects.
+     * @throws PropelException
+     */
+    public function countTransactions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collTransactionsPartial && !$this->isNew();
+        if (null === $this->collTransactions || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTransactions) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getTransactions());
+            }
+
+            $query = ChildTransactionQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterBySupervisor($this)
+                ->count($con);
+        }
+
+        return count($this->collTransactions);
+    }
+
+    /**
+     * Method called to associate a ChildTransaction object to this object
+     * through the ChildTransaction foreign key attribute.
+     *
+     * @param  ChildTransaction $l ChildTransaction
+     * @return $this|\Supervisor The current object (for fluent API support)
+     */
+    public function addTransaction(ChildTransaction $l)
+    {
+        if ($this->collTransactions === null) {
+            $this->initTransactions();
+            $this->collTransactionsPartial = true;
+        }
+
+        if (!$this->collTransactions->contains($l)) {
+            $this->doAddTransaction($l);
+
+            if ($this->transactionsScheduledForDeletion and $this->transactionsScheduledForDeletion->contains($l)) {
+                $this->transactionsScheduledForDeletion->remove($this->transactionsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildTransaction $transaction The ChildTransaction object to add.
+     */
+    protected function doAddTransaction(ChildTransaction $transaction)
+    {
+        $this->collTransactions[]= $transaction;
+        $transaction->setSupervisor($this);
+    }
+
+    /**
+     * @param  ChildTransaction $transaction The ChildTransaction object to remove.
+     * @return $this|ChildSupervisor The current object (for fluent API support)
+     */
+    public function removeTransaction(ChildTransaction $transaction)
+    {
+        if ($this->getTransactions()->contains($transaction)) {
+            $pos = $this->collTransactions->search($transaction);
+            $this->collTransactions->remove($pos);
+            if (null === $this->transactionsScheduledForDeletion) {
+                $this->transactionsScheduledForDeletion = clone $this->collTransactions;
+                $this->transactionsScheduledForDeletion->clear();
+            }
+            $this->transactionsScheduledForDeletion[]= clone $transaction;
+            $transaction->setSupervisor(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Supervisor is new, it will return
+     * an empty collection; or if this Supervisor has previously
+     * been saved, it will retrieve related Transactions from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Supervisor.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildTransaction[] List of ChildTransaction objects
+     */
+    public function getTransactionsJoinPurchasingAgent(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildTransactionQuery::create(null, $criteria);
+        $query->joinWith('PurchasingAgent', $joinBehavior);
+
+        return $this->getTransactions($query, $con);
+    }
+
+    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
@@ -1141,9 +1723,16 @@ abstract class Supervisor implements ActiveRecordInterface
         if (null !== $this->aManager) {
             $this->aManager->removeSupervisor($this);
         }
+        if (null !== $this->aUser) {
+            $this->aUser->removeSupervisor($this);
+        }
+        if (null !== $this->aBranch) {
+            $this->aBranch->removeSupervisor($this);
+        }
         $this->id = null;
-        $this->userid = null;
-        $this->managerid = null;
+        $this->user_id = null;
+        $this->manager_id = null;
+        $this->branch_id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1162,9 +1751,17 @@ abstract class Supervisor implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collTransactions) {
+                foreach ($this->collTransactions as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collTransactions = null;
         $this->aManager = null;
+        $this->aUser = null;
+        $this->aBranch = null;
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace Map;
 
-use \Admin;
-use \AdminQuery;
+use \DodRolepermissions;
+use \DodRolepermissionsQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'admin' table.
+ * This class defines the structure of the 'dod_rolepermissions' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class AdminTableMap extends TableMap
+class DodRolepermissionsTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class AdminTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.AdminTableMap';
+    const CLASS_NAME = '.Map.DodRolepermissionsTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class AdminTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'admin';
+    const TABLE_NAME = 'dod_rolepermissions';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Admin';
+    const OM_CLASS = '\\DodRolepermissions';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Admin';
+    const CLASS_DEFAULT = 'DodRolepermissions';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 2;
+    const NUM_COLUMNS = 3;
 
     /**
      * The number of lazy-loaded columns
@@ -69,17 +69,22 @@ class AdminTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 2;
+    const NUM_HYDRATE_COLUMNS = 3;
 
     /**
-     * the column name for the id field
+     * the column name for the RoleID field
      */
-    const COL_ID = 'admin.id';
+    const COL_ROLEID = 'dod_rolepermissions.RoleID';
 
     /**
-     * the column name for the user_id field
+     * the column name for the PermissionID field
      */
-    const COL_USER_ID = 'admin.user_id';
+    const COL_PERMISSIONID = 'dod_rolepermissions.PermissionID';
+
+    /**
+     * the column name for the AssignmentDate field
+     */
+    const COL_ASSIGNMENTDATE = 'dod_rolepermissions.AssignmentDate';
 
     /**
      * The default string format for model objects of the related table
@@ -93,11 +98,11 @@ class AdminTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'UserId', ),
-        self::TYPE_CAMELNAME     => array('id', 'userId', ),
-        self::TYPE_COLNAME       => array(AdminTableMap::COL_ID, AdminTableMap::COL_USER_ID, ),
-        self::TYPE_FIELDNAME     => array('id', 'user_id', ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Roleid', 'Permissionid', 'Assignmentdate', ),
+        self::TYPE_CAMELNAME     => array('roleid', 'permissionid', 'assignmentdate', ),
+        self::TYPE_COLNAME       => array(DodRolepermissionsTableMap::COL_ROLEID, DodRolepermissionsTableMap::COL_PERMISSIONID, DodRolepermissionsTableMap::COL_ASSIGNMENTDATE, ),
+        self::TYPE_FIELDNAME     => array('RoleID', 'PermissionID', 'AssignmentDate', ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -107,11 +112,11 @@ class AdminTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'UserId' => 1, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'userId' => 1, ),
-        self::TYPE_COLNAME       => array(AdminTableMap::COL_ID => 0, AdminTableMap::COL_USER_ID => 1, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'user_id' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+        self::TYPE_PHPNAME       => array('Roleid' => 0, 'Permissionid' => 1, 'Assignmentdate' => 2, ),
+        self::TYPE_CAMELNAME     => array('roleid' => 0, 'permissionid' => 1, 'assignmentdate' => 2, ),
+        self::TYPE_COLNAME       => array(DodRolepermissionsTableMap::COL_ROLEID => 0, DodRolepermissionsTableMap::COL_PERMISSIONID => 1, DodRolepermissionsTableMap::COL_ASSIGNMENTDATE => 2, ),
+        self::TYPE_FIELDNAME     => array('RoleID' => 0, 'PermissionID' => 1, 'AssignmentDate' => 2, ),
+        self::TYPE_NUM           => array(0, 1, 2, )
     );
 
     /**
@@ -124,15 +129,16 @@ class AdminTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('admin');
-        $this->setPhpName('Admin');
+        $this->setName('dod_rolepermissions');
+        $this->setPhpName('DodRolepermissions');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Admin');
+        $this->setClassName('\\DodRolepermissions');
         $this->setPackage('');
-        $this->setUseIdGenerator(true);
+        $this->setUseIdGenerator(false);
         // columns
-        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addForeignPrimaryKey('user_id', 'UserId', 'INTEGER' , 'user', 'id', true, null, null);
+        $this->addPrimaryKey('RoleID', 'Roleid', 'INTEGER', true, null, null);
+        $this->addPrimaryKey('PermissionID', 'Permissionid', 'INTEGER', true, null, null);
+        $this->addColumn('AssignmentDate', 'Assignmentdate', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -140,20 +146,6 @@ class AdminTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('User', '\\User', RelationMap::MANY_TO_ONE, array (
-  0 =>
-  array (
-    0 => ':user_id',
-    1 => ':id',
-  ),
-), null, null, null, false);
-        $this->addRelation('Manager', '\\Manager', RelationMap::ONE_TO_MANY, array (
-  0 =>
-  array (
-    0 => ':admin_id',
-    1 => ':id',
-  ),
-), null, null, 'Managers', false);
     } // buildRelations()
 
     /**
@@ -164,14 +156,14 @@ class AdminTableMap extends TableMap
      * to the cache in order to ensure that the same objects are always returned by find*()
      * and findPk*() calls.
      *
-     * @param \Admin $obj A \Admin object.
+     * @param \DodRolepermissions $obj A \DodRolepermissions object.
      * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize([(null === $obj->getId() || is_scalar($obj->getId()) || is_callable([$obj->getId(), '__toString']) ? (string) $obj->getId() : $obj->getId()), (null === $obj->getUserId() || is_scalar($obj->getUserId()) || is_callable([$obj->getUserId(), '__toString']) ? (string) $obj->getUserId() : $obj->getUserId())]);
+                $key = serialize([(null === $obj->getRoleid() || is_scalar($obj->getRoleid()) || is_callable([$obj->getRoleid(), '__toString']) ? (string) $obj->getRoleid() : $obj->getRoleid()), (null === $obj->getPermissionid() || is_scalar($obj->getPermissionid()) || is_callable([$obj->getPermissionid(), '__toString']) ? (string) $obj->getPermissionid() : $obj->getPermissionid())]);
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -185,13 +177,13 @@ class AdminTableMap extends TableMap
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param mixed $value A \Admin object or a primary key value.
+     * @param mixed $value A \DodRolepermissions object or a primary key value.
      */
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \Admin) {
-                $key = serialize([(null === $value->getId() || is_scalar($value->getId()) || is_callable([$value->getId(), '__toString']) ? (string) $value->getId() : $value->getId()), (null === $value->getUserId() || is_scalar($value->getUserId()) || is_callable([$value->getUserId(), '__toString']) ? (string) $value->getUserId() : $value->getUserId())]);
+            if (is_object($value) && $value instanceof \DodRolepermissions) {
+                $key = serialize([(null === $value->getRoleid() || is_scalar($value->getRoleid()) || is_callable([$value->getRoleid(), '__toString']) ? (string) $value->getRoleid() : $value->getRoleid()), (null === $value->getPermissionid() || is_scalar($value->getPermissionid()) || is_callable([$value->getPermissionid(), '__toString']) ? (string) $value->getPermissionid() : $value->getPermissionid())]);
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -201,7 +193,7 @@ class AdminTableMap extends TableMap
 
                 return;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Admin object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \DodRolepermissions object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
                 throw $e;
             }
 
@@ -225,11 +217,11 @@ class AdminTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)])]);
+        return serialize([(null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)]), (null === $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)])]);
     }
 
     /**
@@ -251,12 +243,12 @@ class AdminTableMap extends TableMap
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Roleid', TableMap::TYPE_PHPNAME, $indexType)
         ];
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 1 + $offset
-                : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('Permissionid', TableMap::TYPE_PHPNAME, $indexType)
         ];
 
         return $pks;
@@ -275,7 +267,7 @@ class AdminTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? AdminTableMap::CLASS_DEFAULT : AdminTableMap::OM_CLASS;
+        return $withPrefix ? DodRolepermissionsTableMap::CLASS_DEFAULT : DodRolepermissionsTableMap::OM_CLASS;
     }
 
     /**
@@ -289,22 +281,22 @@ class AdminTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Admin object, last column rank)
+     * @return array           (DodRolepermissions object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = AdminTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = AdminTableMap::getInstanceFromPool($key))) {
+        $key = DodRolepermissionsTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = DodRolepermissionsTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + AdminTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + DodRolepermissionsTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = AdminTableMap::OM_CLASS;
-            /** @var Admin $obj */
+            $cls = DodRolepermissionsTableMap::OM_CLASS;
+            /** @var DodRolepermissions $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            AdminTableMap::addInstanceToPool($obj, $key);
+            DodRolepermissionsTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -327,18 +319,18 @@ class AdminTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = AdminTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = AdminTableMap::getInstanceFromPool($key))) {
+            $key = DodRolepermissionsTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = DodRolepermissionsTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Admin $obj */
+                /** @var DodRolepermissions $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                AdminTableMap::addInstanceToPool($obj, $key);
+                DodRolepermissionsTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -359,11 +351,13 @@ class AdminTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(AdminTableMap::COL_ID);
-            $criteria->addSelectColumn(AdminTableMap::COL_USER_ID);
+            $criteria->addSelectColumn(DodRolepermissionsTableMap::COL_ROLEID);
+            $criteria->addSelectColumn(DodRolepermissionsTableMap::COL_PERMISSIONID);
+            $criteria->addSelectColumn(DodRolepermissionsTableMap::COL_ASSIGNMENTDATE);
         } else {
-            $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.user_id');
+            $criteria->addSelectColumn($alias . '.RoleID');
+            $criteria->addSelectColumn($alias . '.PermissionID');
+            $criteria->addSelectColumn($alias . '.AssignmentDate');
         }
     }
 
@@ -376,7 +370,7 @@ class AdminTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(AdminTableMap::DATABASE_NAME)->getTable(AdminTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(DodRolepermissionsTableMap::DATABASE_NAME)->getTable(DodRolepermissionsTableMap::TABLE_NAME);
     }
 
     /**
@@ -384,16 +378,16 @@ class AdminTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(AdminTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(AdminTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new AdminTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(DodRolepermissionsTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(DodRolepermissionsTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new DodRolepermissionsTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Admin or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a DodRolepermissions or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or Admin object or primary key or array of primary keys
+     * @param mixed               $values Criteria or DodRolepermissions object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -404,17 +398,17 @@ class AdminTableMap extends TableMap
      public static function doDelete($values, ConnectionInterface $con = null)
      {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AdminTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodRolepermissionsTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Admin) { // it's a model object
+        } elseif ($values instanceof \DodRolepermissions) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(AdminTableMap::DATABASE_NAME);
+            $criteria = new Criteria(DodRolepermissionsTableMap::DATABASE_NAME);
             // primary key is composite; we therefore, expect
             // the primary key passed to be an array of pkey values
             if (count($values) == count($values, COUNT_RECURSIVE)) {
@@ -422,19 +416,19 @@ class AdminTableMap extends TableMap
                 $values = array($values);
             }
             foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(AdminTableMap::COL_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(AdminTableMap::COL_USER_ID, $value[1]));
+                $criterion = $criteria->getNewCriterion(DodRolepermissionsTableMap::COL_ROLEID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(DodRolepermissionsTableMap::COL_PERMISSIONID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
 
-        $query = AdminQuery::create()->mergeWith($criteria);
+        $query = DodRolepermissionsQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            AdminTableMap::clearInstancePool();
+            DodRolepermissionsTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                AdminTableMap::removeInstanceFromPool($singleval);
+                DodRolepermissionsTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -442,20 +436,20 @@ class AdminTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the admin table.
+     * Deletes all rows from the dod_rolepermissions table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return AdminQuery::create()->doDeleteAll($con);
+        return DodRolepermissionsQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Admin or Criteria object.
+     * Performs an INSERT on the database, given a DodRolepermissions or Criteria object.
      *
-     * @param mixed               $criteria Criteria or Admin object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or DodRolepermissions object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -464,22 +458,18 @@ class AdminTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AdminTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(DodRolepermissionsTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Admin object
-        }
-
-        if ($criteria->containsKey(AdminTableMap::COL_ID) && $criteria->keyContainsValue(AdminTableMap::COL_ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.AdminTableMap::COL_ID.')');
+            $criteria = $criteria->buildCriteria(); // build Criteria from DodRolepermissions object
         }
 
 
         // Set the correct dbName
-        $query = AdminQuery::create()->mergeWith($criteria);
+        $query = DodRolepermissionsQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -488,7 +478,7 @@ class AdminTableMap extends TableMap
         });
     }
 
-} // AdminTableMap
+} // DodRolepermissionsTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-AdminTableMap::buildTableMap();
+DodRolepermissionsTableMap::buildTableMap();

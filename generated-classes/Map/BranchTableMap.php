@@ -137,7 +137,7 @@ class BranchTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('location_id', 'LocationId', 'INTEGER', true, null, null);
+        $this->addForeignKey('location_id', 'LocationId', 'INTEGER', 'location', 'id', true, null, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 45, null);
     } // initialize()
 
@@ -146,6 +146,34 @@ class BranchTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('Location', '\\Location', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, null, false);
+        $this->addRelation('ApprovedUser', '\\ApprovedUser', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, 'ApprovedUsers', false);
+        $this->addRelation('PurchasingAgent', '\\PurchasingAgent', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, 'PurchasingAgents', false);
+        $this->addRelation('Supervisor', '\\Supervisor', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, 'Supervisors', false);
     } // buildRelations()
 
     /**
