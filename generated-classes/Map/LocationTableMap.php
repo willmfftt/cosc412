@@ -160,6 +160,13 @@ class LocationTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'Branches', false);
+        $this->addRelation('Budget', '\\Budget', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':location_id',
+    1 => ':id',
+  ),
+), null, null, 'Budgets', false);
         $this->addRelation('Manager', '\\Manager', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

@@ -67,6 +67,27 @@
       <parameter name="Engine" value="InnoDB"/>
     </vendor>
   </table>
+  <table name="budget" idMethod="native" phpName="Budget">
+    <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="location_id" phpName="LocationId" type="INTEGER" required="true"/>
+    <column name="branch_id" phpName="BranchId" type="INTEGER"/>
+    <column name="amount" phpName="Amount" type="DECIMAL" size="15" scale="2" required="true"/>
+    <foreign-key foreignTable="location" name="fk_budget_locationId">
+      <reference local="location_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="branch" name="fk_budget_branchId">
+      <reference local="branch_id" foreign="id"/>
+    </foreign-key>
+    <index name="fk_budget_locationId_idx">
+      <index-column name="location_id"/>
+    </index>
+    <index name="fk_budget_branchId_idx">
+      <index-column name="branch_id"/>
+    </index>
+    <vendor type="mysql">
+      <parameter name="Engine" value="InnoDB"/>
+    </vendor>
+  </table>
   <table name="dod_permissions" idMethod="native" phpName="DodPermissions">
     <column name="ID" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="Lft" phpName="Lft" type="INTEGER" required="true"/>
@@ -253,6 +274,7 @@
   </table>
   <table name="transaction" idMethod="native" phpName="Transaction">
     <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="description" phpName="Description" type="VARCHAR" size="255"/>
     <column name="type" phpName="Type" type="VARCHAR" size="20" required="true" defaultValue="internal"/>
     <column name="purchasing_agent_id" phpName="PurchasingAgentId" type="INTEGER" required="true"/>
     <column name="supervisor_id" phpName="SupervisorId" type="INTEGER" required="true"/>

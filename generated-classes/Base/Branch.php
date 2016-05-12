@@ -6,6 +6,8 @@ use \ApprovedUser as ChildApprovedUser;
 use \ApprovedUserQuery as ChildApprovedUserQuery;
 use \Branch as ChildBranch;
 use \BranchQuery as ChildBranchQuery;
+use \Budget as ChildBudget;
+use \BudgetQuery as ChildBudgetQuery;
 use \Location as ChildLocation;
 use \LocationQuery as ChildLocationQuery;
 use \PurchasingAgent as ChildPurchasingAgent;
@@ -16,6 +18,7 @@ use \Exception;
 use \PDO;
 use Map\ApprovedUserTableMap;
 use Map\BranchTableMap;
+use Map\BudgetTableMap;
 use Map\PurchasingAgentTableMap;
 use Map\SupervisorTableMap;
 use Propel\Runtime\Propel;
@@ -105,6 +108,12 @@ abstract class Branch implements ActiveRecordInterface
     protected $collApprovedUsersPartial;
 
     /**
+     * @var        ObjectCollection|ChildBudget[] Collection to store aggregation of ChildBudget objects.
+     */
+    protected $collBudgets;
+    protected $collBudgetsPartial;
+
+    /**
      * @var        ObjectCollection|ChildPurchasingAgent[] Collection to store aggregation of ChildPurchasingAgent objects.
      */
     protected $collPurchasingAgents;
@@ -129,6 +138,12 @@ abstract class Branch implements ActiveRecordInterface
      * @var ObjectCollection|ChildApprovedUser[]
      */
     protected $approvedUsersScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildBudget[]
+     */
+    protected $budgetsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -580,6 +595,8 @@ abstract class Branch implements ActiveRecordInterface
             $this->aLocation = null;
             $this->collApprovedUsers = null;
 
+            $this->collBudgets = null;
+
             $this->collPurchasingAgents = null;
 
             $this->collSupervisors = null;
@@ -717,6 +734,24 @@ abstract class Branch implements ActiveRecordInterface
 
             if ($this->collApprovedUsers !== null) {
                 foreach ($this->collApprovedUsers as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->budgetsScheduledForDeletion !== null) {
+                if (!$this->budgetsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->budgetsScheduledForDeletion as $budget) {
+                        // need to save related object because we set the relation to null
+                        $budget->save($con);
+                    }
+                    $this->budgetsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collBudgets !== null) {
+                foreach ($this->collBudgets as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -952,6 +987,21 @@ abstract class Branch implements ActiveRecordInterface
                 }
 
                 $result[$key] = $this->collApprovedUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collBudgets) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'budgets';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'budgets';
+                        break;
+                    default:
+                        $key = 'Budgets';
+                }
+
+                $result[$key] = $this->collBudgets->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collPurchasingAgents) {
 
@@ -1211,6 +1261,12 @@ abstract class Branch implements ActiveRecordInterface
                 }
             }
 
+            foreach ($this->getBudgets() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addBudget($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getPurchasingAgents() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPurchasingAgent($relObj->copy($deepCopy));
@@ -1317,6 +1373,9 @@ abstract class Branch implements ActiveRecordInterface
     {
         if ('ApprovedUser' == $relationName) {
             return $this->initApprovedUsers();
+        }
+        if ('Budget' == $relationName) {
+            return $this->initBudgets();
         }
         if ('PurchasingAgent' == $relationName) {
             return $this->initPurchasingAgents();
@@ -1574,6 +1633,256 @@ abstract class Branch implements ActiveRecordInterface
         $query->joinWith('User', $joinBehavior);
 
         return $this->getApprovedUsers($query, $con);
+    }
+
+    /**
+     * Clears out the collBudgets collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addBudgets()
+     */
+    public function clearBudgets()
+    {
+        $this->collBudgets = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collBudgets collection loaded partially.
+     */
+    public function resetPartialBudgets($v = true)
+    {
+        $this->collBudgetsPartial = $v;
+    }
+
+    /**
+     * Initializes the collBudgets collection.
+     *
+     * By default this just sets the collBudgets collection to an empty array (like clearcollBudgets());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initBudgets($overrideExisting = true)
+    {
+        if (null !== $this->collBudgets && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = BudgetTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collBudgets = new $collectionClassName;
+        $this->collBudgets->setModel('\Budget');
+    }
+
+    /**
+     * Gets an array of ChildBudget objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildBranch is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildBudget[] List of ChildBudget objects
+     * @throws PropelException
+     */
+    public function getBudgets(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBudgetsPartial && !$this->isNew();
+        if (null === $this->collBudgets || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collBudgets) {
+                // return empty collection
+                $this->initBudgets();
+            } else {
+                $collBudgets = ChildBudgetQuery::create(null, $criteria)
+                    ->filterByBranch($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collBudgetsPartial && count($collBudgets)) {
+                        $this->initBudgets(false);
+
+                        foreach ($collBudgets as $obj) {
+                            if (false == $this->collBudgets->contains($obj)) {
+                                $this->collBudgets->append($obj);
+                            }
+                        }
+
+                        $this->collBudgetsPartial = true;
+                    }
+
+                    return $collBudgets;
+                }
+
+                if ($partial && $this->collBudgets) {
+                    foreach ($this->collBudgets as $obj) {
+                        if ($obj->isNew()) {
+                            $collBudgets[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collBudgets = $collBudgets;
+                $this->collBudgetsPartial = false;
+            }
+        }
+
+        return $this->collBudgets;
+    }
+
+    /**
+     * Sets a collection of ChildBudget objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $budgets A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildBranch The current object (for fluent API support)
+     */
+    public function setBudgets(Collection $budgets, ConnectionInterface $con = null)
+    {
+        /** @var ChildBudget[] $budgetsToDelete */
+        $budgetsToDelete = $this->getBudgets(new Criteria(), $con)->diff($budgets);
+
+
+        $this->budgetsScheduledForDeletion = $budgetsToDelete;
+
+        foreach ($budgetsToDelete as $budgetRemoved) {
+            $budgetRemoved->setBranch(null);
+        }
+
+        $this->collBudgets = null;
+        foreach ($budgets as $budget) {
+            $this->addBudget($budget);
+        }
+
+        $this->collBudgets = $budgets;
+        $this->collBudgetsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Budget objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related Budget objects.
+     * @throws PropelException
+     */
+    public function countBudgets(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collBudgetsPartial && !$this->isNew();
+        if (null === $this->collBudgets || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collBudgets) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getBudgets());
+            }
+
+            $query = ChildBudgetQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByBranch($this)
+                ->count($con);
+        }
+
+        return count($this->collBudgets);
+    }
+
+    /**
+     * Method called to associate a ChildBudget object to this object
+     * through the ChildBudget foreign key attribute.
+     *
+     * @param  ChildBudget $l ChildBudget
+     * @return $this|\Branch The current object (for fluent API support)
+     */
+    public function addBudget(ChildBudget $l)
+    {
+        if ($this->collBudgets === null) {
+            $this->initBudgets();
+            $this->collBudgetsPartial = true;
+        }
+
+        if (!$this->collBudgets->contains($l)) {
+            $this->doAddBudget($l);
+
+            if ($this->budgetsScheduledForDeletion and $this->budgetsScheduledForDeletion->contains($l)) {
+                $this->budgetsScheduledForDeletion->remove($this->budgetsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildBudget $budget The ChildBudget object to add.
+     */
+    protected function doAddBudget(ChildBudget $budget)
+    {
+        $this->collBudgets[]= $budget;
+        $budget->setBranch($this);
+    }
+
+    /**
+     * @param  ChildBudget $budget The ChildBudget object to remove.
+     * @return $this|ChildBranch The current object (for fluent API support)
+     */
+    public function removeBudget(ChildBudget $budget)
+    {
+        if ($this->getBudgets()->contains($budget)) {
+            $pos = $this->collBudgets->search($budget);
+            $this->collBudgets->remove($pos);
+            if (null === $this->budgetsScheduledForDeletion) {
+                $this->budgetsScheduledForDeletion = clone $this->collBudgets;
+                $this->budgetsScheduledForDeletion->clear();
+            }
+            $this->budgetsScheduledForDeletion[]= $budget;
+            $budget->setBranch(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Branch is new, it will return
+     * an empty collection; or if this Branch has previously
+     * been saved, it will retrieve related Budgets from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Branch.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return ObjectCollection|ChildBudget[] List of ChildBudget objects
+     */
+    public function getBudgetsJoinLocation(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
+        $query = ChildBudgetQuery::create(null, $criteria);
+        $query->joinWith('Location', $joinBehavior);
+
+        return $this->getBudgets($query, $con);
     }
 
     /**
@@ -2137,6 +2446,11 @@ abstract class Branch implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collBudgets) {
+                foreach ($this->collBudgets as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collPurchasingAgents) {
                 foreach ($this->collPurchasingAgents as $o) {
                     $o->clearAllReferences($deep);
@@ -2150,6 +2464,7 @@ abstract class Branch implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collApprovedUsers = null;
+        $this->collBudgets = null;
         $this->collPurchasingAgents = null;
         $this->collSupervisors = null;
         $this->aLocation = null;

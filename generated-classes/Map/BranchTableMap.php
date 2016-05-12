@@ -160,6 +160,13 @@ class BranchTableMap extends TableMap
     1 => ':id',
   ),
 ), null, null, 'ApprovedUsers', false);
+        $this->addRelation('Budget', '\\Budget', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':branch_id',
+    1 => ':id',
+  ),
+), null, null, 'Budgets', false);
         $this->addRelation('PurchasingAgent', '\\PurchasingAgent', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

@@ -1,6 +1,6 @@
 <?php
 
-use Base\OAuthRefreshTokens as BaseOAuthRefreshTokens;
+use Base\OauthRefreshTokens as BaseOauthRefreshTokens;
 
 /**
  * Skeleton subclass for representing a row from the 'oauth_refresh_tokens' table.
@@ -12,7 +12,7 @@ use Base\OAuthRefreshTokens as BaseOAuthRefreshTokens;
  * long as it does not already exist in the output directory.
  *
  */
-class OAuthRefreshTokens extends BaseOAuthRefreshTokens
+class OauthRefreshTokens extends BaseOauthRefreshTokens
 {
 
 }

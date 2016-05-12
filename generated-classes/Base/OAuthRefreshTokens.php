@@ -2,11 +2,11 @@
 
 namespace Base;
 
-use \OAuthRefreshTokensQuery as ChildOAuthRefreshTokensQuery;
+use \OauthRefreshTokensQuery as ChildOauthRefreshTokensQuery;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Map\OAuthRefreshTokensTableMap;
+use Map\OauthRefreshTokensTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -27,12 +27,12 @@ use Propel\Runtime\Util\PropelDateTime;
  *
 * @package    propel.generator..Base
 */
-abstract class OAuthRefreshTokens implements ActiveRecordInterface
+abstract class OauthRefreshTokens implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Map\\OAuthRefreshTokensTableMap';
+    const TABLE_MAP = '\\Map\\OauthRefreshTokensTableMap';
 
 
     /**
@@ -116,7 +116,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
     }
 
     /**
-     * Initializes internal state of Base\OAuthRefreshTokens object.
+     * Initializes internal state of Base\OauthRefreshTokens object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -213,9 +213,9 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>OAuthRefreshTokens</code> instance.  If
-     * <code>obj</code> is an instance of <code>OAuthRefreshTokens</code>, delegates to
-     * <code>equals(OAuthRefreshTokens)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>OauthRefreshTokens</code> instance.  If
+     * <code>obj</code> is an instance of <code>OauthRefreshTokens</code>, delegates to
+     * <code>equals(OauthRefreshTokens)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -281,7 +281,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|OAuthRefreshTokens The current object, for fluid interface
+     * @return $this|OauthRefreshTokens The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -406,7 +406,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * Set the value of [refresh_token] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthRefreshTokens The current object (for fluent API support)
+     * @return $this|\OauthRefreshTokens The current object (for fluent API support)
      */
     public function setRefreshToken($v)
     {
@@ -416,7 +416,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
 
         if ($this->refresh_token !== $v) {
             $this->refresh_token = $v;
-            $this->modifiedColumns[OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN] = true;
+            $this->modifiedColumns[OauthRefreshTokensTableMap::COL_REFRESH_TOKEN] = true;
         }
 
         return $this;
@@ -426,7 +426,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * Set the value of [client_id] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthRefreshTokens The current object (for fluent API support)
+     * @return $this|\OauthRefreshTokens The current object (for fluent API support)
      */
     public function setClientId($v)
     {
@@ -436,7 +436,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
 
         if ($this->client_id !== $v) {
             $this->client_id = $v;
-            $this->modifiedColumns[OAuthRefreshTokensTableMap::COL_CLIENT_ID] = true;
+            $this->modifiedColumns[OauthRefreshTokensTableMap::COL_CLIENT_ID] = true;
         }
 
         return $this;
@@ -446,7 +446,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * Set the value of [user_id] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthRefreshTokens The current object (for fluent API support)
+     * @return $this|\OauthRefreshTokens The current object (for fluent API support)
      */
     public function setUserId($v)
     {
@@ -456,7 +456,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
 
         if ($this->user_id !== $v) {
             $this->user_id = $v;
-            $this->modifiedColumns[OAuthRefreshTokensTableMap::COL_USER_ID] = true;
+            $this->modifiedColumns[OauthRefreshTokensTableMap::COL_USER_ID] = true;
         }
 
         return $this;
@@ -467,7 +467,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\OAuthRefreshTokens The current object (for fluent API support)
+     * @return $this|\OauthRefreshTokens The current object (for fluent API support)
      */
     public function setExpires($v)
     {
@@ -475,7 +475,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
         if ($this->expires !== null || $dt !== null) {
             if ($this->expires === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->expires->format("Y-m-d H:i:s")) {
                 $this->expires = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[OAuthRefreshTokensTableMap::COL_EXPIRES] = true;
+                $this->modifiedColumns[OauthRefreshTokensTableMap::COL_EXPIRES] = true;
             }
         } // if either are not null
 
@@ -486,7 +486,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * Set the value of [scope] column.
      *
      * @param string $v new value
-     * @return $this|\OAuthRefreshTokens The current object (for fluent API support)
+     * @return $this|\OauthRefreshTokens The current object (for fluent API support)
      */
     public function setScope($v)
     {
@@ -496,7 +496,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
 
         if ($this->scope !== $v) {
             $this->scope = $v;
-            $this->modifiedColumns[OAuthRefreshTokensTableMap::COL_SCOPE] = true;
+            $this->modifiedColumns[OauthRefreshTokensTableMap::COL_SCOPE] = true;
         }
 
         return $this;
@@ -538,22 +538,22 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : OAuthRefreshTokensTableMap::translateFieldName('RefreshToken', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : OauthRefreshTokensTableMap::translateFieldName('RefreshToken', TableMap::TYPE_PHPNAME, $indexType)];
             $this->refresh_token = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OAuthRefreshTokensTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : OauthRefreshTokensTableMap::translateFieldName('ClientId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->client_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OAuthRefreshTokensTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : OauthRefreshTokensTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->user_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OAuthRefreshTokensTableMap::translateFieldName('Expires', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : OauthRefreshTokensTableMap::translateFieldName('Expires', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->expires = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : OAuthRefreshTokensTableMap::translateFieldName('Scope', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : OauthRefreshTokensTableMap::translateFieldName('Scope', TableMap::TYPE_PHPNAME, $indexType)];
             $this->scope = (null !== $col) ? (string) $col : null;
             $this->resetModified();
 
@@ -563,10 +563,10 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = OAuthRefreshTokensTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = OauthRefreshTokensTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\OAuthRefreshTokens'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\OauthRefreshTokens'), 0, $e);
         }
     }
 
@@ -608,13 +608,13 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildOAuthRefreshTokensQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildOauthRefreshTokensQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -633,8 +633,8 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see OAuthRefreshTokens::setDeleted()
-     * @see OAuthRefreshTokens::isDeleted()
+     * @see OauthRefreshTokens::setDeleted()
+     * @see OauthRefreshTokens::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -643,11 +643,11 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildOAuthRefreshTokensQuery::create()
+            $deleteQuery = ChildOauthRefreshTokensQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -678,7 +678,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(OAuthRefreshTokensTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(OauthRefreshTokensTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -697,7 +697,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                OAuthRefreshTokensTableMap::addInstanceToPool($this);
+                OauthRefreshTokensTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -756,19 +756,19 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN)) {
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = 'refresh_token';
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_CLIENT_ID)) {
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_CLIENT_ID)) {
             $modifiedColumns[':p' . $index++]  = 'client_id';
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_USER_ID)) {
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_USER_ID)) {
             $modifiedColumns[':p' . $index++]  = 'user_id';
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_EXPIRES)) {
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_EXPIRES)) {
             $modifiedColumns[':p' . $index++]  = 'expires';
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_SCOPE)) {
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_SCOPE)) {
             $modifiedColumns[':p' . $index++]  = 'scope';
         }
 
@@ -836,7 +836,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = OAuthRefreshTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = OauthRefreshTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -890,11 +890,11 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['OAuthRefreshTokens'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['OauthRefreshTokens'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['OAuthRefreshTokens'][$this->hashCode()] = true;
-        $keys = OAuthRefreshTokensTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['OauthRefreshTokens'][$this->hashCode()] = true;
+        $keys = OauthRefreshTokensTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRefreshToken(),
             $keys[1] => $this->getClientId(),
@@ -924,11 +924,11 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\OAuthRefreshTokens
+     * @return $this|\OauthRefreshTokens
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = OAuthRefreshTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = OauthRefreshTokensTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -939,7 +939,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\OAuthRefreshTokens
+     * @return $this|\OauthRefreshTokens
      */
     public function setByPosition($pos, $value)
     {
@@ -983,7 +983,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = OAuthRefreshTokensTableMap::getFieldNames($keyType);
+        $keys = OauthRefreshTokensTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setRefreshToken($arr[$keys[0]]);
@@ -1019,7 +1019,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\OAuthRefreshTokens The current object, for fluid interface
+     * @return $this|\OauthRefreshTokens The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1039,22 +1039,22 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(OAuthRefreshTokensTableMap::DATABASE_NAME);
+        $criteria = new Criteria(OauthRefreshTokensTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN)) {
-            $criteria->add(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $this->refresh_token);
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN)) {
+            $criteria->add(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $this->refresh_token);
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_CLIENT_ID)) {
-            $criteria->add(OAuthRefreshTokensTableMap::COL_CLIENT_ID, $this->client_id);
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_CLIENT_ID)) {
+            $criteria->add(OauthRefreshTokensTableMap::COL_CLIENT_ID, $this->client_id);
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_USER_ID)) {
-            $criteria->add(OAuthRefreshTokensTableMap::COL_USER_ID, $this->user_id);
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_USER_ID)) {
+            $criteria->add(OauthRefreshTokensTableMap::COL_USER_ID, $this->user_id);
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_EXPIRES)) {
-            $criteria->add(OAuthRefreshTokensTableMap::COL_EXPIRES, $this->expires);
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_EXPIRES)) {
+            $criteria->add(OauthRefreshTokensTableMap::COL_EXPIRES, $this->expires);
         }
-        if ($this->isColumnModified(OAuthRefreshTokensTableMap::COL_SCOPE)) {
-            $criteria->add(OAuthRefreshTokensTableMap::COL_SCOPE, $this->scope);
+        if ($this->isColumnModified(OauthRefreshTokensTableMap::COL_SCOPE)) {
+            $criteria->add(OauthRefreshTokensTableMap::COL_SCOPE, $this->scope);
         }
 
         return $criteria;
@@ -1072,8 +1072,8 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildOAuthRefreshTokensQuery::create();
-        $criteria->add(OAuthRefreshTokensTableMap::COL_REFRESH_TOKEN, $this->refresh_token);
+        $criteria = ChildOauthRefreshTokensQuery::create();
+        $criteria->add(OauthRefreshTokensTableMap::COL_REFRESH_TOKEN, $this->refresh_token);
 
         return $criteria;
     }
@@ -1135,7 +1135,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \OAuthRefreshTokens (or compatible) type.
+     * @param      object $copyObj An object of \OauthRefreshTokens (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1161,7 +1161,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \OAuthRefreshTokens Clone of current object.
+     * @return \OauthRefreshTokens Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1216,7 +1216,7 @@ abstract class OAuthRefreshTokens implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(OAuthRefreshTokensTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(OauthRefreshTokensTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**

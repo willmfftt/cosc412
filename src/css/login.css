@@ -1,0 +1,8 @@
+@CHARSET "US-ASCII";
+
+#login-failed {
+	text-align: center;
+	font-size: 16px;
+	color: #F44336;
+	padding-top: 16px;
+}

@@ -21,11 +21,13 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildTransactionQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildTransactionQuery orderByDescription($order = Criteria::ASC) Order by the description column
  * @method     ChildTransactionQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method     ChildTransactionQuery orderByPurchasingAgentId($order = Criteria::ASC) Order by the purchasing_agent_id column
  * @method     ChildTransactionQuery orderBySupervisorId($order = Criteria::ASC) Order by the supervisor_id column
  *
  * @method     ChildTransactionQuery groupById() Group by the id column
+ * @method     ChildTransactionQuery groupByDescription() Group by the description column
  * @method     ChildTransactionQuery groupByType() Group by the type column
  * @method     ChildTransactionQuery groupByPurchasingAgentId() Group by the purchasing_agent_id column
  * @method     ChildTransactionQuery groupBySupervisorId() Group by the supervisor_id column
@@ -84,6 +86,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransaction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildTransaction matching the query, or a new ChildTransaction object populated from the query conditions when no match is found
  *
  * @method     ChildTransaction findOneById(int $id) Return the first ChildTransaction filtered by the id column
+ * @method     ChildTransaction findOneByDescription(string $description) Return the first ChildTransaction filtered by the description column
  * @method     ChildTransaction findOneByType(string $type) Return the first ChildTransaction filtered by the type column
  * @method     ChildTransaction findOneByPurchasingAgentId(int $purchasing_agent_id) Return the first ChildTransaction filtered by the purchasing_agent_id column
  * @method     ChildTransaction findOneBySupervisorId(int $supervisor_id) Return the first ChildTransaction filtered by the supervisor_id column *
@@ -92,12 +95,14 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildTransaction requireOne(ConnectionInterface $con = null) Return the first ChildTransaction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction requireOneById(int $id) Return the first ChildTransaction filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildTransaction requireOneByDescription(string $description) Return the first ChildTransaction filtered by the description column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByType(string $type) Return the first ChildTransaction filtered by the type column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneByPurchasingAgentId(int $purchasing_agent_id) Return the first ChildTransaction filtered by the purchasing_agent_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildTransaction requireOneBySupervisorId(int $supervisor_id) Return the first ChildTransaction filtered by the supervisor_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildTransaction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildTransaction objects based on current ModelCriteria
  * @method     ChildTransaction[]|ObjectCollection findById(int $id) Return ChildTransaction objects filtered by the id column
+ * @method     ChildTransaction[]|ObjectCollection findByDescription(string $description) Return ChildTransaction objects filtered by the description column
  * @method     ChildTransaction[]|ObjectCollection findByType(string $type) Return ChildTransaction objects filtered by the type column
  * @method     ChildTransaction[]|ObjectCollection findByPurchasingAgentId(int $purchasing_agent_id) Return ChildTransaction objects filtered by the purchasing_agent_id column
  * @method     ChildTransaction[]|ObjectCollection findBySupervisorId(int $supervisor_id) Return ChildTransaction objects filtered by the supervisor_id column
@@ -193,7 +198,7 @@ abstract class TransactionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, type, purchasing_agent_id, supervisor_id FROM transaction WHERE id = :p0';
+        $sql = 'SELECT id, description, type, purchasing_agent_id, supervisor_id FROM transaction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -322,6 +327,35 @@ abstract class TransactionQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TransactionTableMap::COL_ID, $id, $comparison);
+    }
+
+    /**
+     * Filter the query on the description column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
+     * $query->filterByDescription('%fooValue%'); // WHERE description LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $description The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildTransactionQuery The current query, for fluid interface
+     */
+    public function filterByDescription($description = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($description)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $description)) {
+                $description = str_replace('*', '%', $description);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(TransactionTableMap::COL_DESCRIPTION, $description, $comparison);
     }
 
     /**
